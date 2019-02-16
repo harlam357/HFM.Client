@@ -43,13 +43,12 @@
   <ItemGroup>
     <Compile Include="ClientCommand.cs" />
     <Compile Include="FahClientConnection.cs" />
+    <Compile Include="Internal\ValidationHelper.cs" />
     <Compile Include="Sockets\TcpClientConnection.cs" />
     <Compile Include="Sockets\TcpConnection.cs" />
     <Compile Include="Sockets\TcpConnectionFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Internal\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

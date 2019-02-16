@@ -29,6 +29,42 @@ namespace HFM.Client.Sockets
       }
 
       [Test]
+      public void TcpClientConnection_ConnectThrowsArgumentNullExceptionWhenHostIsNull()
+      {
+         // Arrange
+         var connection = new TcpClientConnection();
+         // Act & Assert
+         Assert.Throws<ArgumentNullException>(() => connection.Connect(null, LocalTcpListener.Port, 5000));
+      }
+
+      [Test]
+      public void TcpClientConnection_ConnectAsyncThrowsArgumentNullExceptionWhenHostIsNull()
+      {
+         // Arrange
+         var connection = new TcpClientConnection();
+         // Act & Assert
+         Assert.ThrowsAsync<ArgumentNullException>(() => connection.ConnectAsync(null, LocalTcpListener.Port, 5000));
+      }
+
+      [Test]
+      public void TcpClientConnection_ConnectThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
+      {
+         // Arrange
+         var connection = new TcpClientConnection();
+         // Act & Assert
+         Assert.Throws<ArgumentOutOfRangeException>(() => connection.Connect(LocalTcpListener.Host, -1, 5000));
+      }
+
+      [Test]
+      public void TcpClientConnection_ConnectAsyncThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
+      {
+         // Arrange
+         var connection = new TcpClientConnection();
+         // Act & Assert
+         Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => connection.ConnectAsync(LocalTcpListener.Host, -1, 5000));
+      }
+
+      [Test]
       [Category(TestCategoryNames.Integration)]
       public void TcpClientConnection_ConnectSuccessfullyAndClose()
       {

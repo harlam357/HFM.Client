@@ -1,5 +1,4 @@
 ﻿
-using System;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -21,8 +20,6 @@ namespace HFM.Client.Sockets
       /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
       /// <param name="port">The port number of the remote host.</param>
       /// <param name="timeout">The time (in milliseconds) to wait while trying to establish a connection before terminating the attempt and generating an error.</param>
-      /// <exception cref="InvalidOperationException">The connection is already connected.</exception>
-      /// <exception cref="TimeoutException">A connection was not made before the timeout duration.</exception>
       public abstract void Connect(string host, int port, int timeout);
 
       /// <summary>
@@ -31,8 +28,6 @@ namespace HFM.Client.Sockets
       /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
       /// <param name="port">The port number of the remote host.</param>
       /// <param name="timeout">The time (in milliseconds) to wait while trying to establish a connection before terminating the attempt and generating an error.</param>
-      /// <exception cref="InvalidOperationException">The connection is already connected.</exception>
-      /// <exception cref="TimeoutException">A connection was not made before the timeout duration.</exception>
       public abstract Task ConnectAsync(string host, int port, int timeout);
 
       /// <summary>
