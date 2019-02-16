@@ -65,7 +65,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HFM.Client.New\HFM.Client.csproj">
+    <ProjectReference Include="..\HFM.Client\HFM.Client.csproj">
       <Project>{777c0169-49c5-4726-a137-496c7094c60b}</Project>
       <Name>HFM.Client</Name>
     </ProjectReference>
