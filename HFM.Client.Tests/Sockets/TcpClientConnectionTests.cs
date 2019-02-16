@@ -33,13 +33,13 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectSuccessfullyAndClose()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
 
             var connection = new TcpClientConnection();
             // Act (Connect)
-            connection.Connect(LocalTcpServer.Host, LocalTcpServer.Port, 5000);
+            connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
             // Assert
             Assert.IsTrue(connection.Connected);
             var stream = connection.GetStream();
@@ -58,15 +58,15 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
             
             var connection = new TcpClientConnection();
             // Act (Connect)
-            connection.Connect(LocalTcpServer.Host, LocalTcpServer.Port, 5000);
+            connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
             // Act (Attempt Another Connection) & Assert
-            Assert.Throws<InvalidOperationException>(() => connection.Connect(LocalTcpServer.Host, LocalTcpServer.Port, 5000));
+            Assert.Throws<InvalidOperationException>(() => connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000));
          }
       }
 
@@ -79,7 +79,7 @@ namespace HFM.Client.Sockets
          // use a local IP that no physical machine is using
          var host = "172.20.0.1";
          // Act & Assert
-         Assert.Throws<TimeoutException>(() => connection.Connect(host, LocalTcpServer.Port, 2000));
+         Assert.Throws<TimeoutException>(() => connection.Connect(host, LocalTcpListener.Port, 2000));
          Assert.IsFalse(connection.Connected);
       }
 
@@ -88,14 +88,14 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectThrowsObjectDisposedExceptionWhenAttemptingToConnectUsingConnectionThatWasClosed()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
 
             var connection = new TcpClientConnection();
             connection.Close();
             // Act & Assert
-            Assert.Throws<ObjectDisposedException>(() => connection.Connect(LocalTcpServer.Host, LocalTcpServer.Port, 5000));
+            Assert.Throws<ObjectDisposedException>(() => connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000));
          }
       }
 
@@ -104,13 +104,13 @@ namespace HFM.Client.Sockets
       public async Task TcpClientConnection_ConnectAsyncSuccessfullyAndClose()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
 
             var connection = new TcpClientConnection();
             // Act (Connect)
-            await connection.ConnectAsync(LocalTcpServer.Host, LocalTcpServer.Port, 5000);
+            await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
             // Assert
             Assert.IsTrue(connection.Connected);
             var stream = connection.GetStream();
@@ -129,15 +129,15 @@ namespace HFM.Client.Sockets
       public async Task TcpClientConnection_ConnectAsyncThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
 
             var connection = new TcpClientConnection();
             // Act (Connect)
-            await connection.ConnectAsync(LocalTcpServer.Host, LocalTcpServer.Port, 5000);
+            await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
             // Act (Attempt Another Connection) & Assert
-            Assert.ThrowsAsync<InvalidOperationException>(() => connection.ConnectAsync(LocalTcpServer.Host, LocalTcpServer.Port, 5000));
+            Assert.ThrowsAsync<InvalidOperationException>(() => connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000));
          }
       }
 
@@ -150,7 +150,7 @@ namespace HFM.Client.Sockets
          // use a local IP that no physical machine is using
          var host = "172.20.0.1";
          // Act & Assert
-         Assert.ThrowsAsync<TimeoutException>(() => connection.ConnectAsync(host, LocalTcpServer.Port, 2000));
+         Assert.ThrowsAsync<TimeoutException>(() => connection.ConnectAsync(host, LocalTcpListener.Port, 2000));
          Assert.IsFalse(connection.Connected);
       }
 
@@ -159,14 +159,14 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectAsyncThrowsObjectDisposedExceptionWhenAttemptingToConnectUsingConnectionThatWasClosed()
       {
          // Arrange
-         using (var server = new LocalTcpServer())
+         using (var server = new LocalTcpListener())
          {
             server.Start();
 
             var connection = new TcpClientConnection();
             connection.Close();
             // Act & Assert
-            Assert.ThrowsAsync<ObjectDisposedException>(() => connection.ConnectAsync(LocalTcpServer.Host, LocalTcpServer.Port, 5000));
+            Assert.ThrowsAsync<ObjectDisposedException>(() => connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000));
          }
       }
    }
