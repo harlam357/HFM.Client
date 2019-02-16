@@ -33,10 +33,8 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectSuccessfullyAndClose()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-
             var connection = new TcpClientConnection();
             // Act (Connect)
             connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
@@ -58,10 +56,8 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-            
             var connection = new TcpClientConnection();
             // Act (Connect)
             connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
@@ -88,10 +84,8 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectThrowsObjectDisposedExceptionWhenAttemptingToConnectUsingConnectionThatWasClosed()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-
             var connection = new TcpClientConnection();
             connection.Close();
             // Act & Assert
@@ -104,10 +98,8 @@ namespace HFM.Client.Sockets
       public async Task TcpClientConnection_ConnectAsyncSuccessfullyAndClose()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-
             var connection = new TcpClientConnection();
             // Act (Connect)
             await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
@@ -129,10 +121,8 @@ namespace HFM.Client.Sockets
       public async Task TcpClientConnection_ConnectAsyncThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-
             var connection = new TcpClientConnection();
             // Act (Connect)
             await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
@@ -159,10 +149,8 @@ namespace HFM.Client.Sockets
       public void TcpClientConnection_ConnectAsyncThrowsObjectDisposedExceptionWhenAttemptingToConnectUsingConnectionThatWasClosed()
       {
          // Arrange
-         using (var server = new LocalTcpListener())
+         using (new LocalTcpListener())
          {
-            server.Start();
-
             var connection = new TcpClientConnection();
             connection.Close();
             // Act & Assert
