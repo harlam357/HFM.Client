@@ -55,7 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ClientConnectionTests.cs" />
+    <Compile Include="FahClientConnectionTests.cs" />
     <Compile Include="Sockets\LocalTcpListener.cs" />
     <Compile Include="Sockets\TcpClientConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClientCommand.cs" />
-    <Compile Include="ClientConnection.cs" />
+    <Compile Include="FahClientConnection.cs" />
     <Compile Include="Sockets\TcpClientConnection.cs" />
     <Compile Include="Sockets\TcpConnection.cs" />
     <Compile Include="Sockets\TcpConnectionFactory.cs" />
