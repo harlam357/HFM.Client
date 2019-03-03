@@ -13,6 +13,20 @@ namespace HFM.Client
    public class FahClientConnectionTests
    {
       [Test]
+      public void FahClientConnection_ThrowsArgumentNullExceptionWhenHostIsNull()
+      {
+         // ReSharper disable once ObjectCreationAsStatement
+         Assert.Throws<ArgumentNullException>(() => new FahClientConnection(null, 2000));
+      }
+
+      [Test]
+      public void TcpClientConnection_ConnectThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
+      {
+         // ReSharper disable once ObjectCreationAsStatement
+         Assert.Throws<ArgumentOutOfRangeException>(() => new FahClientConnection("foo", -1));
+      }
+
+      [Test]
       public void FahClientConnection_VerifyPropertiesOnNewInstance()
       {
          // Act
@@ -61,6 +75,27 @@ namespace HFM.Client
       }
 
       [Test]
+      public async Task FahClientConnection_OpenAsyncSuccessfullyAndClose()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            bool connectedChanged = false;
+            connection.ConnectedChanged += (s, e) => connectedChanged = e.Connected;
+            // Act (Open)
+            await connection.OpenAsync();
+            // Assert
+            Assert.IsTrue(connection.Connected);
+            Assert.IsTrue(connectedChanged);
+            // Act (Close)
+            connection.Close();
+            // Assert
+            Assert.IsFalse(connection.Connected);
+            Assert.IsFalse(connectedChanged);
+         }
+      }
+      
+      [Test]
       public void FahClientConnection_OpenSuccessfullyAndCloseMultipleTimes()
       {
          // Arrange
@@ -92,6 +127,20 @@ namespace HFM.Client
             Assert.Throws<InvalidOperationException>(() => connection.Open());
          }
       }
+      
+      [Test]
+      public async Task FahClientConnection_OpenAsyncThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            // Act (Open)
+            await connection.OpenAsync();
+            // Act (Attempt Another Connection) & Assert
+            // ReSharper disable once AccessToDisposedClosure
+            Assert.ThrowsAsync<InvalidOperationException>(() => connection.OpenAsync());
+         }
+      }
 
       [Test]
       [Category(TestCategoryNames.Integration)]
@@ -105,6 +154,23 @@ namespace HFM.Client
             connection.ConnectionTimeout = 2000;
             // Act & Assert
             Assert.Throws<TimeoutException>(() => connection.Open());
+            Assert.IsFalse(connection.Connected);
+         }
+      }
+
+      [Test]
+      [Category(TestCategoryNames.Integration)]
+      public void FahClientConnection_OpenAsyncAttemptTimesOut()
+      {
+         // Arrange
+         // use a local IP that no physical machine is using
+         var host = "172.20.0.1";
+         using (var connection = new FahClientConnection(host, LocalTcpListener.Port))
+         {
+            connection.ConnectionTimeout = 2000;
+            // Act & Assert
+            // ReSharper disable once AccessToDisposedClosure
+            Assert.ThrowsAsync<TimeoutException>(() => connection.OpenAsync());
             Assert.IsFalse(connection.Connected);
          }
       }
@@ -125,6 +191,27 @@ namespace HFM.Client
             Assert.IsFalse(connection.Connected);
             // Act (Open Again)
             connection.Open();
+            // Assert
+            Assert.IsTrue(connection.Connected);
+         }
+      }
+
+      [Test]
+      public async Task FahClientConnection_ReopenAsyncConnectionThatWasPreviouslyOpenedAndClosed()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            // Act (Open)
+            await connection.OpenAsync();
+            // Assert
+            Assert.IsTrue(connection.Connected);
+            // Act (Close)
+            connection.Close();
+            // Assert
+            Assert.IsFalse(connection.Connected);
+            // Act (Open Again)
+            await connection.OpenAsync();
             // Assert
             Assert.IsTrue(connection.Connected);
          }

@@ -75,7 +75,7 @@ namespace HFM.Client.Sockets
          if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
          var connectTask = TcpClient.ConnectAsync(host, port);
-         if (connectTask != await Task.WhenAny(connectTask, Task.Delay(timeout)))
+         if (connectTask != await Task.WhenAny(connectTask, Task.Delay(timeout)).ConfigureAwait(false))
          {
             Close();
             throw new TimeoutException("Connection attempt has timed out.");

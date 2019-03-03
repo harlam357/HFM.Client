@@ -1,6 +1,8 @@
 ﻿
 using System;
+using System.Threading.Tasks;
 
+using HFM.Client.Internal;
 using HFM.Client.Sockets;
 
 namespace HFM.Client
@@ -32,13 +34,18 @@ namespace HFM.Client
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientConnectionBase"/> class.
       /// </summary>
+      /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
+      /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
       protected FahClientConnectionBase(string host, int port)
       {
-         Host = host;
+         Host = host ?? throw new ArgumentNullException(nameof(host));
+         if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
          Port = port;
       }
 
       public abstract void Open();
+
+      public abstract Task OpenAsync();
 
       public abstract void Close();
    }
@@ -53,6 +60,8 @@ namespace HFM.Client
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
       /// </summary>
+      /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
+      /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
       public FahClientConnection(string host, int port)
          : this(TcpConnectionFactory.Default, host, port)
       {
@@ -64,6 +73,8 @@ namespace HFM.Client
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
       /// </summary>
+      /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
+      /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
       public FahClientConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
          : base(host, port)
       {
@@ -81,6 +92,22 @@ namespace HFM.Client
          // create new TcpConnection and connect
          _tcpConnection = _tcpConnectionFactory.Create();
          _tcpConnection.Connect(Host, Port, ConnectionTimeout);
+         // if connection state changed, raise event
+         if (Connected)
+         {
+            OnConnectedChanged(new FahClientConnectedChangedEventArgs(Connected));
+         }
+      }
+
+      public override async Task OpenAsync()
+      {
+         if (Connected) throw new InvalidOperationException("The connection is already open.");
+
+         // dispose of any previous client
+         _tcpConnection?.Close();
+         // create new TcpConnection and connect
+         _tcpConnection = _tcpConnectionFactory.Create();
+         await _tcpConnection.ConnectAsync(Host, Port, ConnectionTimeout).ConfigureAwait(false);
          // if connection state changed, raise event
          if (Connected)
          {
