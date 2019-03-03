@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="FahClientCommand.cs" />
+    <Compile Include="FahClientConnectedChangedEventArgs.cs" />
     <Compile Include="FahClientConnection.cs" />
     <Compile Include="FahClientDataWriter.cs" />
     <Compile Include="Internal\ValidationHelper.cs" />

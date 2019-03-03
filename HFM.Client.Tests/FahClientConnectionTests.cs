@@ -149,9 +149,7 @@ namespace HFM.Client
       public void FahClientConnection_OpenAttemptTimesOut()
       {
          // Arrange
-         // use a local IP that no physical machine is using
-         var host = "172.20.0.1";
-         using (var connection = new FahClientConnection(host, LocalTcpListener.Port))
+         using (var connection = new FahClientConnection(LocalTcpListener.Host, LocalTcpListener.Port))
          {
             connection.ConnectionTimeout = _shortTimeout;
             // Act & Assert
@@ -165,9 +163,7 @@ namespace HFM.Client
       public void FahClientConnection_OpenAsyncAttemptTimesOut()
       {
          // Arrange
-         // use a local IP that no physical machine is using
-         var host = "172.20.0.1";
-         using (var connection = new FahClientConnection(host, LocalTcpListener.Port))
+         using (var connection = new FahClientConnection(LocalTcpListener.Host, LocalTcpListener.Port))
          {
             connection.ConnectionTimeout = _shortTimeout;
             // Act & Assert
