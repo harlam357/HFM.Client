@@ -12,6 +12,8 @@ namespace HFM.Client
 {
    public class FahClientConnectionTests
    {
+      private int _shortTimeout = 250;
+
       [Test]
       public void FahClientConnection_ThrowsArgumentNullExceptionWhenHostIsNull()
       {
@@ -151,7 +153,7 @@ namespace HFM.Client
          var host = "172.20.0.1";
          using (var connection = new FahClientConnection(host, LocalTcpListener.Port))
          {
-            connection.ConnectionTimeout = 2000;
+            connection.ConnectionTimeout = _shortTimeout;
             // Act & Assert
             Assert.Throws<TimeoutException>(() => connection.Open());
             Assert.IsFalse(connection.Connected);
@@ -167,7 +169,7 @@ namespace HFM.Client
          var host = "172.20.0.1";
          using (var connection = new FahClientConnection(host, LocalTcpListener.Port))
          {
-            connection.ConnectionTimeout = 2000;
+            connection.ConnectionTimeout = _shortTimeout;
             // Act & Assert
             // ReSharper disable once AccessToDisposedClosure
             Assert.ThrowsAsync<TimeoutException>(() => connection.OpenAsync());
@@ -218,6 +220,78 @@ namespace HFM.Client
       }
 
       [Test]
+      public void FahClientConnection_CreateCommandReturnsCommandWhenNotConnected()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            // Act
+            var command = connection.CreateCommand();
+            // Assert
+            Assert.IsNotNull(command);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_GetDataWriterThrowsInvalidOperationExceptionWhenConnectionIsNotOpen()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => connection.GetDataWriter());
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_GetDataWriterWhenConnectionIsOpen()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            connection.Open();
+            // Act
+            var dataWriter = connection.GetDataWriter();
+            // Assert
+            Assert.IsNotNull(dataWriter);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_GetDataWriterReturnsSameInstanceWhileConnectionRemainsOpen()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            connection.Open();
+            // Act
+            var dataWriter1 = connection.GetDataWriter();
+            var dataWriter2 = connection.GetDataWriter();
+            // Assert
+            Assert.AreSame(dataWriter1, dataWriter2);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_GetDataWriterReturnsDifferentInstanceEachTimeConnectionIsOpened()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            connection.Open();
+            // Act
+            var dataWriter1 = connection.GetDataWriter();
+            // close and open again
+            connection.Close();
+            connection.Open();
+            // Act
+            var dataWriter2 = connection.GetDataWriter();
+            // Assert
+            Assert.AreNotSame(dataWriter1, dataWriter2);
+         }
+      }
+
+      [Test]
       public void FahClientConnection_DisposeClosesInnerTcpConnection()
       {
          // Arrange
@@ -234,10 +308,9 @@ namespace HFM.Client
          Assert.IsFalse(tcpConnection.Connected);
       }
 
-
       private class MockTcpConnectionFactory : TcpConnectionFactory
       {
-         public TcpConnection TcpConnection { get; set; }
+         public TcpConnection TcpConnection { get; }
 
          public MockTcpConnectionFactory()
          {
@@ -274,7 +347,7 @@ namespace HFM.Client
 
          public override Stream GetStream()
          {
-            throw new NotImplementedException();
+            return new MemoryStream();
          }
       }
    }

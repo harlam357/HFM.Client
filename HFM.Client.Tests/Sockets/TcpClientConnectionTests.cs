@@ -10,6 +10,8 @@ namespace HFM.Client.Sockets
    [TestFixture]
    public class TcpClientConnectionTests
    {
+      private int _shortTimeout = 250;
+
       [Test]
       public void TcpClientConnection_ConnectedReturnsFalseOnNewInstance()
       {
@@ -111,7 +113,7 @@ namespace HFM.Client.Sockets
          // use a local IP that no physical machine is using
          var host = "172.20.0.1";
          // Act & Assert
-         Assert.Throws<TimeoutException>(() => connection.Connect(host, LocalTcpListener.Port, 2000));
+         Assert.Throws<TimeoutException>(() => connection.Connect(host, LocalTcpListener.Port, _shortTimeout));
          Assert.IsFalse(connection.Connected);
       }
 
@@ -176,7 +178,7 @@ namespace HFM.Client.Sockets
          // use a local IP that no physical machine is using
          var host = "172.20.0.1";
          // Act & Assert
-         Assert.ThrowsAsync<TimeoutException>(() => connection.ConnectAsync(host, LocalTcpListener.Port, 2000));
+         Assert.ThrowsAsync<TimeoutException>(() => connection.ConnectAsync(host, LocalTcpListener.Port, _shortTimeout));
          Assert.IsFalse(connection.Connected);
       }
 

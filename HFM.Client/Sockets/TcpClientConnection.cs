@@ -9,7 +9,7 @@ using HFM.Client.Internal;
 namespace HFM.Client.Sockets
 {
    /// <summary>
-   /// Provides connections for TCP network services using a <see cref="TcpClient"/>.
+   /// Provides connections for TCP network services using a <see cref="System.Net.Sockets.TcpClient"/>.
    /// </summary>
    public class TcpClientConnection : TcpConnection, IDisposable
    {
