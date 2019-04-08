@@ -111,6 +111,38 @@ namespace HFM.Client
          }
       }
 
+      [Test]
+      public void FahClientReader_ReadWithTimeoutRethrowsExceptionFromStreamReadAndClosesTheConnection()
+      {
+         // Arrange
+         Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+         {
+            connection.Open();
+            var reader = new FahClientReader(connection);
+            reader.ReadTimeout = 1000;
+            // Act & Assert
+            Assert.Throws<IOException>(() => reader.Read());
+            Assert.IsFalse(connection.Connected);
+         }
+      }
+
+      [Test]
+      public void FahClientReader_ReadAsyncWithTimeoutRethrowsExceptionFromStreamReadAsyncAndClosesTheConnection()
+      {
+         // Arrange
+         Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+         {
+            connection.Open();
+            var reader = new FahClientReader(connection);
+            reader.ReadTimeout = 1000;
+            // Act & Assert
+            Assert.ThrowsAsync<IOException>(() => reader.ReadAsync());
+            Assert.IsFalse(connection.Connected);
+         }
+      }
+
       private class MockStreamThrowsOnRead : MemoryStream
       {
          public override int Read(byte[] buffer, int offset, int count)

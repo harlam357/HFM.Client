@@ -10,7 +10,10 @@ namespace HFM.Client
 {
    public abstract class FahClientReaderBase
    {
-      public int ReadTimeout { get; set; } = 10000;
+      /// <summary>
+      /// Gets or sets the amount of time a <see cref="FahClientReaderBase" /> will wait to read the next message.  The default value is zero and specifies no timeout.
+      /// </summary>
+      public int ReadTimeout { get; set; } = 0;
 
       public FahClientMessage Message { get; protected set; }
 
@@ -33,7 +36,6 @@ namespace HFM.Client
       public FahClientReader(FahClientConnection connection)
       {
          Connection = connection;
-         _readBuffer = new StringBuilder();
       }
 
       public int BufferSize { get; set; } = 1024;
@@ -44,35 +46,41 @@ namespace HFM.Client
 
          int bytesRead;
          var buffer = new byte[BufferSize];
-         while ((bytesRead = ReadWithTimeout(buffer)) != 0)
+         while ((bytesRead = ReadInternal(buffer)) != 0)
          {
-            var nextMessage = GetNextMessage(buffer, bytesRead);
-            if (nextMessage != null)
+            if (GetNextMessage(buffer, bytesRead))
             {
-               Message = nextMessage;
                return true;
             }
          }
          return false;
       }
 
-      private int ReadWithTimeout(byte[] buffer)
+      private int ReadInternal(byte[] buffer)
       {
          var stream = GetStream();
 
          try
          {
-            var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-            if (readTask == Task.WhenAny(readTask, Task.Delay(ReadTimeout)).Result)
+            int timeout = ReadTimeout;
+            if (timeout > 0)
             {
-               return readTask.Result;
+               var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
+               return readTask == Task.WhenAny(readTask, Task.Delay(timeout)).Result 
+                  ? readTask.Result 
+                  : 0;
             }
-            return 0;
+            return stream.Read(buffer, 0, buffer.Length);
          }
          catch (AggregateException ex)
          {
             Connection.Close();
             throw ex.GetBaseException();
+         }
+         catch (Exception)
+         {
+            Connection.Close();
+            throw;
          }
       }
 
@@ -82,30 +90,32 @@ namespace HFM.Client
 
          int bytesRead;
          var buffer = new byte[BufferSize];
-         while ((bytesRead = await ReadAsyncWithTimeout(buffer).ConfigureAwait(false)) != 0)
+         while ((bytesRead = await ReadAsyncInternal(buffer).ConfigureAwait(false)) != 0)
          {
-            var nextMessage = GetNextMessage(buffer, bytesRead);
-            if (nextMessage != null)
+            if (GetNextMessage(buffer, bytesRead))
             {
-               Message = nextMessage;
                return true;
             }
          }
          return false;
       }
 
-      private async Task<int> ReadAsyncWithTimeout(byte[] buffer)
+      private async Task<int> ReadAsyncInternal(byte[] buffer)
       {
          var stream = GetStream();
 
          try
          {
             var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-            if (readTask == await Task.WhenAny(readTask, Task.Delay(ReadTimeout)).ConfigureAwait(false))
+
+            int timeout = ReadTimeout;
+            if (timeout > 0)
             {
-               return await readTask.ConfigureAwait(false);
+               return readTask == await Task.WhenAny(readTask, Task.Delay(timeout)).ConfigureAwait(false) 
+                  ? await readTask.ConfigureAwait(false) 
+                  : 0;
             }
-            return 0;
+            return await readTask.ConfigureAwait(false);
          }
          catch (Exception)
          {
@@ -124,12 +134,17 @@ namespace HFM.Client
          return stream;
       }
 
-      private readonly StringBuilder _readBuffer;
+      private readonly StringBuilder _readBuffer = new StringBuilder();
 
-      private FahClientMessage GetNextMessage(byte[] buffer, int bytesRead)
+      private bool GetNextMessage(byte[] buffer, int bytesRead)
       {
          _readBuffer.Append(Encoding.ASCII.GetChars(buffer, 0, bytesRead));
-         return FahClientMessageParser.GetNextMessage(_readBuffer);
+         var nextMessage = FahClientMessageParser.GetNextMessage(_readBuffer);
+         if (nextMessage != null)
+         {
+            Message = nextMessage;
+         }
+         return nextMessage != null;
       }
    }
 
