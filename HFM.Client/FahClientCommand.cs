@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,14 +14,14 @@ namespace HFM.Client
       /// <summary>
       /// Gets or sets the Folding@Home client command statement.
       /// </summary>
-      public string CommandText { get; set; }
+      public string CommandText { get; set; } = String.Empty;
 
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientCommandBase"/> class.
       /// </summary>
       protected FahClientCommandBase()
       {
-         
+
       }
 
       /// <summary>
@@ -84,9 +85,19 @@ namespace HFM.Client
       {
          if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
+         var stream = GetStream();
          byte[] buffer = GetBuffer(CommandText);
-         Connection.GetDataWriter().Write(buffer);
-         return buffer.Length;
+
+         try
+         {
+            stream.Write(buffer, 0, buffer.Length);
+            return buffer.Length;
+         }
+         catch (Exception)
+         {
+            Connection.Close();
+            throw;
+         }
       }
 
       /// <summary>
@@ -98,13 +109,37 @@ namespace HFM.Client
       {
          if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
+         var stream = GetStream();
          byte[] buffer = GetBuffer(CommandText);
-         await Connection.GetDataWriter().WriteAsync(buffer).ConfigureAwait(false);
-         return buffer.Length;
+
+         try
+         {
+            await stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            return buffer.Length;
+         }
+         catch (Exception)
+         {
+            Connection.Close();
+            throw;
+         }
+      }
+
+      private Stream GetStream()
+      {
+         var stream = Connection.TcpConnection?.GetStream();
+         if (stream == null)
+         {
+            throw new InvalidOperationException("The connection is not open.");
+         }
+         return stream;
       }
 
       private static byte[] GetBuffer(string commandText)
       {
+         if (commandText == null)
+         {
+            return new byte[0];
+         }
          if (!commandText.EndsWith("\n", StringComparison.Ordinal))
          {
             commandText += "\n";

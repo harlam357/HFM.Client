@@ -57,7 +57,10 @@
   <ItemGroup>
     <Compile Include="FahClientCommandTests.cs" />
     <Compile Include="FahClientConnectionTests.cs" />
-    <Compile Include="FahClientDataWriterTests.cs" />
+    <Compile Include="FahClientReaderTests.cs" />
+    <Compile Include="Mocks\MockTcpConnection.cs" />
+    <Compile Include="Mocks\MockTcpConnectionFactory.cs" />
+    <Compile Include="RealFahClientTests.cs" />
     <Compile Include="Sockets\LocalTcpListener.cs" />
     <Compile Include="Sockets\TcpClientConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

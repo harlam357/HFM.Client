@@ -1,9 +1,13 @@
 ﻿
 using System;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
+
+using HFM.Client.Mocks;
+using HFM.Client.Sockets;
 
 namespace HFM.Client
 {
@@ -29,33 +33,29 @@ namespace HFM.Client
       }
 
       [Test]
-      public void FahClientCommand_ExecuteWritesCommandTextToConnectionDataWriter()
+      public void FahClientCommand_ExecuteThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
       {
          // Arrange
-         var dataWriter = new MockFahClientDataWriter();
-         var connection = new MockFahClientConnection(dataWriter);
-         connection.Open();
-         var command = new FahClientCommand(connection, "command text");
-         // Act
-         int bytesWritten = command.Execute();
-         // Assert
-         Assert.AreEqual(13, bytesWritten);
-         Assert.AreEqual("command text\n", Encoding.ASCII.GetString(dataWriter.Buffer));
+         using (var connection = new MockFahClientConnection())
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection);
+            // Act & Assert
+            Assert.Throws<InvalidOperationException>(() => command.Execute());
+         }
       }
 
       [Test]
-      public async Task FahClientCommand_ExecuteAsyncWritesCommandTextToConnectionDataWriter()
+      public void FahClientCommand_ExecuteAsyncThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
       {
          // Arrange
-         var dataWriter = new MockFahClientDataWriter();
-         var connection = new MockFahClientConnection(dataWriter);
-         connection.Open();
-         var command = new FahClientCommand(connection, "command text");
-         // Act
-         int bytesWritten = await command.ExecuteAsync();
-         // Assert
-         Assert.AreEqual(13, bytesWritten);
-         Assert.AreEqual("command text\n", Encoding.ASCII.GetString(dataWriter.Buffer));
+         using (var connection = new MockFahClientConnection())
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection);
+            // Act & Assert
+            Assert.ThrowsAsync<InvalidOperationException>(() => command.ExecuteAsync());
+         }
       }
 
       private class MockFahClientConnection : FahClientConnection
@@ -63,39 +63,130 @@ namespace HFM.Client
          private bool _connected;
 
          public override bool Connected => _connected;
-         
-         public MockFahClientConnection(FahClientDataWriter dataWriter) 
-            : base("foo", 2000)
+
+         // simulate losing the TcpConnection after the FahClientConnection has been opened
+         public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
+
+         public MockFahClientConnection()
+            : base(new MockTcpConnectionFactory(), "foo", 2000)
          {
-            _dataWriter = dataWriter;
+
          }
 
          public override void Open()
          {
+            base.Open();
             _connected = true;
-         }
-
-         private readonly FahClientDataWriter _dataWriter;
-
-         public override FahClientDataWriter GetDataWriter()
-         {
-            return _dataWriter;
          }
       }
 
-      private class MockFahClientDataWriter : FahClientDataWriter
+      [Test]
+      public void FahClientCommand_ExecuteRethrowsExceptionFromStreamWriteAndClosesTheConnection()
       {
-         public byte[] Buffer { get; private set; }
-
-         public override void Write(byte[] buffer)
+         // Arrange
+         Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnWrite());
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
          {
-            Buffer = buffer;
+            connection.Open();
+            var command = new FahClientCommand(connection);
+            // Act & Assert
+            Assert.Throws<IOException>(() => command.Execute());
+            Assert.IsFalse(connection.Connected);
          }
+      }
 
-         public override Task WriteAsync(byte[] buffer)
+      [Test]
+      public void FahClientCommand_ExecuteAsyncRethrowsExceptionFromStreamWriteAsyncAndClosesTheConnection()
+      {
+         // Arrange
+         Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnWrite());
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
          {
-            Buffer = buffer;
-            return Task.FromResult(0);
+            connection.Open();
+            var command = new FahClientCommand(connection);
+            // Act & Assert
+            Assert.ThrowsAsync<IOException>(() => command.ExecuteAsync());
+            Assert.IsFalse(connection.Connected);
+         }
+      }
+
+      private class MockStreamThrowsOnWrite : MemoryStream
+      {
+         public override void Write(byte[] buffer, int offset, int count)
+         {
+            throw new IOException("Simulated IO error");
+         }
+      }
+
+      [Test]
+      public void FahClientCommand_ExecuteWritesCommandTextToConnection()
+      {
+         // Arrange
+         var tcpConnectionFactory = new MockTcpConnectionFactory();
+         using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection, "command text");
+            // Act
+            int bytesWritten = command.Execute();
+            // Assert
+            Assert.AreEqual(13, bytesWritten);
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            Assert.AreEqual("command text\n", Encoding.ASCII.GetString(memoryStream.ToArray()));
+         }
+      }
+
+      [Test]
+      public async Task FahClientCommand_ExecuteAsyncWritesCommandTextToConnection()
+      {
+         // Arrange
+         var tcpConnectionFactory = new MockTcpConnectionFactory();
+         using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection, "command text");
+            // Act
+            int bytesWritten = await command.ExecuteAsync();
+            // Assert
+            Assert.AreEqual(13, bytesWritten);
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            Assert.AreEqual("command text\n", Encoding.ASCII.GetString(memoryStream.ToArray()));
+         }
+      }
+
+      [Test]
+      public void FahClientCommand_ExecuteWritesNullCommandTextToConnection()
+      {
+         // Arrange
+         var tcpConnectionFactory = new MockTcpConnectionFactory();
+         using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection, null);
+            // Act
+            int bytesWritten = command.Execute();
+            // Assert
+            Assert.AreEqual(0, bytesWritten);
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            Assert.AreEqual("", Encoding.ASCII.GetString(memoryStream.ToArray()));
+         }
+      }
+
+      [Test]
+      public async Task FahClientCommand_ExecuteAsyncWritesNullCommandTextToConnection()
+      {
+         // Arrange
+         var tcpConnectionFactory = new MockTcpConnectionFactory();
+         using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+         {
+            connection.Open();
+            var command = new FahClientCommand(connection, null);
+            // Act
+            int bytesWritten = await command.ExecuteAsync();
+            // Assert
+            Assert.AreEqual(0, bytesWritten);
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            Assert.AreEqual("", Encoding.ASCII.GetString(memoryStream.ToArray()));
          }
       }
    }

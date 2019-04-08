@@ -79,9 +79,24 @@ namespace HFM.Client
       public abstract void Close();
 
       /// <summary>
-      /// Creates a <see cref="FahClientCommandBase"/> object that can be used to send a command to the client.
+      /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
       /// </summary>
-      public abstract FahClientCommandBase CreateCommand();
+      public FahClientCommandBase CreateCommand()
+      {
+         return CreateClientCommand();
+      }
+
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
+      /// </summary>
+      protected abstract FahClientCommandBase CreateClientCommand();
+
+      public FahClientReaderBase CreateReader()
+      {
+         return CreateClientReader();
+      }
+
+      protected abstract FahClientReaderBase CreateClientReader();
    }
 
    /// <summary>
@@ -92,7 +107,9 @@ namespace HFM.Client
       /// <summary>
       /// Gets a value indicating whether the connection is connected to a client.
       /// </summary>
-      public override bool Connected => (_tcpConnection?.Connected).GetValueOrDefault();
+      public override bool Connected => (TcpConnection?.Connected).GetValueOrDefault();
+
+      public virtual TcpConnection TcpConnection { get; private set; }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
@@ -123,8 +140,6 @@ namespace HFM.Client
          _tcpConnectionFactory = tcpConnectionFactory;
       }
 
-      private TcpConnection _tcpConnection;
-
       /// <summary>
       /// Opens the connection to the client.
       /// </summary>
@@ -133,11 +148,11 @@ namespace HFM.Client
       {
          if (Connected) throw new InvalidOperationException("The connection is already open.");
 
-         // dispose of any previous client
-         _tcpConnection?.Close();
+         // dispose of existing connection
+         TcpConnection?.Close();
          // create new TcpConnection and connect
-         _tcpConnection = _tcpConnectionFactory.Create();
-         _tcpConnection.Connect(Host, Port, ConnectionTimeout);
+         TcpConnection = _tcpConnectionFactory.Create();
+         TcpConnection.Connect(Host, Port, ConnectionTimeout);
          // if connection state changed, raise event
          if (Connected)
          {
@@ -153,11 +168,11 @@ namespace HFM.Client
       {
          if (Connected) throw new InvalidOperationException("The connection is already open.");
 
-         // dispose of any previous client
-         _tcpConnection?.Close();
+         // dispose of existing connection
+         TcpConnection?.Close();
          // create new TcpConnection and connect
-         _tcpConnection = _tcpConnectionFactory.Create();
-         await _tcpConnection.ConnectAsync(Host, Port, ConnectionTimeout).ConfigureAwait(false);
+         TcpConnection = _tcpConnectionFactory.Create();
+         await TcpConnection.ConnectAsync(Host, Port, ConnectionTimeout).ConfigureAwait(false);
          // if connection state changed, raise event
          if (Connected)
          {
@@ -171,10 +186,9 @@ namespace HFM.Client
       public override void Close()
       {
          bool connected = Connected;
-         // close the connection
-         _tcpConnection?.Close();
-         // clear the cached data writer
-         _dataWriter = null;
+         // dispose of existing connection
+         TcpConnection?.Close();
+         TcpConnection = null;
          // if connection state changed, raise event
          if (connected != Connected)
          {
@@ -182,27 +196,26 @@ namespace HFM.Client
          }
       }
 
-      /// <summary>
-      /// Creates a <see cref="FahClientCommand"/> object that can be used to send a command to the client.
-      /// </summary>
-      public override FahClientCommandBase CreateCommand()
+      public new FahClientCommand CreateCommand()
+      {
+         return (FahClientCommand)CreateClientCommand();
+      }
+
+      protected override FahClientCommandBase CreateClientCommand()
       {
          return new FahClientCommand(this);
       }
 
-      private FahClientDataWriter _dataWriter;
-
-      /// <summary>
-      /// Gets a <see cref="FahClientDataWriter"/> that can be used to write data to the client.
-      /// </summary>
-      /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-      public virtual FahClientDataWriter GetDataWriter()
+      public new FahClientReader CreateReader()
       {
-         if (!Connected) throw new InvalidOperationException("The connection is not open.");
-
-         return _dataWriter ?? (_dataWriter = FahClientDataWriter.Create(_tcpConnection.GetStream()));
+         return (FahClientReader)CreateClientReader();
       }
 
+      protected override FahClientReaderBase CreateClientReader()
+      {
+         return new FahClientReader(this);
+      }
+      
       private bool _disposed;
 
       /// <summary>

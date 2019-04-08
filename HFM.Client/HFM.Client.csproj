@@ -47,7 +47,9 @@
     <Compile Include="FahClientCommand.cs" />
     <Compile Include="FahClientConnectedChangedEventArgs.cs" />
     <Compile Include="FahClientConnection.cs" />
-    <Compile Include="FahClientDataWriter.cs" />
+    <Compile Include="FahClientMessage.cs" />
+    <Compile Include="FahClientReader.cs" />
+    <Compile Include="Internal\StringBuilderExtensions.cs" />
     <Compile Include="Internal\ValidationHelper.cs" />
     <Compile Include="Sockets\TcpClientConnection.cs" />
     <Compile Include="Sockets\TcpConnection.cs" />

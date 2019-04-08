@@ -1,11 +1,11 @@
 ﻿
 using System;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
 
+using HFM.Client.Mocks;
 using HFM.Client.Sockets;
 
 namespace HFM.Client
@@ -22,7 +22,7 @@ namespace HFM.Client
       }
 
       [Test]
-      public void TcpClientConnection_ConnectThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
+      public void FahClientConnection_ThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
       {
          // ReSharper disable once ObjectCreationAsStatement
          Assert.Throws<ArgumentOutOfRangeException>(() => new FahClientConnection("foo", -1));
@@ -229,61 +229,114 @@ namespace HFM.Client
       }
 
       [Test]
-      public void FahClientConnection_GetDataWriterThrowsInvalidOperationExceptionWhenConnectionIsNotOpen()
+      public void FahClientConnectionBase_CreateCommandReturnsCommandWhenNotConnected()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            FahClientConnectionBase connectionBase = connection;
+            // Act
+            var command = connectionBase.CreateCommand();
+            // Assert
+            Assert.IsNotNull(command);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_CreateReaderReturnsReaderWhenNotConnected()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            // Act
+            var reader = connection.CreateReader();
+            // Assert
+            Assert.IsNotNull(reader);
+         }
+      }
+
+      [Test]
+      public void FahClientConnectionBase_CreateReaderReturnsReaderWhenNotConnected()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            FahClientConnectionBase connectionBase = connection;
+            // Act
+            var reader = connectionBase.CreateReader();
+            // Assert
+            Assert.IsNotNull(reader);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_TcpConnectionReturnsNullWhenConnectionIsNotOpen()
       {
          // Arrange
          using (var connection = new FahClientConnection("foo", 2000))
          {
             // Act & Assert
-            Assert.Throws<InvalidOperationException>(() => connection.GetDataWriter());
+            Assert.IsNull(connection.TcpConnection);
          }
       }
 
       [Test]
-      public void FahClientConnection_GetDataWriterWhenConnectionIsOpen()
+      public void FahClientConnection_TcpConnectionReturnsInstanceWhenConnectionIsOpen()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            connection.Open();
+            // Act & Assert
+            Assert.IsNotNull(connection.TcpConnection);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_TcpConnectionReturnsNullAfterConnectionIsOpenedAndClosed()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+         {
+            connection.Open();
+            Assert.IsNotNull(connection.TcpConnection);
+            connection.Close();
+            // Act & Assert
+            Assert.IsNull(connection.TcpConnection);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_TcpConnectionReturnsSameInstanceWhileConnectionRemainsOpen()
       {
          // Arrange
          using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
          {
             connection.Open();
             // Act
-            var dataWriter = connection.GetDataWriter();
+            var tcpConnection1 = connection.TcpConnection;
+            var tcpConnection2 = connection.TcpConnection;
             // Assert
-            Assert.IsNotNull(dataWriter);
+            Assert.AreSame(tcpConnection1, tcpConnection2);
          }
       }
 
       [Test]
-      public void FahClientConnection_GetDataWriterReturnsSameInstanceWhileConnectionRemainsOpen()
+      public void FahClientConnection_TcpConnectionReturnsDifferentInstanceEachTimeConnectionIsOpened()
       {
          // Arrange
          using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
          {
             connection.Open();
             // Act
-            var dataWriter1 = connection.GetDataWriter();
-            var dataWriter2 = connection.GetDataWriter();
-            // Assert
-            Assert.AreSame(dataWriter1, dataWriter2);
-         }
-      }
-
-      [Test]
-      public void FahClientConnection_GetDataWriterReturnsDifferentInstanceEachTimeConnectionIsOpened()
-      {
-         // Arrange
-         using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
-         {
-            connection.Open();
-            // Act
-            var dataWriter1 = connection.GetDataWriter();
+            var tcpConnection1 = connection.TcpConnection;
             // close and open again
             connection.Close();
             connection.Open();
             // Act
-            var dataWriter2 = connection.GetDataWriter();
+            var tcpConnection2 = connection.TcpConnection;
             // Assert
-            Assert.AreNotSame(dataWriter1, dataWriter2);
+            Assert.AreNotSame(tcpConnection1, tcpConnection2);
          }
       }
 
@@ -292,59 +345,15 @@ namespace HFM.Client
       {
          // Arrange
          var tcpConnectionFactory = new MockTcpConnectionFactory();
-         var tcpConnection = tcpConnectionFactory.TcpConnection;
          using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
          {
             // Act (Open)
             connection.Open();
             // Assert
-            Assert.IsTrue(tcpConnection.Connected);
+            Assert.IsTrue(tcpConnectionFactory.TcpConnection.Connected);
          }
          // Assert
-         Assert.IsFalse(tcpConnection.Connected);
-      }
-
-      private class MockTcpConnectionFactory : TcpConnectionFactory
-      {
-         public TcpConnection TcpConnection { get; }
-
-         public MockTcpConnectionFactory()
-         {
-            TcpConnection = new MockTcpConnection();
-         }
-
-         public override TcpConnection Create()
-         {
-            return TcpConnection;
-         }
-      }
-
-      private class MockTcpConnection : TcpConnection
-      {
-         private bool _connected;
-
-         public override bool Connected => _connected;
-
-         public override void Connect(string host, int port, int timeout)
-         {
-            _connected = true;
-         }
-
-         public override Task ConnectAsync(string host, int port, int timeout)
-         {
-            _connected = true;
-            return Task.FromResult(0);
-         }
-
-         public override void Close()
-         {
-            _connected = false;
-         }
-
-         public override Stream GetStream()
-         {
-            return new MemoryStream();
-         }
+         Assert.IsFalse(tcpConnectionFactory.TcpConnection.Connected);
       }
    }
 }
