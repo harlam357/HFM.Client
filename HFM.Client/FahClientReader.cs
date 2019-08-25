@@ -10,11 +10,6 @@ namespace HFM.Client
 {
    public abstract class FahClientReaderBase
    {
-      /// <summary>
-      /// Gets or sets the amount of time a <see cref="FahClientReaderBase" /> will wait to read the next message.  The default value is zero and specifies no timeout.
-      /// </summary>
-      public int ReadTimeout { get; set; } = 0;
-
       public FahClientMessage Message { get; protected set; }
 
       public abstract bool Read();
@@ -39,6 +34,11 @@ namespace HFM.Client
       }
 
       public int BufferSize { get; set; } = 1024;
+
+      /// <summary>
+      /// Gets or sets the amount of time a <see cref="FahClientReaderBase" /> will wait to read the next message.  The default value is zero and specifies no timeout.
+      /// </summary>
+      public int ReadTimeout { get; set; } = 0;
 
       public override bool Read()
       {

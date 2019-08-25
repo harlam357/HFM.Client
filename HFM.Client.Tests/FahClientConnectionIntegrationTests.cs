@@ -18,12 +18,11 @@ namespace HFM.Client
       {
          using (var connection = new FahClientConnection(Host, Port))
          {
-            FahClientConnectionBase connectionBase = connection;
-            connectionBase.Open();
+            connection.Open();
             // close the connection later
-            Task.Delay(1000).ContinueWith(t => connectionBase.Close());
+            Task.Delay(1000).ContinueWith(t => connection.Close());
 
-            var command = connectionBase.CreateCommand();
+            var command = connection.CreateCommand();
             command.CommandText = "info";
 
             try
@@ -36,7 +35,7 @@ namespace HFM.Client
             }
             catch (Exception ex)
             {
-               Assert.IsFalse(connectionBase.Connected);
+               Assert.IsFalse(connection.Connected);
                Console.WriteLine(ex);
             }
          }
@@ -48,16 +47,15 @@ namespace HFM.Client
       {
          using (var connection = new FahClientConnection(Host, Port))
          {
-            FahClientConnectionBase connectionBase = connection;
-            connectionBase.Open();
+            connection.Open();
 
-            var command = connectionBase.CreateCommand();
+            var command = connection.CreateCommand();
             command.CommandText = "info";
             command.Execute();
             command.CommandText = "log-updates restart";
             command.Execute();
 
-            var reader = connectionBase.CreateReader();
+            var reader = connection.CreateReader();
             reader.ReadTimeout = 2000;
             while (reader.Read())
             {
@@ -72,16 +70,15 @@ namespace HFM.Client
       {
          using (var connection = new FahClientConnection(Host, Port))
          {
-            FahClientConnectionBase connectionBase = connection;
-            await connectionBase.OpenAsync();
+            await connection.OpenAsync();
 
-            var command = connectionBase.CreateCommand();
+            var command = connection.CreateCommand();
             command.CommandText = "info";
             await command.ExecuteAsync();
             command.CommandText = "log-updates restart";
             await command.ExecuteAsync();
 
-            var reader = connectionBase.CreateReader();
+            var reader = connection.CreateReader();
             reader.ReadTimeout = 2000;
             while (await reader.ReadAsync())
             {
@@ -96,19 +93,18 @@ namespace HFM.Client
       {
          using (var connection = new FahClientConnection(Host, Port))
          {
-            FahClientConnectionBase connectionBase = connection;
-            connectionBase.Open();
+            connection.Open();
 
             // close the connection later
-            Task.Delay(3000).ContinueWith(t => connectionBase.Close());
+            Task.Delay(3000).ContinueWith(t => connection.Close());
 
-            var command = connectionBase.CreateCommand();
+            var command = connection.CreateCommand();
             command.CommandText = "info";
             command.Execute();
             command.CommandText = "log-updates restart";
             command.Execute();
 
-            var reader = connectionBase.CreateReader();
+            var reader = connection.CreateReader();
             try
             {
                while (reader.Read())
@@ -118,7 +114,7 @@ namespace HFM.Client
             }
             catch (Exception ex)
             {
-               Assert.IsFalse(connectionBase.Connected);
+               Assert.IsFalse(connection.Connected);
                Console.WriteLine(ex);
             }
          }
@@ -130,19 +126,19 @@ namespace HFM.Client
       {
          using (var connection = new FahClientConnection(Host, Port))
          {
-            FahClientConnectionBase connectionBase = connection;
-            await connectionBase.OpenAsync();
+            await connection.OpenAsync();
 
             // close the connection later
-            var closeConnectionLater = Task.Delay(3000).ContinueWith(t => connectionBase.Close());
+            // use a local variable to avoid CS4014 warning
+            var closeConnectionLater = Task.Delay(3000).ContinueWith(t => connection.Close());
 
-            var command = connectionBase.CreateCommand();
+            var command = connection.CreateCommand();
             command.CommandText = "info";
             await command.ExecuteAsync();
             command.CommandText = "log-updates restart";
             await command.ExecuteAsync();
 
-            var reader = connectionBase.CreateReader();
+            var reader = connection.CreateReader();
             try
             {
                while (await reader.ReadAsync())
@@ -152,7 +148,7 @@ namespace HFM.Client
             }
             catch (Exception ex)
             {
-               Assert.IsFalse(connectionBase.Connected);
+               Assert.IsFalse(connection.Connected);
                Console.WriteLine(ex);
             }
          }
