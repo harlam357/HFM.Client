@@ -12,7 +12,7 @@ namespace HFM.Client
 {
    public class FahClientConnectionTests
    {
-      private int _shortTimeout = 250;
+      private const int ShortTimeout = 250;
 
       [Test]
       public void FahClientConnection_ThrowsArgumentNullExceptionWhenHostIsNull()
@@ -151,7 +151,7 @@ namespace HFM.Client
          // Arrange
          using (var connection = new FahClientConnection(LocalTcpListener.Host, LocalTcpListener.Port))
          {
-            connection.ConnectionTimeout = _shortTimeout;
+            connection.ConnectionTimeout = ShortTimeout;
             // Act & Assert
             Assert.Throws<TimeoutException>(() => connection.Open());
             Assert.IsFalse(connection.Connected);
@@ -165,7 +165,7 @@ namespace HFM.Client
          // Arrange
          using (var connection = new FahClientConnection(LocalTcpListener.Host, LocalTcpListener.Port))
          {
-            connection.ConnectionTimeout = _shortTimeout;
+            connection.ConnectionTimeout = ShortTimeout;
             // Act & Assert
             // ReSharper disable once AccessToDisposedClosure
             Assert.ThrowsAsync<TimeoutException>(() => connection.OpenAsync());
