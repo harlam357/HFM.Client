@@ -8,15 +8,32 @@ using HFM.Client.Internal;
 
 namespace HFM.Client
 {
+   /// <summary>
+   /// Provides the abstract base class for a Folding@Home client message reader.
+   /// </summary>
    public abstract class FahClientReaderBase
    {
+      /// <summary>
+      /// Gets the last message read by the reader.
+      /// </summary>
       public FahClientMessage Message { get; protected set; }
 
+      /// <summary>
+      /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
+      /// </summary>
+      /// <returns>true if a message was read; otherwise false.</returns>
       public abstract bool Read();
 
+      /// <summary>
+      /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
+      /// </summary>
+      /// <returns>A task representing the asynchronous operation that can return true if a message was read; otherwise false.</returns>
       public abstract Task<bool> ReadAsync();
    }
 
+   /// <summary>
+   /// Folding@Home client message reader.
+   /// </summary>
    public class FahClientReader : FahClientReaderBase
    {
       /// <summary>
@@ -33,6 +50,9 @@ namespace HFM.Client
          Connection = connection;
       }
 
+      /// <summary>
+      /// Gets or sets the size of the read buffer, in bytes. The default value is 1024 bytes.
+      /// </summary>
       public int BufferSize { get; set; } = 1024;
 
       /// <summary>
@@ -40,6 +60,11 @@ namespace HFM.Client
       /// </summary>
       public int ReadTimeout { get; set; } = 0;
 
+      /// <summary>
+      /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReaderBase.Message"/> property.
+      /// </summary>
+      /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+      /// <returns>true if a message was read; otherwise false.</returns>
       public override bool Read()
       {
          if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
@@ -79,6 +104,11 @@ namespace HFM.Client
          }
       }
 
+      /// <summary>
+      /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReaderBase.Message"/> property.
+      /// </summary>
+      /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+      /// <returns>A task representing the asynchronous operation that can return true if a message was read; otherwise false.</returns>
       public override async Task<bool> ReadAsync()
       {
          if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
