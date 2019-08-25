@@ -66,16 +66,11 @@ namespace HFM.Client
             if (timeout > 0)
             {
                var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-               return readTask == Task.WhenAny(readTask, Task.Delay(timeout)).Result 
-                  ? readTask.Result 
+               return readTask == Task.WhenAny(readTask, Task.Delay(timeout)).GetAwaiter().GetResult() 
+                  ? readTask.GetAwaiter().GetResult() 
                   : 0;
             }
             return stream.Read(buffer, 0, buffer.Length);
-         }
-         catch (AggregateException ex)
-         {
-            Connection.Close();
-            throw ex.GetBaseException();
          }
          catch (Exception)
          {
