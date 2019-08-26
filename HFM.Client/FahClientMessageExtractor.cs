@@ -53,19 +53,18 @@ namespace HFM.Client
       /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
       protected virtual bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
       {
-         indexes[IndexKey.StartHeader] = IndexOf(buffer, SearchValue.PyONHeader, 0);
-         if (indexes[IndexKey.StartHeader] < 0) return false;
-
-         int endHeaderStartMessageTypeIndex = indexes[IndexKey.StartHeader] + SearchValue.PyONHeader.Length;
-         indexes[IndexKey.EndHeader] = endHeaderStartMessageTypeIndex;
-         indexes[IndexKey.StartMessageType] = endHeaderStartMessageTypeIndex;
+         var headerIndexes = IndexesOf(buffer, SearchValue.PyONHeader, 0);
+         if (headerIndexes.Item1 < 0) return false;
+         indexes[IndexKey.StartHeader] = headerIndexes.Item1;
+         indexes[IndexKey.EndHeader] = headerIndexes.Item2;
+         indexes[IndexKey.StartMessageType] = headerIndexes.Item2;
 
          string[] newLineValues =
          {
             SearchValue.NewLineCrLf,
             SearchValue.NewLineLf
          };
-         indexes[IndexKey.EndMessageType] = IndexOfAny(buffer, newLineValues, endHeaderStartMessageTypeIndex);
+         indexes[IndexKey.EndMessageType] = IndexOfAny(buffer, newLineValues, indexes[IndexKey.StartMessageType]);
          if (indexes[IndexKey.EndMessageType] < 0) return false;
 
          string[] footerValues =
@@ -73,11 +72,10 @@ namespace HFM.Client
             String.Concat(SearchValue.NewLineCrLf, SearchValue.PyONFooter, SearchValue.NewLineCrLf),
             String.Concat(SearchValue.NewLineLf, SearchValue.PyONFooter, SearchValue.NewLineLf)
          };
-         indexes[IndexKey.StartFooter] = IndexOfAny(buffer, footerValues, indexes[IndexKey.EndMessageType]);
-         if (indexes[IndexKey.StartFooter] < 0) return false;
-
-         indexes[IndexKey.EndFooter] = EndIndexOfAny(buffer, footerValues, indexes[IndexKey.StartFooter]);
-         if (indexes[IndexKey.EndFooter] < 0) return false;
+         var footerIndexes = IndexesOfAny(buffer, footerValues, indexes[IndexKey.EndMessageType]);
+         if (footerIndexes.Item1 < 0) return false;
+         indexes[IndexKey.StartFooter] = footerIndexes.Item1;
+         indexes[IndexKey.EndFooter] = footerIndexes.Item2;
 
          return true;
       }
@@ -102,6 +100,22 @@ namespace HFM.Client
          int start = indexes[IndexKey.StartHeader];
          int end = indexes[IndexKey.EndFooter];
          return buffer.Substring(start, end - start);
+      }
+
+      /// <summary>
+      /// Reports the indexes of the first occurrence of any of the specified strings in the given StringBuilder object.
+      /// </summary>
+      protected static Tuple<int,int> IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+      {
+         foreach (var value in values)
+         {
+            int index = IndexOf(buffer, value, startIndex);
+            if (index >= 0)
+            {
+               return Tuple.Create(index, index + value.Length);
+            }
+         }
+         return NoIndexTuple;
       }
 
       /// <summary>
@@ -137,6 +151,19 @@ namespace HFM.Client
       }
 
       /// <summary>
+      /// Reports the indexes of the first occurrence of the specified string in the given StringBuilder object.
+      /// </summary>
+      protected static Tuple<int, int> IndexesOf(StringBuilder buffer, string value, int startIndex)
+      {
+         int index = buffer.IndexOf(value, startIndex, false);
+         if (index >= 0)
+         {
+            return Tuple.Create(index, index + value.Length);
+         }
+         return NoIndexTuple;
+      }
+
+      /// <summary>
       /// Reports the index of the first occurrence of the specified string in the given StringBuilder object.
       /// </summary>
       protected static int IndexOf(StringBuilder buffer, string value, int startIndex)
@@ -161,6 +188,8 @@ namespace HFM.Client
          }
          return -1;
       }
+
+      private static readonly Tuple<int, int> NoIndexTuple = Tuple.Create(-1, -1);
 
       /// <summary>
       /// Provides well-known key values for the indexes dictionary.

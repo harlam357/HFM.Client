@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
@@ -195,6 +196,17 @@ namespace HFM.Client
 }";
 
       [Test]
+      public void FahClientMessageExtractor_ReturnsNullWhenBufferIsNull()
+      {
+         // Arrange
+         var extractor = new FahClientMessageExtractor();
+         // Act
+         var result = extractor.Extract(null);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
       public void FahClientMessageExtractor_ExtractsSingleMessageFromSingleMessage()
       {
          // Arrange
@@ -239,6 +251,42 @@ namespace HFM.Client
       }
 
       [Test]
+      public void FahClientMessageExtractor_CannotExtractMessageWithNoHeader()
+      {
+         // Arrange
+         var extractor = new FahClientMessageExtractor();
+         var buffer = new StringBuilder();
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
+      public void FahClientMessageExtractor_CannotExtractMessageWithOnlyHeader()
+      {
+         // Arrange
+         var extractor = new FahClientMessageExtractor();
+         var buffer = new StringBuilder(Info.Substring(0, 11));
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
+      public void FahClientMessageExtractor_CannotExtractMessageWithNoFooter()
+      {
+         // Arrange
+         var extractor = new FahClientMessageExtractor();
+         var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
       public void FahClientJsonMessageExtractor_ExtractsMessageTextAsJson()
       {
          // Arrange
@@ -249,6 +297,82 @@ namespace HFM.Client
          // Assert
          Assert.AreEqual("simulation-info", result.Identifier.MessageType);
          Assert.AreEqual(SimulationInfoJson, result.MessageText);
+      }
+
+      [Test]
+      public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoHeader()
+      {
+         // Arrange
+         var extractor = new FahClientJsonMessageExtractor();
+         var buffer = new StringBuilder();
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
+      public void FahClientJsonMessageExtractor_CannotExtractMessageWithOnlyHeader()
+      {
+         // Arrange
+         var extractor = new FahClientJsonMessageExtractor();
+         var buffer = new StringBuilder(Info.Substring(0, 11));
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
+      public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoFooter()
+      {
+         // Arrange
+         var extractor = new FahClientJsonMessageExtractor();
+         var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      [Test]
+      public void FahClientMessageExtractor_HandlesNullMessageType()
+      {
+         // Arrange
+         var extractor = new MessageExtractorReturnsNullMessageType();
+         var buffer = new StringBuilder(Info);
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      private class MessageExtractorReturnsNullMessageType : FahClientMessageExtractor
+      {
+         protected override string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
+         {
+            return null;
+         }
+      }
+
+      [Test]
+      public void FahClientMessageExtractor_HandlesNullMessageText()
+      {
+         // Arrange
+         var extractor = new MessageExtractorReturnsNullMessageText();
+         var buffer = new StringBuilder(Info);
+         // Act
+         var result = extractor.Extract(buffer);
+         // Assert
+         Assert.IsNull(result);
+      }
+
+      private class MessageExtractorReturnsNullMessageText : FahClientMessageExtractor
+      {
+         protected override string ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+         {
+            return null;
+         }
       }
    }
 }
