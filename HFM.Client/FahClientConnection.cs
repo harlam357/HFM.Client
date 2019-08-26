@@ -91,11 +91,17 @@ namespace HFM.Client
       /// </summary>
       protected abstract FahClientCommandBase CreateClientCommand();
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientReaderBase"/> object associated with the current connection.
+      /// </summary>
       public FahClientReaderBase CreateReader()
       {
          return CreateClientReader();
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientReaderBase"/> object associated with the current connection.
+      /// </summary>
       protected abstract FahClientReaderBase CreateClientReader();
    }
 
@@ -196,21 +202,55 @@ namespace HFM.Client
          }
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
+      /// </summary>
+      /// <param name="commandText">The Folding@Home client command statement.</param>
+      public FahClientCommand CreateCommand(string commandText)
+      {
+         var command = CreateCommand();
+         command.CommandText = commandText;
+         return command;
+      }
+
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
+      /// </summary>
       public new FahClientCommand CreateCommand()
       {
          return (FahClientCommand)CreateClientCommand();
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
+      /// </summary>
       protected override FahClientCommandBase CreateClientCommand()
       {
          return new FahClientCommand(this);
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
+      /// </summary>
+      /// <param name="readTimeout">The amount of time the <see cref="FahClientReader"/> will wait to read the next message.  Value of zero specifies no timeout.</param>
+      public FahClientReader CreateReader(int readTimeout)
+      {
+         var reader = CreateReader();
+         reader.ReadTimeout = readTimeout;
+         return reader;
+      }
+
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
+      /// </summary>
       public new FahClientReader CreateReader()
       {
          return (FahClientReader)CreateClientReader();
       }
 
+      /// <summary>
+      /// Creates and returns a <see cref="FahClientReaderBase"/> object associated with the current connection.
+      /// </summary>
       protected override FahClientReaderBase CreateClientReader()
       {
          return new FahClientReader(this);

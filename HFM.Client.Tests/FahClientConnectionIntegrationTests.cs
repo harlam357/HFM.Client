@@ -26,8 +26,7 @@ namespace HFM.Client
             command.CommandText = "log-updates restart";
             command.Execute();
 
-            var reader = connection.CreateReader();
-            reader.ReadTimeout = 2000;
+            var reader = connection.CreateReader(2000);
             while (reader.Read())
             {
                Console.WriteLine(reader.Message);
@@ -49,8 +48,51 @@ namespace HFM.Client
             command.CommandText = "log-updates restart";
             await command.ExecuteAsync();
 
-            var reader = connection.CreateReader();
-            reader.ReadTimeout = 2000;
+            var reader = connection.CreateReader(2000);
+            while (await reader.ReadAsync())
+            {
+               Console.WriteLine(reader.Message);
+            }
+         }
+      }
+
+      [Test]
+      [Category(TestCategoryNames.Integration)]
+      public void FahClientConnection_SimulateHFMUpdateCommandsSynchronouslyUntilTimeout()
+      {
+         using (var connection = new FahClientConnection(Host, Port))
+         {
+            connection.Open();
+
+            connection.CreateCommand("log-updates restart").Execute();
+            connection.CreateCommand("updates add 0 60 $heartbeat").Execute();
+            connection.CreateCommand("updates add 1 1 $info").Execute();
+            connection.CreateCommand("updates add 2 1 $(options -a)").Execute();
+            connection.CreateCommand("updates add 3 1 $slot-info").Execute();
+
+            var reader = connection.CreateReader(2000);
+            while (reader.Read())
+            {
+               Console.WriteLine(reader.Message);
+            }
+         }
+      }
+
+      [Test]
+      [Category(TestCategoryNames.Integration)]
+      public async Task FahClientConnection_SimulateHFMUpdateCommandsAsynchronouslyUntilTimeout()
+      {
+         using (var connection = new FahClientConnection(Host, Port))
+         {
+            await connection.OpenAsync();
+
+            await connection.CreateCommand("log-updates restart").ExecuteAsync();
+            await connection.CreateCommand("updates add 0 60 $heartbeat").ExecuteAsync();
+            await connection.CreateCommand("updates add 1 1 $info").ExecuteAsync();
+            await connection.CreateCommand("updates add 2 1 $(options -a)").ExecuteAsync();
+            await connection.CreateCommand("updates add 3 1 $slot-info").ExecuteAsync();
+
+            var reader = connection.CreateReader(2000);
             while (await reader.ReadAsync())
             {
                Console.WriteLine(reader.Message);

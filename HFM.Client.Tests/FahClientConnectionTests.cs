@@ -216,6 +216,20 @@ namespace HFM.Client
       }
 
       [Test]
+      public void FahClientConnection_CreateCommandReturnsCommandWithCommandText()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            // Act
+            var command = connection.CreateCommand("bar");
+            // Assert
+            Assert.IsNotNull(command);
+            Assert.AreEqual("bar", command.CommandText);
+         }
+      }
+
+      [Test]
       public void FahClientConnection_CreateCommandReturnsCommandWhenNotConnected()
       {
          // Arrange
@@ -239,6 +253,20 @@ namespace HFM.Client
             var command = connectionBase.CreateCommand();
             // Assert
             Assert.IsNotNull(command);
+         }
+      }
+
+      [Test]
+      public void FahClientConnection_CreateReaderReturnsReaderWithReadTimeout()
+      {
+         // Arrange
+         using (var connection = new FahClientConnection("foo", 2000))
+         {
+            // Act
+            var reader = connection.CreateReader(1000);
+            // Assert
+            Assert.IsNotNull(reader);
+            Assert.AreEqual(1000, reader.ReadTimeout);
          }
       }
 
