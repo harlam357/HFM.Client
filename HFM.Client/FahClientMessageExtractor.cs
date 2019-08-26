@@ -189,10 +189,17 @@ namespace HFM.Client
       }
    }
 
+   /// <summary>
+   /// Folding@Home client message extractor that extracts messages in JSON format.
+   /// </summary>
    public class FahClientJsonMessageExtractor : FahClientMessageExtractor
    {
       private const string BeginObject = nameof(BeginObject);
 
+      /// <summary>
+      /// Extracts indexes from the <paramref name="buffer"/> and stores them in the <paramref name="indexes"/> dictionary for later processing.
+      /// </summary>
+      /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
       protected override bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
       {
          if (!base.ExtractIndexes(buffer, indexes))
@@ -214,6 +221,10 @@ namespace HFM.Client
          return true;
       }
 
+      /// <summary>
+      /// Extracts the message text from the <paramref name="buffer"/>.
+      /// </summary>
+      /// <returns>The message text as a string.</returns>
       protected override string ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
       {
          int beginObjectIndex = indexes[BeginObject];
