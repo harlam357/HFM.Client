@@ -48,6 +48,7 @@
     <Compile Include="FahClientConnectedChangedEventArgs.cs" />
     <Compile Include="FahClientConnection.cs" />
     <Compile Include="FahClientMessage.cs" />
+    <Compile Include="FahClientMessageExtractor.cs" />
     <Compile Include="FahClientReader.cs" />
     <Compile Include="Internal\StringBuilderExtensions.cs" />
     <Compile Include="Internal\ValidationHelper.cs" />
