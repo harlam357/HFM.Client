@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="FahClientCommandTests.cs" />
     <Compile Include="FahClientConnectionTests.cs" />
+    <Compile Include="FahClientMessageExtractorTests.cs" />
     <Compile Include="FahClientReaderTests.cs" />
     <Compile Include="Mocks\MockTcpConnection.cs" />
     <Compile Include="Mocks\MockTcpConnectionFactory.cs" />

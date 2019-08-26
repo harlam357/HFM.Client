@@ -214,8 +214,7 @@ namespace HFM.Client
                                                "]\r\n" +
                                                "---\r\n";
 
-      private const string MessageFromReader = "\r\n" +
-                                               "[\r\n" +
+      private const string MessageFromReader = "[\r\n" +
                                                "  [\r\n" +
                                                "    \"Folding@home Client\",\r\n" +
                                                "  ]\r\n" +
