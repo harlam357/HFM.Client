@@ -1,10 +1,10 @@
 ﻿
 using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
-
-//using HFM.Client.Converters;
 
 namespace HFM.Client.ObjectModel
 {
@@ -57,7 +57,7 @@ namespace HFM.Client.ObjectModel
          result.Build.Version = GetValue<string>(build, "Version");
          result.Build.Date = GetValue<string>(build, "Date");
          result.Build.Time = GetValue<string>(build, "Time");
-         result.Build.SvnRev = GetValue<int>(build, "SVN Rev");
+         result.Build.SVNRev = GetValue<int>(build, "SVN Rev");
          result.Build.Branch = GetValue<string>(build, "Branch");
          result.Build.Compiler = GetValue<string>(build, "Compiler");
          result.Build.Options = GetValue<string>(build, "Options");
@@ -66,14 +66,25 @@ namespace HFM.Client.ObjectModel
          result.Build.Mode = GetValue<string>(build, "Mode");
 
          var system = array[2];
-         result.System.OperatingSystem = GetValue<string>(system, "OS");
-         result.System.Cpu = GetValue<string>(system, "CPU");
-         result.System.CpuId = GetValue<string>(system, "CPU ID");
-         result.System.CpuCount = GetValue<int>(system, "CPUs");
+         result.System.OS = GetValue<string>(system, "OS");
+         result.System.CPU = GetValue<string>(system, "CPU");
+         result.System.CPUID = GetValue<string>(system, "CPU ID");
+         result.System.CPUs = GetValue<int>(system, "CPUs");
          result.System.Memory = GetValue<string>(system, "Memory");
          result.System.MemoryValue = ConvertToMemoryValue(result.System.Memory);
          result.System.FreeMemory = GetValue<string>(system, "Free Memory");
          result.System.FreeMemoryValue = ConvertToMemoryValue(result.System.FreeMemory);
+         result.System.Threads = GetValue<string>(system, "Threads");
+         result.System.GPUs = GetValue<int>(system, "GPUs");
+         result.System.GPUInfos = BuildGPUInfos(system);
+         result.System.CUDA = GetValue<string>(system, "CUDA");
+         result.System.CUDADriver = GetValue<string>(system, "CUDA Driver");
+         result.System.HasBattery = GetValue<bool>(system, "Has Battery");
+         result.System.OnBattery = GetValue<bool>(system, "On Battery");
+         result.System.UtcOffset = GetValue<int>(system, "UTC offset");
+         result.System.PID = GetValue<int>(system, "PID");
+         result.System.CWD = GetValue<string>(system, "CWD");
+         result.System.Win32Service = GetValue<bool>(system, "Win32 Service");
 
          return result;
       }
@@ -83,6 +94,20 @@ namespace HFM.Client.ObjectModel
          var innerArray = token.FirstOrDefault(x => x.FirstOrDefault()?.Value<string>() == name);
          var valueElement = innerArray?.ElementAtOrDefault(1);
          return valueElement != null ? valueElement.Value<T>() : default(T);
+      }
+
+      private static IDictionary<int, GPUInfo> BuildGPUInfos(JToken token)
+      {
+         var result = Enumerable.Range(0, 8)
+            .Select(id =>
+            {
+               var gpu = GetValue<string>(token, String.Concat("GPU ", id));
+               return gpu != null ? new GPUInfo { ID = id, GPU = gpu, FriendlyName = ConvertToGPUFriendlyName(gpu) } : null;
+            })
+            .Where(x => x != null)
+            .ToDictionary(x => x.ID);
+
+         return result.Count > 0 ? result : null;
       }
 
       private static double? ConvertToMemoryValue(string input)
@@ -115,6 +140,20 @@ namespace HFM.Client.ObjectModel
          }
          return null;
       }
+
+      private static string ConvertToGPUFriendlyName(string input)
+      {
+         if (input == null) return null;
+
+         var regex = new Regex("\\[(?<GpuType>.+)\\]", RegexOptions.ExplicitCapture | RegexOptions.Singleline);
+         Match match;
+         if ((match = regex.Match(input)).Success)
+         {
+            return match.Groups["GpuType"].Value;
+         }
+
+         return input;
+      }
    }
 
    /// <summary>
@@ -137,7 +176,7 @@ namespace HFM.Client.ObjectModel
       public string Version { get; set; }
       public string Date { get; set; }
       public string Time { get; set; }
-      public int SvnRev { get; set; }
+      public int SVNRev { get; set; }
       public string Branch { get; set; }
       public string Compiler { get; set; }
       public string Options { get; set; }
@@ -151,47 +190,34 @@ namespace HFM.Client.ObjectModel
    /// </summary>
    public class SystemInfo
    {
-      public string OperatingSystem { get; set; }
-      public string Cpu { get; set; }
-      public string CpuId { get; set; }
-      public int CpuCount { get; set; }
+      public string OS { get; set; }
+      public string CPU { get; set; }
+      public string CPUID { get; set; }
+      public int CPUs { get; set; }
       public string Memory { get; set; }
       public double? MemoryValue { get; set; }
       public string FreeMemory { get; set; }
       public double? FreeMemoryValue { get; set; }
-      public string ThreadType { get; set; }
-      public int GpuCount { get; set; }
-      public string GpuId0 { get; set; }
-      //[MessageProperty("GPU 0", typeof(GpuTypeConverter))]
-      public string Gpu0 { get; set; }
-      public string GpuId1 { get; set; }
-      //[MessageProperty("GPU 1", typeof(GpuTypeConverter))]
-      public string Gpu1 { get; set; }
-      public string GpuId2 { get; set; }
-      //[MessageProperty("GPU 2", typeof(GpuTypeConverter))]
-      public string Gpu2 { get; set; }
-      public string GpuId3 { get; set; }
-      //[MessageProperty("GPU 3", typeof(GpuTypeConverter))]
-      public string Gpu3 { get; set; }
-      public string GpuId4 { get; set; }
-      //[MessageProperty("GPU 4", typeof(GpuTypeConverter))]
-      public string Gpu4 { get; set; }
-      public string GpuId5 { get; set; }
-      //[MessageProperty("GPU 5", typeof(GpuTypeConverter))]
-      public string Gpu5 { get; set; }
-      public string GpuId6 { get; set; }
-      //[MessageProperty("GPU 6", typeof(GpuTypeConverter))]
-      public string Gpu6 { get; set; }
-      public string GpuId7 { get; set; }
-      //[MessageProperty("GPU 7", typeof(GpuTypeConverter))]
-      public string Gpu7 { get; set; }
-      public string Cuda { get; set; }
-      public string CudaDriver { get; set; }
+      public string Threads { get; set; }
+      public int GPUs { get; set; }
+      public IDictionary<int, GPUInfo> GPUInfos { get; set; }
+      public string CUDA { get; set; }
+      public string CUDADriver { get; set; }
       public bool HasBattery { get; set; }
       public bool OnBattery { get; set; }
       public int UtcOffset { get; set; }
-      public int ProcessId { get; set; }
-      public string WorkingDirectory { get; set; }
+      public int PID { get; set; }
+      public string CWD { get; set; }
       public bool? Win32Service { get; set; }
+   }
+
+   /// <summary>
+   /// Folding@Home client GPU information.
+   /// </summary>
+   public class GPUInfo
+   {
+      public int ID { get; set; }
+      public string GPU { get; set; }
+      public string FriendlyName { get; set; }
    }
 }
