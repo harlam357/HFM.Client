@@ -23,19 +23,10 @@ namespace HFM.Client.ObjectModel
          System = new SystemInfo();
       }
 
-      /// <summary>
-      /// Folding@Home client information.
-      /// </summary>
       public ClientInfo Client { get; }
 
-      /// <summary>
-      /// Folding@Home client build information.
-      /// </summary>
       public BuildInfo Build { get; }
 
-      /// <summary>
-      /// Folding@Home client system information.
-      /// </summary>
       public SystemInfo System { get; }
 
       /// <summary>

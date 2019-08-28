@@ -64,6 +64,7 @@
     <Compile Include="Mocks\MockTcpConnectionFactory.cs" />
     <Compile Include="FahClientConnectionIntegrationTests.cs" />
     <Compile Include="ObjectModel\InfoTests.cs" />
+    <Compile Include="ObjectModel\LogUpdateTests.cs" />
     <Compile Include="Sockets\LocalTcpListener.cs" />
     <Compile Include="Sockets\TcpClientConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

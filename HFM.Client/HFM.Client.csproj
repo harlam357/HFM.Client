@@ -56,6 +56,7 @@
     <Compile Include="Internal\StringBuilderExtensions.cs" />
     <Compile Include="Internal\ValidationHelper.cs" />
     <Compile Include="ObjectModel\Info.cs" />
+    <Compile Include="ObjectModel\LogUpdate.cs" />
     <Compile Include="Sockets\TcpClientConnection.cs" />
     <Compile Include="Sockets\TcpConnection.cs" />
     <Compile Include="Sockets\TcpConnectionFactory.cs" />

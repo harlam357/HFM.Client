@@ -20,6 +20,19 @@ namespace HFM.Client.Internal
       }
 
       /// <summary>
+      /// Reports the end index of the first occurrence of the specified string in the current System.String object. A parameter specifies the type of search to use for the specified string.
+      /// </summary>
+      /// <param name="sb">The System.Text.StringBuilder to search.</param>
+      /// <param name="value">The string to seek.</param>
+      /// <param name="ignoreCase">Ignore character case.</param>
+      /// <returns>The index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is 0.</returns>
+      /// <exception cref="ArgumentNullException">value is null.</exception>
+      internal static int EndIndexOf(this StringBuilder sb, string value, bool ignoreCase)
+      {
+         return IndexOf(sb, value, 0, ignoreCase) + value.Length;
+      }
+
+      /// <summary>
       /// Reports the index of the first occurrence of the specified string in the current System.String object. Parameters specify the starting search position in the current string and the type of search to use for the specified string.
       /// </summary>
       /// <param name="sb">The System.Text.StringBuilder to search.</param>
@@ -125,6 +138,20 @@ namespace HFM.Client.Internal
       /// </summary>
       /// <param name="sb">The System.Text.StringBuilder source instance.</param>
       /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
+      /// <param name="length">The number of characters in the substring.</param>
+      /// <param name="trimOnly">if true trim the existing StringBuilder instance. -or- if false create a new StringBuilder instance and leave the existing instance in tact.</param>
+      /// <returns>A System.Text.StringBuilder that is equivalent to the substring of length length that begins at startIndex in this instance.</returns>
+      /// <exception cref="System.ArgumentOutOfRangeException">startIndex plus length indicates a position not within this instance. -or- startIndex or length is less than zero.</exception>
+      internal static StringBuilder SubstringBuilder(this StringBuilder sb, int startIndex, int length, bool trimOnly)
+      {
+         return SubstringBuilder(sb, startIndex, null, length, trimOnly);
+      }
+
+      /// <summary>
+      /// Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.
+      /// </summary>
+      /// <param name="sb">The System.Text.StringBuilder source instance.</param>
+      /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
       /// <param name="dest">The System.Text.StringBuilder destination instance. If null a new StringBuilder will be returned.</param>
       /// <param name="length">The number of characters in the substring.</param>
       /// <param name="trimOnly">if true trim the existing StringBuilder instance. -or- if false create a new StringBuilder instance and leave the existing instance in tact.</param>
@@ -149,6 +176,11 @@ namespace HFM.Client.Internal
          return result;
       }
 
+      internal static void CopyTo(this StringBuilder sb, StringBuilder dest)
+      {
+         CopyTo(sb, 0, dest, sb.Length);
+      }
+
       private static void CopyTo(this StringBuilder sb, int startIndex, StringBuilder dest, int length)
       {
          if (sb == null) throw new ArgumentNullException(nameof(sb));
@@ -163,6 +195,13 @@ namespace HFM.Client.Internal
          {
             dest.Append(sb[i]);
          }
+      }
+
+      internal static bool EndsWith(this StringBuilder sb, char value)
+      {
+         if (sb == null) throw new ArgumentNullException(nameof(sb));
+
+         return sb.Length > 0 && sb[sb.Length - 1].Equals(value);
       }
    }
 }
