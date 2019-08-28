@@ -216,7 +216,7 @@ namespace HFM.Client
          var result = extractor.Extract(buffer);
          // Assert
          Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-         Assert.AreEqual(SimulationInfo, result.MessageText);
+         Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
       }
 
       [Test]
@@ -229,7 +229,7 @@ namespace HFM.Client
          var result = extractor.Extract(buffer);
          // Assert
          Assert.AreEqual("info", result.Identifier.MessageType);
-         Assert.AreEqual(Info, result.MessageText);
+         Assert.AreEqual(Info, result.MessageText.ToString());
       }
 
       [Test]
@@ -242,12 +242,12 @@ namespace HFM.Client
          var result = extractor.Extract(buffer);
          // Assert (First Message)
          Assert.AreEqual("info", result.Identifier.MessageType);
-         Assert.AreEqual(Info, result.MessageText);
+         Assert.AreEqual(Info, result.MessageText.ToString());
          // Act (Second Message)
          result = extractor.Extract(buffer);
          // Assert (Second Message)
          Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-         Assert.AreEqual(SimulationInfo, result.MessageText);
+         Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
       }
 
       [Test]
@@ -296,7 +296,7 @@ namespace HFM.Client
          var result = extractor.Extract(buffer);
          // Assert
          Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-         Assert.AreEqual(SimulationInfoJson, result.MessageText);
+         Assert.AreEqual(SimulationInfoJson, result.MessageText.ToString());
       }
 
       [Test]
@@ -369,7 +369,7 @@ namespace HFM.Client
 
       private class MessageExtractorReturnsNullMessageText : FahClientMessageExtractor
       {
-         protected override string ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+         protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
          {
             return null;
          }

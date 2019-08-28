@@ -169,7 +169,7 @@ namespace HFM.Client
                Assert.IsTrue(result);
                var message = reader.Message;
                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
-               Assert.AreEqual(MessageFromReader, message.MessageText);
+               Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
             }
          }
       }
@@ -192,7 +192,7 @@ namespace HFM.Client
                Assert.IsTrue(result);
                var message = reader.Message;
                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
-               Assert.AreEqual(MessageFromReader, message.MessageText);
+               Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
             }
          }
       }

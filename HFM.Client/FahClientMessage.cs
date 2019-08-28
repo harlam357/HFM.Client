@@ -101,14 +101,14 @@ namespace HFM.Client
       /// <summary>
       /// Gets the text value of the message.
       /// </summary>
-      public string MessageText { get; }
+      public StringBuilder MessageText { get; }
 
       /// <summary>
       /// Initializes a new instance of the <see cref="FahClientMessage"/> class.
       /// </summary>
       /// <param name="identifier">The message identifier.</param>
       /// <param name="messageText">The text value of the message.</param>
-      public FahClientMessage(FahClientMessageIdentifier identifier, string messageText)
+      public FahClientMessage(FahClientMessageIdentifier identifier, StringBuilder messageText)
       {
          Identifier = identifier;
          MessageText = messageText;
@@ -121,7 +121,7 @@ namespace HFM.Client
       {
          var sb = new StringBuilder();
          sb.AppendLine($"{Identifier} - Length: {MessageText.Length}");
-         sb.AppendLine(MessageText);
+         sb.AppendLine(MessageText.ToString());
          sb.AppendLine();
          return sb.ToString();
       }

@@ -95,11 +95,11 @@ namespace HFM.Client
       /// Extracts the message text from the <paramref name="buffer"/>.
       /// </summary>
       /// <returns>The message text as a string.</returns>
-      protected virtual string ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+      protected virtual StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
       {
          int start = indexes[IndexKey.StartHeader];
          int end = indexes[IndexKey.EndFooter];
-         return buffer.Substring(start, end - start);
+         return buffer.SubstringBuilder(start, null, end - start);
       }
 
       /// <summary>
@@ -254,13 +254,13 @@ namespace HFM.Client
       /// Extracts the message text from the <paramref name="buffer"/>.
       /// </summary>
       /// <returns>The message text as a string.</returns>
-      protected override string ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+      protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
       {
          int beginObjectIndex = indexes[BeginObject];
          int startFooterIndex = indexes[IndexKey.StartFooter];
          var json = buffer.SubstringBuilder(beginObjectIndex, null, startFooterIndex - beginObjectIndex);
          ConvertPythonValuesToJsonValues(json);
-         return json.ToString();
+         return json;
       }
 
       private static void ConvertPythonValuesToJsonValues(StringBuilder buffer)
