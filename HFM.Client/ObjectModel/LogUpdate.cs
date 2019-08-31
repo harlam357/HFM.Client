@@ -9,7 +9,7 @@ namespace HFM.Client.ObjectModel
    public class LogUpdate
    {
       /// <summary>
-      /// Log fragment value.
+      /// Folding@Home client log update message.
       /// </summary>
       public StringBuilder Value { get; private set; }
 

@@ -5,6 +5,9 @@ using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel
 {
+   /// <summary>
+   /// Folding@Home client options message.
+   /// </summary>
    public class Options
    {
       public static Options FromMessage(string message)

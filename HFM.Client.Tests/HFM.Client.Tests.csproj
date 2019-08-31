@@ -66,6 +66,7 @@
     <Compile Include="ObjectModel\InfoTests.cs" />
     <Compile Include="ObjectModel\LogUpdateTests.cs" />
     <Compile Include="ObjectModel\OptionsTests.cs" />
+    <Compile Include="ObjectModel\SimulationInfoTests.cs" />
     <Compile Include="Sockets\LocalTcpListener.cs" />
     <Compile Include="Sockets\TcpClientConnectionTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
