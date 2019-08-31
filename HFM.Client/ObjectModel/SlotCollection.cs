@@ -38,6 +38,7 @@ namespace HFM.Client.ObjectModel
          result.Status = GetValue<string>(obj, "status");
          result.SlotStatus = ConvertToSlotStatus(result.Status);
          result.Description = GetValue<string>(obj, "description");
+         result.SlotOptions = SlotOptions.FromObject((JObject)obj["options"]);
          return result;
       }
 
@@ -95,7 +96,6 @@ namespace HFM.Client.ObjectModel
       public string Status { get; set; }
       public SlotStatus SlotStatus { get; set; }
       public string Description { get; set; }
-      //[MessageProperty("options")]
-      //public SlotOptions SlotOptions { get; set; }
+      public SlotOptions SlotOptions { get; set; }
    }
 }

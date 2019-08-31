@@ -26,7 +26,7 @@ namespace HFM.Client.ObjectModel
          Assert.AreEqual("RUNNING", slotCollection[0].Status);
          Assert.AreEqual(SlotStatus.Running, slotCollection[0].SlotStatus);
          Assert.AreEqual("smp:4", slotCollection[0].Description);
-         //Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
+         Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
       }
    }
 }

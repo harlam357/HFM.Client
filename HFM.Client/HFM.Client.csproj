@@ -61,6 +61,7 @@
     <Compile Include="ObjectModel\Options.cs" />
     <Compile Include="ObjectModel\SimulationInfo.cs" />
     <Compile Include="ObjectModel\SlotCollection.cs" />
+    <Compile Include="ObjectModel\SlotOptions.cs" />
     <Compile Include="ObjectModel\SlotStatus.cs" />
     <Compile Include="Sockets\TcpClientConnection.cs" />
     <Compile Include="Sockets\TcpConnection.cs" />
