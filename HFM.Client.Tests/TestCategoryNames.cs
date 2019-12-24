@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace HFM.Client
 {
-   internal static class TestCategoryNames
-   {
-      internal const string Integration = nameof(Integration);
-   }
+    internal static class TestCategoryNames
+    {
+        internal const string Integration = nameof(Integration);
+    }
 }

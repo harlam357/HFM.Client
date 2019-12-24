@@ -5,26 +5,26 @@ using HFM.Client.Sockets;
 
 namespace HFM.Client.Mocks
 {
-   internal class MockTcpConnectionFactory : TcpConnectionFactory
-   {
-      private readonly Func<TcpConnection> _factory;
+    internal class MockTcpConnectionFactory : TcpConnectionFactory
+    {
+        private readonly Func<TcpConnection> _factory;
 
-      public MockTcpConnectionFactory()
-         : this(() => new MockTcpConnection())
-      {
-         
-      }
+        public MockTcpConnectionFactory()
+           : this(() => new MockTcpConnection())
+        {
 
-      public MockTcpConnectionFactory(Func<TcpConnection> factory)
-      {
-         _factory = factory;
-      }
+        }
 
-      public TcpConnection TcpConnection { get; private set; }
+        public MockTcpConnectionFactory(Func<TcpConnection> factory)
+        {
+            _factory = factory;
+        }
 
-      public override TcpConnection Create()
-      {
-         return TcpConnection = _factory();
-      }
-   }
+        public TcpConnection TcpConnection { get; private set; }
+
+        public override TcpConnection Create()
+        {
+            return TcpConnection = _factory();
+        }
+    }
 }
