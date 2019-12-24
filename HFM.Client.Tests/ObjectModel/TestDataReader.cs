@@ -1,6 +1,7 @@
 ﻿
 using System.IO;
 using System.Reflection;
+using System.Text;
 
 namespace HFM.Client.ObjectModel
 {
@@ -16,6 +17,11 @@ namespace HFM.Client.ObjectModel
                 message = sr.ReadToEnd();
             }
             return message;
+        }
+
+        internal static StringBuilder ReadStringBuilder(string resourceName)
+        {
+            return new StringBuilder(ReadString(resourceName));
         }
     }
 }

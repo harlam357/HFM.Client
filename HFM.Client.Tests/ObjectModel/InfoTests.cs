@@ -7,9 +7,9 @@ namespace HFM.Client.ObjectModel
     public class InfoTests
     {
         [Test]
-        public void Info_FromJson_FromWindowsClientVersion_7_1_24_Test()
+        public void Info_Load_FromWindowsClientVersion_7_1_24()
         {
-            var info = Info.FromJson(TestDataReader.ReadString("Client_7_1_24_info_Windows.txt"));
+            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_info_Windows.txt"));
             Assert.AreEqual("http://folding.stanford.edu/", info.Client.Website);
             Assert.AreEqual("(c) 2009,2010 Stanford University", info.Client.Copyright);
             Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);

@@ -2,7 +2,7 @@
 using System;
 using System.Globalization;
 
-namespace HFM.Client.ObjectModel
+namespace HFM.Client.ObjectModel.Internal
 {
     internal static class DateTimeConverter
     {

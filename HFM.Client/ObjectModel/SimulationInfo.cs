@@ -36,7 +36,7 @@ namespace HFM.Client.ObjectModel
             result.Energy = GetValue<int?>(obj, "energy");
             result.Temperature = GetValue<int?>(obj, "temperature");
             result.StartTime = GetValue<string>(obj, "start_time");
-            result.StartTimeDateTime = DateTimeConverter.ConvertToDateTime(result.StartTime);
+            result.StartTimeDateTime = Internal.DateTimeConverter.ConvertToDateTime(result.StartTime);
             result.Timeout = GetValue<int?>(obj, "timeout");
             result.TimeoutDateTime = ConvertToDateTime(result.Timeout);
             result.Deadline = GetValue<int?>(obj, "deadline");

@@ -1,9 +1,12 @@
 ﻿
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel
@@ -30,13 +33,32 @@ namespace HFM.Client.ObjectModel
         public SystemInfo System { get; }
 
         /// <summary>
-        /// Creates a new <see cref="Info"/> object from the given JSON message.
+        /// Creates a new <see cref="Info"/> object from a <see cref="String"/> that contains JSON.
         /// </summary>
-        public static Info FromJson(string message)
-        {
-            var result = new Info();
-            var array = JArray.Parse(message);
+        public static Info Load(string json) => new InfoObjectLoader().Load(json);
 
+        /// <summary>
+        /// Creates a new <see cref="Info"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static Info Load(StringBuilder json) => new InfoObjectLoader().Load(json);
+
+        /// <summary>
+        /// Creates a new <see cref="Info"/> object from a <see cref="TextReader"/> that contains JSON.
+        /// </summary>
+        public static Info Load(TextReader textReader) => new InfoObjectLoader().Load(textReader);
+    }
+
+    internal class InfoObjectLoader : Internal.ObjectLoader<Info>
+    {
+        public override Info Load(TextReader textReader)
+        {
+            JArray array;
+            using (var reader = new JsonTextReader(textReader))
+            {
+                array = JArray.Load(reader);
+            }
+
+            var result = new Info();
             var client = array[0];
             result.Client.Website = GetValue<string>(client, "Website");
             result.Client.Copyright = GetValue<string>(client, "Copyright");
