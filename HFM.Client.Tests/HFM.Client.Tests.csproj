@@ -3,6 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <IsPackable>false</IsPackable>
+    <RootNamespace>HFM.Client</RootNamespace>
     <Version>0.1.0</Version>
   </PropertyGroup>
 
