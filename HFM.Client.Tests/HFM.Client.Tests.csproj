@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_info_Windows.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart_Windows.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options_Windows.txt" />
   </ItemGroup>
 
