@@ -1,10 +1,7 @@
 ﻿
 using System;
-using System.ComponentModel;
 using System.IO;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using System.Text;
 
 namespace HFM.Client.ObjectModel
 {
@@ -14,83 +11,19 @@ namespace HFM.Client.ObjectModel
     public class SimulationInfo
     {
         /// <summary>
-        /// Fill the SimulationInfo object with data from the given JsonMessage.
+        /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="String"/> that contains JSON.
         /// </summary>
-        /// <param name="message">Message object containing JSON value and meta-data.</param>
-        public static SimulationInfo FromMessage(string message)
-        {
-            var result = new SimulationInfo();
+        public static SimulationInfo Load(string json) => new Internal.SimulationInfoObjectLoader().Load(json);
 
-            var obj = GetJObject(message);
-            result.User = GetValue<string>(obj, "user");
-            result.Team = GetValue<int?>(obj, "team");
-            result.Project = GetValue<int?>(obj, "project");
-            result.Run = GetValue<int?>(obj, "run");
-            result.Clone = GetValue<int?>(obj, "clone");
-            result.Gen = GetValue<int?>(obj, "gen");
-            result.CoreType = GetValue<int?>(obj, "core_type");
-            result.Core = GetValue<string>(obj, "core");
-            result.Description = GetValue<string>(obj, "description");
-            result.TotalIterations = GetValue<int?>(obj, "total_iterations");
-            result.IterationsDone = GetValue<int?>(obj, "iterations_done");
-            result.Energy = GetValue<int?>(obj, "energy");
-            result.Temperature = GetValue<int?>(obj, "temperature");
-            result.StartTime = GetValue<string>(obj, "start_time");
-            result.StartTimeDateTime = Internal.DateTimeConverter.ConvertToDateTime(result.StartTime);
-            result.Timeout = GetValue<int?>(obj, "timeout");
-            result.TimeoutDateTime = ConvertToDateTime(result.Timeout);
-            result.Deadline = GetValue<int?>(obj, "deadline");
-            result.DeadlineDateTime = ConvertToDateTime(result.Deadline);
-            result.ETA = GetValue<int?>(obj, "eta");
-            result.ETATimeSpan = ConvertToTimeSpan(result.ETA);
-            result.News = GetValue<string>(obj, "news");
-            result.Slot = GetValue<int?>(obj, "slot");
-            return result;
-        }
+        /// <summary>
+        /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static SimulationInfo Load(StringBuilder json) => new Internal.SimulationInfoObjectLoader().Load(json);
 
-        private static JObject GetJObject(string message)
-        {
-            using (var reader = new JsonTextReader(new StringReader(message)))
-            {
-                reader.DateParseHandling = DateParseHandling.None;
-                return JObject.Load(reader);
-            }
-        }
-
-        private static T GetValue<T>(JObject obj, params string[] names)
-        {
-            foreach (var name in names)
-            {
-                var token = obj[name];
-                if (token != null)
-                {
-                    try
-                    {
-                        return token.Value<T>();
-                    }
-                    catch (FormatException)
-                    {
-                        // if the data changed in a way where the value can
-                        // no longer be converted to the target CLR type
-                    }
-                }
-            }
-            return default(T);
-        }
-
-        private static DateTime? ConvertToDateTime(int? input)
-        {
-            if (input == null || input == 0) return null;
-
-            return new DateTime(1970, 1, 1).AddSeconds((int)input);
-        }
-
-        private static TimeSpan? ConvertToTimeSpan(int? input)
-        {
-            if (input == null) return null;
-
-            return TimeSpan.FromSeconds((int)input);
-        }
+        /// <summary>
+        /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="TextReader"/> that contains JSON.
+        /// </summary>
+        public static SimulationInfo Load(TextReader textReader) => new Internal.SimulationInfoObjectLoader().Load(textReader);
 
         public string User { get; set; }
         public int? Team { get; set; }

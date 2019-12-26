@@ -5,6 +5,7 @@ using System.Text;
 
 using HFM.Client.Internal;
 
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel.Internal
@@ -37,6 +38,17 @@ namespace HFM.Client.ObjectModel.Internal
         /// Creates a object from a <see cref="TextReader"/> that contains JSON.
         /// </summary>
         public abstract T Load(TextReader textReader);
+
+        /// <summary>
+        /// TODO: LoadJObject documentation
+        /// </summary>
+        protected virtual JObject LoadJObject(TextReader textReader)
+        {
+            using (var reader = new JsonTextReader(textReader))
+            {
+                return JObject.Load(reader);
+            }
+        }
 
         /// <summary>
         /// TODO: GetValue documentation

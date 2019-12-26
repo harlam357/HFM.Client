@@ -1,20 +1,13 @@
 ﻿
 using System.IO;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace HFM.Client.ObjectModel.Internal
 {
     internal class OptionsObjectLoader : ObjectLoader<Options>
     {
         public override Options Load(TextReader textReader)
         {
-            JObject obj;
-            using (var reader = new JsonTextReader(textReader))
-            {
-                obj = JObject.Load(reader);
-            }
+            var obj = LoadJObject(textReader);
 
             var result = new Options();
             result.Allow = GetValue<string>(obj, "allow", "command-allow");

@@ -8,33 +8,10 @@ namespace HFM.Client.ObjectModel
     [TestFixture]
     public class SimulationInfoTests
     {
-        private const string SimulationInfoText = @"{
-   ""user"": ""harlam357"",
-   ""team"": ""32"",
-   ""project"": 11020,
-   ""run"": 0,
-   ""clone"": 1921,
-   ""gen"": 24,
-   ""core_type"": 163,
-   ""core"": ""GROGBSMP"",
-   ""description"": """",
-   ""total_iterations"": 1000,
-   ""iterations_done"": 590,
-   ""energy"": 0,
-   ""temperature"": 0,
-   ""start_time"": ""27/May/2011-19:34:24"",
-   ""timeout"": 1307216064,
-   ""deadline"": 1307561664,
-   ""run_time"": 13028,
-   ""simulation_time"": 0,
-   ""eta"": 8844,
-   ""news"": """"
-}";
-
         [Test]
-        public void SimulationInfo_FromMessage_Test()
+        public void SimulationInfo_Load_FromWindowsClientVersion_7_1_24()
         {
-            var simulationInfo = SimulationInfo.FromMessage(SimulationInfoText);
+            var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_simulation-info_Windows.txt"));
             Assert.AreEqual("harlam357", simulationInfo.User);
             Assert.AreEqual(32, simulationInfo.Team);
             Assert.AreEqual(11020, simulationInfo.Project);
