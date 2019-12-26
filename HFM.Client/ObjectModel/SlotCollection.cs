@@ -6,6 +6,9 @@ using System.Text;
 
 namespace HFM.Client.ObjectModel
 {
+    /// <summary>
+    /// Folding@Home client slot collection message.
+    /// </summary>
     public class SlotCollection : Collection<Slot>
     {
         /// <summary>
@@ -24,6 +27,9 @@ namespace HFM.Client.ObjectModel
         public static SlotCollection Load(TextReader textReader) => new Internal.SlotCollectionObjectLoader().Load(textReader);
     }
 
+    /// <summary>
+    /// Folding@Home client slot message.
+    /// </summary>
     public class Slot
     {
         public int? ID { get; set; }
