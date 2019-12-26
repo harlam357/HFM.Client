@@ -51,6 +51,17 @@ namespace HFM.Client.ObjectModel.Internal
         }
 
         /// <summary>
+        /// TODO: LoadJArray documentation
+        /// </summary>
+        protected virtual JArray LoadJArray(TextReader textReader)
+        {
+            using (var reader = new JsonTextReader(textReader))
+            {
+                return JArray.Load(reader);
+            }
+        }
+
+        /// <summary>
         /// TODO: GetValue documentation
         /// </summary>
         protected virtual TResult GetValue<TResult>(JObject obj, params string[] names)

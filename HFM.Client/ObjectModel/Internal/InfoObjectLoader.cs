@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel.Internal
@@ -14,54 +13,50 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override Info Load(TextReader textReader)
         {
-            JArray array;
-            using (var reader = new JsonTextReader(textReader))
-            {
-                array = JArray.Load(reader);
-            }
+            var array = LoadJArray(textReader);
 
-            var result = new Info();
+            var info = new Info();
             var client = array[0];
-            result.Client.Website = GetValue<string>(client, "Website");
-            result.Client.Copyright = GetValue<string>(client, "Copyright");
-            result.Client.Author = GetValue<string>(client, "Author");
-            result.Client.Args = GetValue<string>(client, "Args")?.Trim();
-            result.Client.Config = GetValue<string>(client, "Config");
+            info.Client.Website = GetValue<string>(client, "Website");
+            info.Client.Copyright = GetValue<string>(client, "Copyright");
+            info.Client.Author = GetValue<string>(client, "Author");
+            info.Client.Args = GetValue<string>(client, "Args")?.Trim();
+            info.Client.Config = GetValue<string>(client, "Config");
 
             var build = array[1];
-            result.Build.Version = GetValue<string>(build, "Version");
-            result.Build.Date = GetValue<string>(build, "Date");
-            result.Build.Time = GetValue<string>(build, "Time");
-            result.Build.SVNRev = GetValue<int>(build, "SVN Rev");
-            result.Build.Branch = GetValue<string>(build, "Branch");
-            result.Build.Compiler = GetValue<string>(build, "Compiler");
-            result.Build.Options = GetValue<string>(build, "Options");
-            result.Build.Platform = GetValue<string>(build, "Platform");
-            result.Build.Bits = GetValue<int>(build, "Bits");
-            result.Build.Mode = GetValue<string>(build, "Mode");
+            info.Build.Version = GetValue<string>(build, "Version");
+            info.Build.Date = GetValue<string>(build, "Date");
+            info.Build.Time = GetValue<string>(build, "Time");
+            info.Build.SVNRev = GetValue<int>(build, "SVN Rev");
+            info.Build.Branch = GetValue<string>(build, "Branch");
+            info.Build.Compiler = GetValue<string>(build, "Compiler");
+            info.Build.Options = GetValue<string>(build, "Options");
+            info.Build.Platform = GetValue<string>(build, "Platform");
+            info.Build.Bits = GetValue<int>(build, "Bits");
+            info.Build.Mode = GetValue<string>(build, "Mode");
 
             var system = array[2];
-            result.System.OS = GetValue<string>(system, "OS");
-            result.System.CPU = GetValue<string>(system, "CPU");
-            result.System.CPUID = GetValue<string>(system, "CPU ID");
-            result.System.CPUs = GetValue<int>(system, "CPUs");
-            result.System.Memory = GetValue<string>(system, "Memory");
-            result.System.MemoryValue = ConvertToMemoryValue(result.System.Memory);
-            result.System.FreeMemory = GetValue<string>(system, "Free Memory");
-            result.System.FreeMemoryValue = ConvertToMemoryValue(result.System.FreeMemory);
-            result.System.Threads = GetValue<string>(system, "Threads");
-            result.System.GPUs = GetValue<int>(system, "GPUs");
-            result.System.GPUInfos = BuildGPUInfos(system);
-            result.System.CUDA = GetValue<string>(system, "CUDA");
-            result.System.CUDADriver = GetValue<string>(system, "CUDA Driver");
-            result.System.HasBattery = GetValue<bool>(system, "Has Battery");
-            result.System.OnBattery = GetValue<bool>(system, "On Battery");
-            result.System.UtcOffset = GetValue<int>(system, "UTC offset");
-            result.System.PID = GetValue<int>(system, "PID");
-            result.System.CWD = GetValue<string>(system, "CWD");
-            result.System.Win32Service = GetValue<bool>(system, "Win32 Service");
+            info.System.OS = GetValue<string>(system, "OS");
+            info.System.CPU = GetValue<string>(system, "CPU");
+            info.System.CPUID = GetValue<string>(system, "CPU ID");
+            info.System.CPUs = GetValue<int>(system, "CPUs");
+            info.System.Memory = GetValue<string>(system, "Memory");
+            info.System.MemoryValue = ConvertToMemoryValue(info.System.Memory);
+            info.System.FreeMemory = GetValue<string>(system, "Free Memory");
+            info.System.FreeMemoryValue = ConvertToMemoryValue(info.System.FreeMemory);
+            info.System.Threads = GetValue<string>(system, "Threads");
+            info.System.GPUs = GetValue<int>(system, "GPUs");
+            info.System.GPUInfos = BuildGPUInfos(system);
+            info.System.CUDA = GetValue<string>(system, "CUDA");
+            info.System.CUDADriver = GetValue<string>(system, "CUDA Driver");
+            info.System.HasBattery = GetValue<bool>(system, "Has Battery");
+            info.System.OnBattery = GetValue<bool>(system, "On Battery");
+            info.System.UtcOffset = GetValue<int>(system, "UTC offset");
+            info.System.PID = GetValue<int>(system, "PID");
+            info.System.CWD = GetValue<string>(system, "CWD");
+            info.System.Win32Service = GetValue<bool>(system, "Win32 Service");
 
-            return result;
+            return info;
         }
 
         private static T GetValue<T>(JToken token, string name)

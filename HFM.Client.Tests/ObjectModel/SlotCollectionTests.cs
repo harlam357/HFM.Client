@@ -6,21 +6,10 @@ namespace HFM.Client.ObjectModel
     [TestFixture]
     public class SlotCollectionTests
     {
-        private const string SlotCollectionText = @"[
-   {
-    ""id"": ""00"",
-      ""status"": ""RUNNING"",
-      ""description"": ""smp:4"",
-      ""options"": {
-         ""pause-on-start"": ""true""
-      }
-   }
-]";
-
         [Test]
-        public void SlotCollection_FromMessage_Test()
+        public void SlotCollection_Load_FromWindowsClientVersion_7_1_24()
         {
-            var slotCollection = SlotCollection.FromMessage(SlotCollectionText);
+            var slotCollection = SlotCollection.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_slots_Windows.txt"));
             Assert.AreEqual(1, slotCollection.Count);
             Assert.AreEqual(0, slotCollection[0].ID);
             Assert.AreEqual("RUNNING", slotCollection[0].Status);
