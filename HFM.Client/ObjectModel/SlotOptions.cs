@@ -1,7 +1,6 @@
 ﻿
-using System;
-
-using Newtonsoft.Json.Linq;
+using System.IO;
+using System.Text;
 
 namespace HFM.Client.ObjectModel
 {
@@ -10,51 +9,20 @@ namespace HFM.Client.ObjectModel
     /// </summary>
     public class SlotOptions
     {
-        public static SlotOptions FromMessage(string message)
-        {
-            return FromObject(JObject.Parse(message));
-        }
+        /// <summary>
+        /// Creates a new <see cref="SlotOptions"/> object from a <see cref="string"/> that contains JSON.
+        /// </summary>
+        public static SlotOptions Load(string json) => new Internal.SlotOptionsObjectLoader().Load(json);
 
-        internal static SlotOptions FromObject(JObject obj)
-        {
-            if (obj == null) return null;
+        /// <summary>
+        /// Creates a new <see cref="SlotOptions"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static SlotOptions Load(StringBuilder json) => new Internal.SlotOptionsObjectLoader().Load(json);
 
-            var result = new SlotOptions();
-            result.ClientType = GetValue<string>(obj, "client-type");
-            result.ClientSubType = GetValue<string>(obj, "client-subtype");
-            result.CPUUsage = GetValue<int?>(obj, "cpu-usage");
-            result.MachineID = GetValue<int?>(obj, "machine-id");
-            result.MaxPacketSize = GetValue<string>(obj, "max-packet-size");
-            result.CorePriority = GetValue<string>(obj, "core-priority");
-            result.NextUnitPercentage = GetValue<int?>(obj, "next-unit-percentage");
-            result.MaxUnits = GetValue<int?>(obj, "max-units");
-            result.Checkpoint = GetValue<int?>(obj, "checkpoint");
-            result.PauseOnStart = GetValue<bool?>(obj, "pause-on-start");
-            result.GPUIndex = GetValue<int?>(obj, "gpu-index");
-            result.GPUUsage = GetValue<int?>(obj, "gpu-usage");
-            return result;
-        }
-
-        private static T GetValue<T>(JObject obj, params string[] names)
-        {
-            foreach (var name in names)
-            {
-                var token = obj[name];
-                if (token != null)
-                {
-                    try
-                    {
-                        return token.Value<T>();
-                    }
-                    catch (FormatException)
-                    {
-                        // if the data changed in a way where the value can
-                        // no longer be converted to the target CLR type
-                    }
-                }
-            }
-            return default(T);
-        }
+        /// <summary>
+        /// Creates a new <see cref="SlotOptions"/> object from a <see cref="TextReader"/> that contains JSON.
+        /// </summary>
+        public static SlotOptions Load(TextReader textReader) => new Internal.SlotOptionsObjectLoader().Load(textReader);
 
         public string ClientType { get; set; }
         public string ClientSubType { get; set; }

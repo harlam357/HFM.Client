@@ -10,13 +10,15 @@ using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel.Internal
 {
-    internal abstract class ObjectLoader<T>
+    internal abstract class ObjectLoader<T> where T : class
     {
         /// <summary>
         /// Creates a new object from a <see cref="string"/> that contains JSON.
         /// </summary>
         public virtual T Load(string json)
         {
+            if (json is null) return null;
+
             using (var textReader = new StringReader(json))
             {
                 return Load(textReader);
@@ -28,6 +30,8 @@ namespace HFM.Client.ObjectModel.Internal
         /// </summary>
         public virtual T Load(StringBuilder json)
         {
+            if (json is null) return null;
+
             using (var textReader = new StringBuilderReader(json))
             {
                 return Load(textReader);

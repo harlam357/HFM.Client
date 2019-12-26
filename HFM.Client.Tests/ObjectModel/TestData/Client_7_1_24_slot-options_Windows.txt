@@ -1,0 +1,13 @@
+{
+  "client-type": "normal",
+  "client-subtype": "SMP",
+  "machine-id": "0",
+  "max-packet-size": "normal",
+  "core-priority": "idle",
+  "next-unit-percentage": "99",
+  "max-units": "0",
+  "checkpoint": "15",
+  "pause-on-start": "true",
+  "gpu-vendor-id": null,
+  "gpu-device-id": null
+}

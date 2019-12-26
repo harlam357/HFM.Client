@@ -11,34 +11,24 @@ namespace HFM.Client.ObjectModel.Internal
         public override SlotCollection Load(TextReader textReader)
         {
             var array = LoadJArray(textReader);
-            
+
             var collection = new SlotCollection();
             foreach (var token in array.Where(x => x.HasValues))
             {
-                collection.Add(LoadSlot(token));
+                collection.Add(LoadSlot((JObject)token));
             }
             return collection;
         }
 
-        private Slot LoadSlot(JToken token)
+        private Slot LoadSlot(JObject obj)
         {
-            var obj = LoadJObject(token);
-
             var slot = new Slot();
             slot.ID = GetValue<int?>(obj, "id");
             slot.Status = GetValue<string>(obj, "status");
             slot.SlotStatus = ConvertToSlotStatus(slot.Status);
             slot.Description = GetValue<string>(obj, "description");
-            slot.SlotOptions = SlotOptions.FromObject((JObject)obj["options"]);
+            slot.SlotOptions = new SlotOptionsObjectLoader().Load((JObject)obj["options"]);
             return slot;
-        }
-
-        private static JObject LoadJObject(JToken token)
-        {
-            using (var reader = token.CreateReader())
-            {
-                return JObject.Load(reader);
-            }
         }
 
         private static SlotStatus ConvertToSlotStatus(string input)

@@ -12,6 +12,7 @@
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart_Windows.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options_Windows.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_simulation-info_Windows.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slot-options_Windows.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slots_Windows.txt" />
   </ItemGroup>
 

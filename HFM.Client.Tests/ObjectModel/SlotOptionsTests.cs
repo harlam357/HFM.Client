@@ -6,24 +6,10 @@ namespace HFM.Client.ObjectModel
     [TestFixture]
     public class SlotOptionsTests
     {
-        private const string SlotOptionsText = @"{
-   ""client-type"": ""normal"",
-   ""client-subtype"": ""SMP"",
-   ""machine-id"": ""0"",
-   ""max-packet-size"": ""normal"",
-   ""core-priority"": ""idle"",
-   ""next-unit-percentage"": ""99"",
-   ""max-units"": ""0"",
-   ""checkpoint"": ""15"",
-   ""pause-on-start"": ""true"",
-   ""gpu-vendor-id"": null,
-   ""gpu-device-id"": null
-}";
-
         [Test]
-        public void SlotOptions_FromMessage_Test()
+        public void SlotOptions_Load_FromWindowsClientVersion_7_1_24()
         {
-            var slotOptions = SlotOptions.FromMessage(SlotOptionsText);
+            var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_slot-options_Windows.txt"));
             Assert.AreEqual("normal", slotOptions.ClientType);
             Assert.AreEqual("SMP", slotOptions.ClientSubType);
             Assert.AreEqual(0, slotOptions.MachineID);
