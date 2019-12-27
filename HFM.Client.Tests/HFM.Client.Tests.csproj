@@ -15,6 +15,7 @@
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slot-options.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slots.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_units.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_info.txt" />
   </ItemGroup>
 
   <ItemGroup>

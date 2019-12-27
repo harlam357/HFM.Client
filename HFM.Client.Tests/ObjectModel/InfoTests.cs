@@ -50,6 +50,49 @@ namespace HFM.Client.ObjectModel
         }
 
         [Test]
+        public void Info_Load_FromClientVersion_7_1_43()
+        {
+            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_info.txt"));
+            Assert.AreEqual("http://folding.stanford.edu/", info.Client.Website);
+            Assert.AreEqual("(c) 2009-2012 Stanford University", info.Client.Copyright);
+            Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
+            Assert.AreEqual("--lifeline 2600 --command-port=36330", info.Client.Args);
+            Assert.AreEqual("", info.Client.Config);
+            Assert.AreEqual("7.1.43", info.Build.Version);
+            Assert.AreEqual("Jan  2 2012", info.Build.Date);
+            Assert.AreEqual("12:33:05", info.Build.Time);
+            Assert.AreEqual(3223, info.Build.SVNRev);
+            Assert.AreEqual("fah/trunk/client", info.Build.Branch);
+            Assert.AreEqual("Intel(R) C++ MSVC 1500 mode 1200", info.Build.Compiler);
+            Assert.AreEqual("/TP /nologo /EHa /Qdiag-disable:4297,4103,1786,279 /Ox -arch:SSE /QaxSSE2,SSE3,SSSE3,SSE4.1,SSE4.2 /Qopenmp /Qrestrict /MT", info.Build.Options);
+            Assert.AreEqual("win32 XP", info.Build.Platform);
+            Assert.AreEqual(32, info.Build.Bits);
+            Assert.AreEqual("Release", info.Build.Mode);
+            Assert.AreEqual("Microsoft Windows XP Service Pack 2", info.System.OS);
+            Assert.AreEqual("Intel(R) Core(TM)2 Quad CPU    Q6600  @ 2.40GHz", info.System.CPU);
+            Assert.AreEqual("GenuineIntel Family 6 Model 15 Stepping 11", info.System.CPUID);
+            Assert.AreEqual(4, info.System.CPUs);
+            Assert.AreEqual("4.00GiB", info.System.Memory);
+            Assert.AreEqual(4.0, info.System.MemoryValue);
+            Assert.AreEqual("3.22GiB", info.System.FreeMemory);
+            Assert.AreEqual(3.22, info.System.FreeMemoryValue);
+            Assert.AreEqual("WINDOWS_THREADS", info.System.Threads);
+            Assert.AreEqual(1, info.System.GPUs);
+            Assert.IsNotNull(info.System.GPUInfos);
+            Assert.AreEqual(1, info.System.GPUInfos.Count);
+            Assert.AreEqual("NVIDIA:1 GT200b [GeForce GTX 285]", info.System.GPUInfos[0].GPU);
+            Assert.AreEqual("GeForce GTX 285", info.System.GPUInfos[0].FriendlyName);
+            Assert.AreEqual("1.3", info.System.CUDA);
+            Assert.AreEqual("3010", info.System.CUDADriver);
+            Assert.AreEqual(false, info.System.HasBattery);
+            Assert.AreEqual(false, info.System.OnBattery);
+            Assert.AreEqual(-6, info.System.UtcOffset);
+            Assert.AreEqual(1520, info.System.PID);
+            Assert.AreEqual("", info.System.CWD);
+            Assert.AreEqual(false, info.System.Win32Service);
+        }
+
+        [Test]
         public void Info_Load_MemoryValueInGigabytes()
         {
             // Arrange
