@@ -55,10 +55,10 @@ namespace HFM.Client
         protected virtual bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
         {
             var headerIndexes = IndexesOf(buffer, SearchValue.PyONHeader, 0);
-            if (headerIndexes.Item1 < 0) return false;
-            indexes[IndexKey.StartHeader] = headerIndexes.Item1;
-            indexes[IndexKey.EndHeader] = headerIndexes.Item2;
-            indexes[IndexKey.StartMessageType] = headerIndexes.Item2;
+            if (headerIndexes.Start < 0) return false;
+            indexes[IndexKey.StartHeader] = headerIndexes.Start;
+            indexes[IndexKey.EndHeader] = headerIndexes.End;
+            indexes[IndexKey.StartMessageType] = headerIndexes.End;
 
             string[] newLineValues =
             {
@@ -74,9 +74,9 @@ namespace HFM.Client
                 String.Concat(SearchValue.NewLineLf, SearchValue.PyONFooter, SearchValue.NewLineLf)
             };
             var footerIndexes = IndexesOfAny(buffer, footerValues, indexes[IndexKey.EndMessageType]);
-            if (footerIndexes.Item1 < 0) return false;
-            indexes[IndexKey.StartFooter] = footerIndexes.Item1;
-            indexes[IndexKey.EndFooter] = footerIndexes.Item2;
+            if (footerIndexes.Start < 0) return false;
+            indexes[IndexKey.StartFooter] = footerIndexes.Start;
+            indexes[IndexKey.EndFooter] = footerIndexes.End;
 
             return true;
         }
@@ -108,14 +108,14 @@ namespace HFM.Client
         /// <summary>
         /// Reports the indexes of the first occurrence of any of the specified strings in the given StringBuilder object.
         /// </summary>
-        protected static Tuple<int, int> IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+        protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
         {
             foreach (var value in values)
             {
                 int index = buffer.IndexOf(value, startIndex);
                 if (index >= 0)
                 {
-                    return Tuple.Create(index, index + value.Length);
+                    return (index, index + value.Length);
                 }
             }
             return NoIndexTuple;
@@ -156,17 +156,17 @@ namespace HFM.Client
         /// <summary>
         /// Reports the indexes of the first occurrence of the specified string in the given StringBuilder object.
         /// </summary>
-        protected static Tuple<int, int> IndexesOf(StringBuilder buffer, string value, int startIndex)
+        protected static (int Start, int End) IndexesOf(StringBuilder buffer, string value, int startIndex)
         {
             int index = buffer.IndexOf(value, startIndex);
             if (index >= 0)
             {
-                return Tuple.Create(index, index + value.Length);
+                return (index, index + value.Length);
             }
             return NoIndexTuple;
         }
 
-        private static readonly Tuple<int, int> NoIndexTuple = Tuple.Create(-1, -1);
+        private static readonly (int, int) NoIndexTuple = (-1, -1);
 
         /// <summary>
         /// Provides well-known key values for the indexes dictionary.
