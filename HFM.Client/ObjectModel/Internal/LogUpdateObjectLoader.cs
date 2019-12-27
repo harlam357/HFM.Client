@@ -17,7 +17,7 @@ namespace HFM.Client.ObjectModel.Internal
         public override LogUpdate Load(StringBuilder json)
         {
             var logUpdate = new LogUpdate { Value = new StringBuilder() };
-            json.CopyTo(logUpdate.Value);
+            json.CopyTo(0, logUpdate.Value, 0, json.Length);
             return LoadInternal(logUpdate);
         }
 
@@ -28,21 +28,8 @@ namespace HFM.Client.ObjectModel.Internal
 
         private static LogUpdate LoadInternal(LogUpdate logUpdate)
         {
-            int startIndex = GetStartIndex(logUpdate.Value);
-            int length = GetLength(logUpdate.Value, startIndex);
-            SetEnvironmentNewLineCharacters(logUpdate.Value.SubstringBuilder(startIndex, length, true));
+            SetEnvironmentNewLineCharacters(logUpdate.Value.Trim('\"'));
             return logUpdate;
-        }
-
-        private static int GetStartIndex(StringBuilder value)
-        {
-            int startIndex = value.EndIndexOf("\"", false);
-            return startIndex != -1 ? startIndex : 0;
-        }
-
-        private static int GetLength(StringBuilder value, int startIndex)
-        {
-            return (value.EndsWith('\"') ? value.Length - 1 : value.Length) - startIndex;
         }
 
         private static void SetEnvironmentNewLineCharacters(StringBuilder value)

@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -61,17 +62,17 @@ namespace HFM.Client
 
             string[] newLineValues =
             {
-            SearchValue.NewLineCrLf,
-            SearchValue.NewLineLf
-         };
+                SearchValue.NewLineCrLf,
+                SearchValue.NewLineLf
+            };
             indexes[IndexKey.EndMessageType] = IndexOfAny(buffer, newLineValues, indexes[IndexKey.StartMessageType]);
             if (indexes[IndexKey.EndMessageType] < 0) return false;
 
             string[] footerValues =
             {
-            String.Concat(SearchValue.NewLineCrLf, SearchValue.PyONFooter, SearchValue.NewLineCrLf),
-            String.Concat(SearchValue.NewLineLf, SearchValue.PyONFooter, SearchValue.NewLineLf)
-         };
+                String.Concat(SearchValue.NewLineCrLf, SearchValue.PyONFooter, SearchValue.NewLineCrLf),
+                String.Concat(SearchValue.NewLineLf, SearchValue.PyONFooter, SearchValue.NewLineLf)
+            };
             var footerIndexes = IndexesOfAny(buffer, footerValues, indexes[IndexKey.EndMessageType]);
             if (footerIndexes.Item1 < 0) return false;
             indexes[IndexKey.StartFooter] = footerIndexes.Item1;
@@ -88,7 +89,7 @@ namespace HFM.Client
         {
             int start = indexes[IndexKey.StartMessageType];
             int end = indexes[IndexKey.EndMessageType];
-            return buffer.Substring(start, end - start);
+            return buffer.ToString(start, end - start);
         }
 
         /// <summary>
@@ -99,7 +100,9 @@ namespace HFM.Client
         {
             int start = indexes[IndexKey.StartHeader];
             int end = indexes[IndexKey.EndFooter];
-            return buffer.SubstringBuilder(start, null, end - start);
+            var text = new StringBuilder();
+            buffer.CopyTo(start, text, 0, end - start);
+            return text;
         }
 
         /// <summary>
@@ -109,7 +112,7 @@ namespace HFM.Client
         {
             foreach (var value in values)
             {
-                int index = IndexOf(buffer, value, startIndex);
+                int index = buffer.IndexOf(value, startIndex);
                 if (index >= 0)
                 {
                     return Tuple.Create(index, index + value.Length);
@@ -125,7 +128,7 @@ namespace HFM.Client
         {
             foreach (var value in values)
             {
-                int index = IndexOf(buffer, value, startIndex);
+                int index = buffer.IndexOf(value, startIndex);
                 if (index >= 0)
                 {
                     return index;
@@ -141,10 +144,10 @@ namespace HFM.Client
         {
             foreach (var value in values)
             {
-                int index = EndIndexOf(buffer, value, startIndex);
+                int index = buffer.IndexOf(value, startIndex);
                 if (index >= 0)
                 {
-                    return index;
+                    return index + value.Length;
                 }
             }
             return -1;
@@ -155,38 +158,12 @@ namespace HFM.Client
         /// </summary>
         protected static Tuple<int, int> IndexesOf(StringBuilder buffer, string value, int startIndex)
         {
-            int index = buffer.IndexOf(value, startIndex, false);
+            int index = buffer.IndexOf(value, startIndex);
             if (index >= 0)
             {
                 return Tuple.Create(index, index + value.Length);
             }
             return NoIndexTuple;
-        }
-
-        /// <summary>
-        /// Reports the index of the first occurrence of the specified string in the given StringBuilder object.
-        /// </summary>
-        protected static int IndexOf(StringBuilder buffer, string value, int startIndex)
-        {
-            int index = buffer.IndexOf(value, startIndex, false);
-            if (index >= 0)
-            {
-                return index;
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Reports the end index of the first occurrence of the specified string in the given StringBuilder object.
-        /// </summary>
-        protected static int EndIndexOf(StringBuilder buffer, string value, int startIndex)
-        {
-            int index = buffer.IndexOf(value, startIndex, false);
-            if (index >= 0)
-            {
-                return index + value.Length;
-            }
-            return -1;
         }
 
         private static readonly Tuple<int, int> NoIndexTuple = Tuple.Create(-1, -1);
@@ -238,9 +215,9 @@ namespace HFM.Client
 
             string[] newLineValues =
             {
-            SearchValue.NewLineCrLf,
-            SearchValue.NewLineLf
-         };
+                SearchValue.NewLineCrLf,
+                SearchValue.NewLineLf
+            };
             indexes[BeginObject] = EndIndexOfAny(buffer, newLineValues, indexes[IndexKey.EndMessageType]);
             if (indexes[BeginObject] < 0)
             {
@@ -256,11 +233,12 @@ namespace HFM.Client
         /// <returns>The message text as a string.</returns>
         protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
         {
-            int beginObjectIndex = indexes[BeginObject];
-            int startFooterIndex = indexes[IndexKey.StartFooter];
-            var json = buffer.SubstringBuilder(beginObjectIndex, null, startFooterIndex - beginObjectIndex);
-            ConvertPythonValuesToJsonValues(json);
-            return json;
+            int start = indexes[BeginObject];
+            int end = indexes[IndexKey.StartFooter];
+            var text = new StringBuilder();
+            buffer.CopyTo(start, text, 0, end - start);
+            ConvertPythonValuesToJsonValues(text);
+            return text;
         }
 
         private static void ConvertPythonValuesToJsonValues(StringBuilder buffer)

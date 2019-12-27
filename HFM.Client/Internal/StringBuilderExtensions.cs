@@ -7,89 +7,37 @@ namespace HFM.Client.Internal
     internal static class StringBuilderExtensions
     {
         /// <summary>
-        /// Reports the index of the first occurrence of the specified string in the current System.String object. A parameter specifies the type of search to use for the specified string.
+        /// Reports the index of the first occurrence of the specified string in the current <see cref="StringBuilder"/> object. Parameters specify the starting search position in the current <see cref="StringBuilder"/> and the type of search to use for the specified string.
         /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder to search.</param>
-        /// <param name="value">The string to seek.</param>
-        /// <param name="ignoreCase">Ignore character case.</param>
-        /// <returns>The index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is 0.</returns>
-        /// <exception cref="ArgumentNullException">value is null.</exception>
-        internal static int IndexOf(this StringBuilder sb, string value, bool ignoreCase)
-        {
-            return IndexOf(sb, value, 0, ignoreCase);
-        }
-
-        /// <summary>
-        /// Reports the end index of the first occurrence of the specified string in the current System.String object. A parameter specifies the type of search to use for the specified string.
-        /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder to search.</param>
-        /// <param name="value">The string to seek.</param>
-        /// <param name="ignoreCase">Ignore character case.</param>
-        /// <returns>The index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is 0.</returns>
-        /// <exception cref="ArgumentNullException">value is null.</exception>
-        internal static int EndIndexOf(this StringBuilder sb, string value, bool ignoreCase)
-        {
-            return IndexOf(sb, value, 0, ignoreCase) + value.Length;
-        }
-
-        /// <summary>
-        /// Reports the index of the first occurrence of the specified string in the current System.String object. Parameters specify the starting search position in the current string and the type of search to use for the specified string.
-        /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder to search.</param>
+        /// <param name="source">The <see cref="StringBuilder"/> to search.</param>
         /// <param name="value">The string to seek.</param>
         /// <param name="startIndex">The search starting position.</param>
-        /// <param name="ignoreCase">Ignore character case.</param>
-        /// <returns>The zero-based index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is startIndex.</returns>
         /// <exception cref="ArgumentNullException">value is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">startIndex is negative. -or- startIndex specifies a position not within this instance.</exception>
-        internal static int IndexOf(this StringBuilder sb, string value, int startIndex, bool ignoreCase)
+        /// <returns>The zero-based index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is startIndex.</returns>
+        internal static int IndexOf(this StringBuilder source, string value, int startIndex)
         {
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
+            if (source == null) throw new ArgumentNullException(nameof(source));
             if (value == null) throw new ArgumentNullException(nameof(value));
-            if (startIndex < 0 || startIndex > sb.Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
+            if (startIndex < 0 || startIndex > source.Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
 
             if (value.Length == 0)
             {
                 return startIndex;
             }
 
-            int index;
-            int length = value.Length;
-            int maxSearchLength = (sb.Length - length) + 1;
-
-            if (ignoreCase)
+            int searchLength = source.Length - value.Length + 1;
+            for (int i = startIndex; i < searchLength; ++i)
             {
-                for (int i = startIndex; i < maxSearchLength; ++i)
+                if (source[i] == value[0])
                 {
-                    if (Char.ToLower(sb[i]) == Char.ToLower(value[0]))
-                    {
-                        index = 1;
-                        while ((index < length) && (Char.ToLower(sb[i + index]) == Char.ToLower(value[index])))
-                        {
-                            ++index;
-                        }
-
-                        if (index == length)
-                        {
-                            return i;
-                        }
-                    }
-                }
-
-                return -1;
-            }
-
-            for (int i = startIndex; i < maxSearchLength; ++i)
-            {
-                if (sb[i] == value[0])
-                {
-                    index = 1;
-                    while ((index < length) && (sb[i + index] == value[index]))
+                    int index = 1;
+                    while (index < value.Length && source[i + index] == value[index])
                     {
                         ++index;
                     }
 
-                    if (index == length)
+                    if (index == value.Length)
                     {
                         return i;
                     }
@@ -100,108 +48,113 @@ namespace HFM.Client.Internal
         }
 
         /// <summary>
-        /// Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.
+        /// Removes all leading and trailing occurrences of a set of characters specified in an array from the source instance and returns the same source instance.
         /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder source instance.</param>
-        /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
-        /// <param name="length">The number of characters in the substring.</param>
-        /// <returns>A string that is equivalent to the substring of length length that begins at startIndex in this instance, or System.String.Empty if startIndex is equal to the length of this instance and length is zero.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">startIndex plus length indicates a position not within this instance. -or- startIndex or length is less than zero.</exception>
-        internal static string Substring(this StringBuilder sb, int startIndex, int length)
+        /// <param name="source">The <see cref="StringBuilder"/> source instance.</param>
+        /// <param name="trimChars">An array of Unicode characters to remove.</param>
+        /// <exception cref="ArgumentNullException">source -or- trimChars is null.</exception>
+        /// <returns>The same source instance with the string content that remains after all occurrences of the characters in the trimChars parameter are removed from the start and end of the source instance.</returns>
+        internal static StringBuilder Trim(this StringBuilder source, params char[] trimChars)
         {
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
-            if (startIndex < 0) throw new ArgumentOutOfRangeException(nameof(startIndex));
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
-            if (startIndex + length > sb.Length) throw new ArgumentOutOfRangeException(nameof(length));
-
-            var temp = new char[length];
-            sb.CopyTo(startIndex, temp, 0, length);
-            return new string(temp);
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (trimChars == null) throw new ArgumentNullException(nameof(trimChars));
+            
+            TrimHelper(source, trimChars, 2);
+            return source;
         }
 
-        /// <summary>
-        /// Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.
-        /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder source instance.</param>
-        /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
-        /// <param name="dest">The System.Text.StringBuilder destination instance. If null a new StringBuilder will be returned.</param>
-        /// <param name="length">The number of characters in the substring.</param>
-        /// <returns>A System.Text.StringBuilder that is equivalent to the substring of length length that begins at startIndex in this instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">startIndex plus length indicates a position not within this instance. -or- startIndex or length is less than zero.</exception>
-        internal static StringBuilder SubstringBuilder(this StringBuilder sb, int startIndex, StringBuilder dest, int length)
+        // modeled after System.String.TrimHelper
+        private static void TrimHelper(StringBuilder source, char[] trimChars, int trimType)
         {
-            return SubstringBuilder(sb, startIndex, dest, length, false);
-        }
-
-        /// <summary>
-        /// Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.
-        /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder source instance.</param>
-        /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
-        /// <param name="length">The number of characters in the substring.</param>
-        /// <param name="trimOnly">if true trim the existing StringBuilder instance. -or- if false create a new StringBuilder instance and leave the existing instance in tact.</param>
-        /// <returns>A System.Text.StringBuilder that is equivalent to the substring of length length that begins at startIndex in this instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">startIndex plus length indicates a position not within this instance. -or- startIndex or length is less than zero.</exception>
-        internal static StringBuilder SubstringBuilder(this StringBuilder sb, int startIndex, int length, bool trimOnly)
-        {
-            return SubstringBuilder(sb, startIndex, null, length, trimOnly);
-        }
-
-        /// <summary>
-        /// Retrieves a substring from this instance. The substring starts at a specified character position and has a specified length.
-        /// </summary>
-        /// <param name="sb">The System.Text.StringBuilder source instance.</param>
-        /// <param name="startIndex">The zero-based starting character position of a substring in this instance.</param>
-        /// <param name="dest">The System.Text.StringBuilder destination instance. If null a new StringBuilder will be returned.</param>
-        /// <param name="length">The number of characters in the substring.</param>
-        /// <param name="trimOnly">if true trim the existing StringBuilder instance. -or- if false create a new StringBuilder instance and leave the existing instance in tact.</param>
-        /// <returns>A System.Text.StringBuilder that is equivalent to the substring of length length that begins at startIndex in this instance.</returns>
-        /// <exception cref="System.ArgumentOutOfRangeException">startIndex plus length indicates a position not within this instance. -or- startIndex or length is less than zero.</exception>
-        private static StringBuilder SubstringBuilder(this StringBuilder sb, int startIndex, StringBuilder dest, int length, bool trimOnly)
-        {
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
-            if (startIndex < 0) throw new ArgumentOutOfRangeException(nameof(startIndex));
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
-            if (startIndex + length > sb.Length) throw new ArgumentOutOfRangeException(nameof(length));
-
-            if (trimOnly)
+            int end = source.Length - 1;
+            int start = 0;
+            if (trimType != 1)
             {
-                sb.Remove(0, startIndex);
-                sb.Remove(length, sb.Length - length);
-                return sb;
+                for (start = 0; start < source.Length; ++start)
+                {
+                    char ch = source[start];
+                    int index = 0;
+                    while (index < trimChars.Length && trimChars[index] != ch)
+                    {
+                        ++index;
+                    }
+
+                    if (index == trimChars.Length)
+                    {
+                        break;
+                    }
+                }
+            }
+            if (trimType != 0)
+            {
+                for (end = source.Length - 1; end >= start; --end)
+                {
+                    char ch = source[end];
+                    int index = 0;
+                    while (index < trimChars.Length && trimChars[index] != ch)
+                    {
+                        ++index;
+                    }
+
+                    if (index == trimChars.Length)
+                    {
+                        break;
+                    }
+                }
             }
 
-            var result = dest ?? new StringBuilder();
-            sb.CopyTo(startIndex, result, length);
-            return result;
-        }
-
-        internal static void CopyTo(this StringBuilder sb, StringBuilder dest)
-        {
-            CopyTo(sb, 0, dest, sb.Length);
-        }
-
-        private static void CopyTo(this StringBuilder sb, int startIndex, StringBuilder dest, int length)
-        {
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
-            if (startIndex < 0) throw new ArgumentOutOfRangeException(nameof(startIndex));
-            if (dest == null) throw new ArgumentNullException(nameof(dest));
-            if (length < 0) throw new ArgumentOutOfRangeException(nameof(length));
-            if (startIndex + length > sb.Length) throw new ArgumentOutOfRangeException(nameof(length));
-
-            dest.Clear();
-            dest.EnsureCapacity(length);
-            for (int i = startIndex; i < (startIndex + length); i++)
+            if (end < source.Length - 1)
             {
-                dest.Append(sb[i]);
+                source.Remove(end + 1, source.Length - (end + 1));
+            }
+            if (start > 0)
+            {
+                source.Remove(0, start);
             }
         }
 
-        internal static bool EndsWith(this StringBuilder sb, char value)
+        /// <summary>
+        /// Copies the characters from a specified segment of the source instance to a specified segment of a destination <see cref="StringBuilder" />.
+        /// </summary>
+        /// <param name="source">The <see cref="StringBuilder"/> source instance.</param>
+        /// <param name="sourceIndex">The starting position in this instance where characters will be copied from. The index is zero-based.</param>
+        /// <param name="destination">The <see cref="StringBuilder"/> where characters will be copied.</param>
+        /// <param name="destinationIndex">The starting position in destination where characters will be copied. The index is zero-based.</param>
+        /// <param name="count">The number of characters to be copied.</param>
+        /// <exception cref="ArgumentNullException">source -or- destination is null.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">sourceIndex, destinationIndex, or count, is less than zero. -or- sourceIndex is greater than the length of this instance.</exception>
+        /// <exception cref="ArgumentException">sourceIndex + count is greater than the length of this instance.</exception>
+        internal static void CopyTo(this StringBuilder source, int sourceIndex, StringBuilder destination, int destinationIndex, int count)
         {
-            if (sb == null) throw new ArgumentNullException(nameof(sb));
+            if (source == null) throw new ArgumentNullException(nameof(source));
+            if (destination == null) throw new ArgumentNullException(nameof(destination));
+            if (sourceIndex < 0 || sourceIndex > source.Length) throw new ArgumentOutOfRangeException(nameof(sourceIndex));
+            if (destinationIndex < 0) throw new ArgumentOutOfRangeException(nameof(destinationIndex));
+            if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
+            if (sourceIndex + count > source.Length) throw new ArgumentException($"{nameof(sourceIndex)} + {nameof(count)} is greater than the length of {nameof(source)}.");
 
-            return sb.Length > 0 && sb[sb.Length - 1].Equals(value);
+            destination.EnsureCapacity(destinationIndex + count);
+            while (destinationIndex > destination.Length)
+            {
+                destination.Append(' ');
+            }
+
+            int i = sourceIndex;
+            int j = destinationIndex;
+            while (i < sourceIndex + count)
+            {
+                if (j < destination.Length)
+                {
+                    destination[j] = source[i];
+                }
+                else
+                {
+                    destination.Append(source[i]);
+                }
+
+                i++;
+                j++;
+            }
         }
     }
 }
