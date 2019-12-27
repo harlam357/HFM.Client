@@ -48,5 +48,49 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual("C:/Documents and Settings/user/Application Data/FAHClient", info.System.CWD);
             Assert.AreEqual(true, info.System.Win32Service);
         }
+
+        [Test]
+        public void Info_Load_MemoryValueInGigabytes()
+        {
+            // Arrange
+            const string json = @"[ [ ""System"", [ ""Memory"", ""4.00GiB"" ] ] ]";
+            // Act
+            var info = Info.Load(json);
+            // Assert
+            Assert.AreEqual(4.0, info.System.MemoryValue);
+        }
+
+        [Test]
+        public void Info_Load_MemoryValueInMegabytes()
+        {
+            // Arrange
+            const string json = @"[ [ ""System"", [ ""Memory"", ""512.00MiB"" ] ] ]";
+            // Act
+            var info = Info.Load(json);
+            // Assert
+            Assert.AreEqual(0.5, info.System.MemoryValue);
+        }
+
+        [Test]
+        public void Info_Load_MemoryValueInKilobytes()
+        {
+            // Arrange
+            const string json = @"[ [ ""System"", [ ""Memory"", ""262144.00KiB"" ] ] ]";
+            // Act
+            var info = Info.Load(json);
+            // Assert
+            Assert.AreEqual(0.25, info.System.MemoryValue);
+        }
+
+        [Test]
+        public void Info_Load_MemoryValueInUnknownUnits()
+        {
+            // Arrange
+            const string json = @"[ [ ""System"", [ ""Memory"", ""2.00FiB"" ] ] ]";
+            // Act
+            var info = Info.Load(json);
+            // Assert
+            Assert.IsNull(info.System.MemoryValue);
+        }
     }
 }

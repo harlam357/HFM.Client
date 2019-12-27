@@ -16,14 +16,14 @@ namespace HFM.Client.ObjectModel.Internal
             var array = LoadJArray(textReader);
 
             var info = new Info();
-            var client = array[0];
+            var client = GetArrayToken(array, "Folding@home Client");
             info.Client.Website = GetValue<string>(client, "Website");
             info.Client.Copyright = GetValue<string>(client, "Copyright");
             info.Client.Author = GetValue<string>(client, "Author");
             info.Client.Args = GetValue<string>(client, "Args")?.Trim();
             info.Client.Config = GetValue<string>(client, "Config");
 
-            var build = array[1];
+            var build = GetArrayToken(array, "Build");
             info.Build.Version = GetValue<string>(build, "Version");
             info.Build.Date = GetValue<string>(build, "Date");
             info.Build.Time = GetValue<string>(build, "Time");
@@ -35,7 +35,7 @@ namespace HFM.Client.ObjectModel.Internal
             info.Build.Bits = GetValue<int>(build, "Bits");
             info.Build.Mode = GetValue<string>(build, "Mode");
 
-            var system = array[2];
+            var system = GetArrayToken(array, "System");
             info.System.OS = GetValue<string>(system, "OS");
             info.System.CPU = GetValue<string>(system, "CPU");
             info.System.CPUID = GetValue<string>(system, "CPU ID");
@@ -59,9 +59,14 @@ namespace HFM.Client.ObjectModel.Internal
             return info;
         }
 
+        private static JToken GetArrayToken(JArray array, string name)
+        {
+            return array.Descendants().FirstOrDefault(x => x.Type == JTokenType.String && x.Value<string>() == name)?.Parent;
+        }
+
         private static T GetValue<T>(JToken token, string name)
         {
-            var innerArray = token.FirstOrDefault(x => x.FirstOrDefault()?.Value<string>() == name);
+            var innerArray = token?.FirstOrDefault(x => x.FirstOrDefault()?.Value<string>() == name);
             var valueElement = innerArray?.ElementAtOrDefault(1);
             if (valueElement != null)
             {
@@ -94,6 +99,8 @@ namespace HFM.Client.ObjectModel.Internal
 
         private static double? ConvertToMemoryValue(string input)
         {
+            if (input is null) return null;
+
             double value;
             // always returns value in gigabytes
             int gigabyteIndex = input.IndexOf("GiB", StringComparison.Ordinal);
@@ -125,8 +132,6 @@ namespace HFM.Client.ObjectModel.Internal
 
         private static string ConvertToGPUFriendlyName(string input)
         {
-            if (input == null) return null;
-
             var regex = new Regex("\\[(?<GpuType>.+)\\]", RegexOptions.ExplicitCapture | RegexOptions.Singleline);
             Match match;
             if ((match = regex.Match(input)).Success)
