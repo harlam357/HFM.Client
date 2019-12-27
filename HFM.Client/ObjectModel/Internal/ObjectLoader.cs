@@ -50,6 +50,7 @@ namespace HFM.Client.ObjectModel.Internal
         {
             using (var reader = new JsonTextReader(textReader))
             {
+                reader.DateParseHandling = DateParseHandling.None;
                 return JObject.Load(reader);
             }
         }
@@ -61,6 +62,7 @@ namespace HFM.Client.ObjectModel.Internal
         {
             using (var reader = new JsonTextReader(textReader))
             {
+                reader.DateParseHandling = DateParseHandling.None;
                 return JArray.Load(reader);
             }
         }

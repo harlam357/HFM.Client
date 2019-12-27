@@ -101,31 +101,21 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (input is null) return null;
 
-            double value;
             // always returns value in gigabytes
             int gigabyteIndex = input.IndexOf("GiB", StringComparison.Ordinal);
-            if (gigabyteIndex > 0)
+            if (gigabyteIndex > 0 && Double.TryParse(input.Substring(0, gigabyteIndex), out double value))
             {
-                if (Double.TryParse(input.Substring(0, gigabyteIndex), out value))
-                {
-                    return value;
-                }
+                return value;
             }
             int megabyteIndex = input.IndexOf("MiB", StringComparison.Ordinal);
-            if (megabyteIndex > 0)
+            if (megabyteIndex > 0 && Double.TryParse(input.Substring(0, megabyteIndex), out value))
             {
-                if (Double.TryParse(input.Substring(0, megabyteIndex), out value))
-                {
-                    return value / 1024;
-                }
+                return value / 1024;
             }
             int kilobyteIndex = input.IndexOf("KiB", StringComparison.Ordinal);
-            if (kilobyteIndex > 0)
+            if (kilobyteIndex > 0 && Double.TryParse(input.Substring(0, kilobyteIndex), out value))
             {
-                if (Double.TryParse(input.Substring(0, kilobyteIndex), out value))
-                {
-                    return value / 1048576;
-                }
+                return value / 1048576;
             }
             return null;
         }

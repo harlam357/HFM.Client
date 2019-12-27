@@ -2,9 +2,6 @@
 using System;
 using System.IO;
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-
 namespace HFM.Client.ObjectModel.Internal
 {
     internal class SimulationInfoObjectLoader : ObjectLoader<SimulationInfo>
@@ -38,15 +35,6 @@ namespace HFM.Client.ObjectModel.Internal
             result.News = GetValue<string>(obj, "news");
             result.Slot = GetValue<int?>(obj, "slot");
             return result;
-        }
-
-        protected override JObject LoadJObject(TextReader textReader)
-        {
-            using (var reader = new JsonTextReader(textReader))
-            {
-                reader.DateParseHandling = DateParseHandling.None;
-                return JObject.Load(reader);
-            }
         }
 
         private static DateTime? ConvertToDateTime(int? input)

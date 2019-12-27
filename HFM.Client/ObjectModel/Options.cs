@@ -49,6 +49,7 @@ namespace HFM.Client.ObjectModel
         public bool? ExitWhenDone { get; set; }
         public bool? FoldAnon { get; set; }
         public bool? GPU { get; set; }
+        public string GPUAssignmentServers { get; set; }
         public int? GPUUsage { get; set; }
         public bool? Idle { get; set; }
         public string Log { get; set; }
@@ -78,6 +79,7 @@ namespace HFM.Client.ObjectModel
         public int? ServiceRestartDelay { get; set; }
         public bool? SMP { get; set; }
         public int? Team { get; set; }
+        public int? Threads { get; set; }
         public string User { get; set; }
         public int? Verbosity { get; set; }
     }

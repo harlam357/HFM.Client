@@ -34,6 +34,7 @@ namespace HFM.Client.ObjectModel.Internal
             result.ExitWhenDone = GetValue<bool?>(obj, "exit-when-done");
             result.FoldAnon = GetValue<bool?>(obj, "fold-anon");
             result.GPU = GetValue<bool?>(obj, "gpu");
+            result.GPUAssignmentServers = GetValue<string>(obj, "gpu-assignment-servers");
             result.GPUUsage = GetValue<int?>(obj, "gpu-usage");
             result.Idle = GetValue<bool?>(obj, "idle");
             result.Log = GetValue<string>(obj, "log");
@@ -63,6 +64,7 @@ namespace HFM.Client.ObjectModel.Internal
             result.ServiceRestartDelay = GetValue<int?>(obj, "service-restart-delay");
             result.SMP = GetValue<bool?>(obj, "smp");
             result.Team = GetValue<int?>(obj, "team");
+            result.Threads = GetValue<int?>(obj, "threads");
             result.User = GetValue<string>(obj, "user");
             result.Verbosity = GetValue<int?>(obj, "verbosity");
             return result;
