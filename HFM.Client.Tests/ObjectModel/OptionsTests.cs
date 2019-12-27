@@ -9,9 +9,9 @@ namespace HFM.Client.ObjectModel
     public class OptionsTests
     {
         [Test]
-        public void Options_Load_FromWindowsClientVersion_7_1_24()
+        public void Options_Load_FromClientVersion_7_1_24()
         {
-            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options_Windows.txt"));
+            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options.txt"));
             Assert.AreEqual("127.0.0.1", options.Allow);
             Assert.AreEqual("assign3.stanford.edu:8080 assign4.stanford.edu:80", options.AssignmentServers);
             Assert.AreEqual(15, options.Checkpoint);

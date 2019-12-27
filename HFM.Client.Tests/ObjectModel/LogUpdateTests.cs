@@ -7,9 +7,9 @@ namespace HFM.Client.ObjectModel
     public class LogUpdateTests
     {
         [Test]
-        public void LogUpdate_Load_FromWindowsClientVersion_7_1_24()
+        public void LogUpdate_Load_FromClientVersion_7_1_24()
         {
-            var logUpdate = LogUpdate.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_log-restart_Windows.txt"));
+            var logUpdate = LogUpdate.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_log-restart.txt"));
             Assert.AreEqual(65571, logUpdate.Value.Length);
         }
     }

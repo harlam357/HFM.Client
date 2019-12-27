@@ -9,9 +9,9 @@ namespace HFM.Client.ObjectModel
     public class UnitCollectionTests
     {
         [Test]
-        public void UnitCollection_Load_FromWindowsClientVersion_7_1_24()
+        public void UnitCollection_Load_FromClientVersion_7_1_24()
         {
-            var unitCollection = UnitCollection.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_units_Windows.txt"));
+            var unitCollection = UnitCollection.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_units.txt"));
             Assert.AreEqual(0, unitCollection[0].ID);
             Assert.AreEqual("RUNNING", unitCollection[0].State);
             Assert.AreEqual(null, unitCollection[0].Error);

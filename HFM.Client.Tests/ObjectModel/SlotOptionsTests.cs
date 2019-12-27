@@ -7,9 +7,9 @@ namespace HFM.Client.ObjectModel
     public class SlotOptionsTests
     {
         [Test]
-        public void SlotOptions_Load_FromWindowsClientVersion_7_1_24()
+        public void SlotOptions_Load_FromClientVersion_7_1_24()
         {
-            var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_slot-options_Windows.txt"));
+            var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_slot-options.txt"));
             Assert.AreEqual("normal", slotOptions.ClientType);
             Assert.AreEqual("SMP", slotOptions.ClientSubType);
             Assert.AreEqual(0, slotOptions.MachineID);

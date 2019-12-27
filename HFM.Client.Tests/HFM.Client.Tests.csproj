@@ -8,13 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_info_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_simulation-info_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slot-options_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slots_Windows.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_units_Windows.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_info.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_simulation-info.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slot-options.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slots.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_units.txt" />
   </ItemGroup>
 
   <ItemGroup>
