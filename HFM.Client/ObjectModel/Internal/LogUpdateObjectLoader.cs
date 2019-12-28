@@ -11,11 +11,15 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override LogUpdate Load(string json)
         {
+            if (json is null) return null;
+
             return LoadInternal(new LogUpdate { Value = new StringBuilder(json) });
         }
 
         public override LogUpdate Load(StringBuilder json)
         {
+            if (json is null) return null;
+
             var logUpdate = new LogUpdate { Value = new StringBuilder() };
             json.CopyTo(0, logUpdate.Value, 0, json.Length);
             return LoadInternal(logUpdate);
@@ -23,6 +27,8 @@ namespace HFM.Client.ObjectModel.Internal
 
         public override LogUpdate Load(TextReader textReader)
         {
+            if (textReader is null) return null;
+            
             return LoadInternal(new LogUpdate { Value = new StringBuilder(textReader.ReadToEnd()) });
         }
 

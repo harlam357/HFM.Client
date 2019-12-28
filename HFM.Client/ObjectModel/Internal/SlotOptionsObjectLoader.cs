@@ -9,6 +9,8 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override SlotOptions Load(TextReader textReader)
         {
+            if (textReader is null) return null;
+
             return Load(LoadJObject(textReader));
         }
 

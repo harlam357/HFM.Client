@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -130,6 +132,24 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(4, options.Threads);
             Assert.AreEqual("harlam357", options.User);
             Assert.AreEqual(3, options.Verbosity);
+        }
+
+        [Test]
+        public void Options_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(Options.Load((string)null));
+        }
+
+        [Test]
+        public void Options_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(Options.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void Options_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(Options.Load((TextReader)null));
         }
     }
 }

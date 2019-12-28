@@ -7,6 +7,8 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override Options Load(TextReader textReader)
         {
+            if (textReader is null) return null;
+
             var obj = LoadJObject(textReader);
 
             var result = new Options();

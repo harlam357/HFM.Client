@@ -10,6 +10,8 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override SlotCollection Load(TextReader textReader)
         {
+            if (textReader is null) return null;
+
             var array = LoadJArray(textReader);
 
             var collection = new SlotCollection();

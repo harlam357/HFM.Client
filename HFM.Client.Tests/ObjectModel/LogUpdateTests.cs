@@ -1,5 +1,6 @@
 ﻿
 using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -28,6 +29,24 @@ namespace HFM.Client.ObjectModel
             using var reader = new StreamReader(TestDataReader.ReadStream("Client_7_1_24_log-restart.txt"));
             var logUpdate = LogUpdate.Load(reader);
             Assert.AreEqual(65571, logUpdate.Value.Length);
+        }
+
+        [Test]
+        public void LogUpdate_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(LogUpdate.Load((string)null));
+        }
+
+        [Test]
+        public void LogUpdate_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(LogUpdate.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void LogUpdate_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(LogUpdate.Load((TextReader)null));
         }
     }
 }

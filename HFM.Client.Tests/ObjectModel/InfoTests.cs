@@ -1,4 +1,7 @@
 ﻿
+using System.IO;
+using System.Text;
+
 using NUnit.Framework;
 
 namespace HFM.Client.ObjectModel
@@ -90,6 +93,24 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(1520, info.System.PID);
             Assert.AreEqual("", info.System.CWD);
             Assert.AreEqual(false, info.System.Win32Service);
+        }
+
+        [Test]
+        public void Info_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(Info.Load((string)null));
+        }
+
+        [Test]
+        public void Info_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(Info.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void Info_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(Info.Load((TextReader)null));
         }
 
         [Test]

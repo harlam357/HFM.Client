@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -115,6 +117,24 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(new TimeSpan(0, 0, 0, 33, 820), unitCollection[1].TPFTimeSpan);
             Assert.AreEqual(0, unitCollection[1].BaseCredit);
             Assert.AreEqual(0, unitCollection[1].CreditEstimate);
+        }
+
+        [Test]
+        public void UnitCollection_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(UnitCollection.Load((string)null));
+        }
+
+        [Test]
+        public void UnitCollection_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(UnitCollection.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void UnitCollection_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(UnitCollection.Load((TextReader)null));
         }
 
         [Test]

@@ -1,5 +1,7 @@
 ﻿
 using System;
+using System.IO;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -64,6 +66,24 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(new TimeSpan(2, 24, 42), simulationInfo.ETATimeSpan);
             Assert.AreEqual(String.Empty, simulationInfo.News);
             Assert.AreEqual(null, simulationInfo.Slot);
+        }
+
+        [Test]
+        public void SimulationInfo_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(SimulationInfo.Load((string)null));
+        }
+
+        [Test]
+        public void SimulationInfo_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(SimulationInfo.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void SimulationInfo_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(SimulationInfo.Load((TextReader)null));
         }
 
         [Test]

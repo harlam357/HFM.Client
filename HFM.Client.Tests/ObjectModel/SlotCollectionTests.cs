@@ -1,4 +1,7 @@
 ﻿
+using System.IO;
+using System.Text;
+
 using NUnit.Framework;
 
 namespace HFM.Client.ObjectModel
@@ -33,6 +36,24 @@ namespace HFM.Client.ObjectModel
         }
 
         [Test]
+        public void SlotCollection_Load_ReturnsNullWhenJsonStringIsNull()
+        {
+            Assert.IsNull(SlotCollection.Load((string)null));
+        }
+
+        [Test]
+        public void SlotCollection_Load_ReturnsNullWhenJsonStringBuilderIsNull()
+        {
+            Assert.IsNull(SlotCollection.Load((StringBuilder)null));
+        }
+
+        [Test]
+        public void SlotCollection_Load_ReturnsNullWhenJsonTextReaderIsNull()
+        {
+            Assert.IsNull(SlotCollection.Load((TextReader)null));
+        }
+
+        [Test]
         public void SlotCollection_Load_SlotOptionsDoesNotExist()
         {
             // Arrange
@@ -41,6 +62,17 @@ namespace HFM.Client.ObjectModel
             var slotCollection = SlotCollection.Load(json);
             // Assert
             Assert.IsNull(slotCollection[0].SlotOptions);
+        }
+
+        [Test]
+        public void SlotCollection_Load_MalformedInt32Value()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""A"" } ]";
+            // Act
+            var slotCollection = SlotCollection.Load(json);
+            // Assert
+            Assert.IsNull(slotCollection[0].ID);
         }
     }
 }

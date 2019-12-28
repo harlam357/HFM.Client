@@ -13,6 +13,8 @@ namespace HFM.Client.ObjectModel.Internal
     {
         public override Info Load(TextReader textReader)
         {
+            if (textReader is null) return null;
+
             var array = LoadJArray(textReader);
 
             var info = new Info();
