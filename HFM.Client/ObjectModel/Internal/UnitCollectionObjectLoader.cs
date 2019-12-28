@@ -72,8 +72,8 @@ namespace HFM.Client.ObjectModel.Internal
             var options = RegexOptions.Compiled | RegexOptions.ExplicitCapture | RegexOptions.Singleline;
             try
             {
-                var regex = new Regex("(?<Hours>.+) hours (?<Minutes>.+) mins (?<Seconds>.+) secs", options);
                 Match match;
+                var regex = new Regex("(?<Hours>.+) hours (?<Minutes>.+) mins (?<Seconds>.+) secs", options);
                 if ((match = regex.Match(value)).Success)
                 {
                     return new TimeSpan(Convert.ToInt32(match.Groups["Hours"].Value, CultureInfo.InvariantCulture),
@@ -109,9 +109,10 @@ namespace HFM.Client.ObjectModel.Internal
                     return TimeSpan.FromDays(Convert.ToDouble(match.Groups["Days"].Value, CultureInfo.InvariantCulture));
                 }
             }
-            catch (FormatException ex)
+            catch (FormatException)
             {
-                
+                // if the data changed in a way where the value can
+                // no longer be converted to the target CLR type
             }
 
             return null;

@@ -116,5 +116,82 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(0, unitCollection[1].BaseCredit);
             Assert.AreEqual(0, unitCollection[1].CreditEstimate);
         }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanInHoursMinutesSeconds()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""2 hours 28 mins 13 secs"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.AreEqual(new TimeSpan(2, 28, 13), unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanInHoursMinutes()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""2 hours 28 mins"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.AreEqual(new TimeSpan(2, 28, 0), unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanInMinutesSeconds()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""28 mins 13 secs"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.AreEqual(new TimeSpan(0, 28, 13), unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanInSeconds()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""13.15 secs"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.AreEqual(TimeSpan.FromSeconds(13.15), unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanInDays()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""6.70 days"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.AreEqual(TimeSpan.FromDays(6.7), unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_MalformedTimeSpanValue()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""A days"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.IsNull(unitCollection[0].ETATimeSpan);
+        }
+
+        [Test]
+        public void UnitCollection_Load_TimeSpanValueInUnknownUnits()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"", ""eta"": ""13 lightyears"" } ]";
+            // Act
+            var unitCollection = UnitCollection.Load(json);
+            // Assert
+            Assert.IsNull(unitCollection[0].ETATimeSpan);
+        }
     }
 }

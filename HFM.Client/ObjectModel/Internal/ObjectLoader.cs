@@ -3,10 +3,10 @@ using System;
 using System.IO;
 using System.Text;
 
-using HFM.Client.Internal;
-
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+
+using HFM.Client.Internal;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -88,7 +88,7 @@ namespace HFM.Client.ObjectModel.Internal
                     }
                 }
             }
-            return default(TResult);
+            return default;
         }
     }
 }
