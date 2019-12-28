@@ -13,7 +13,6 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(1, slotCollection.Count);
             Assert.AreEqual(0, slotCollection[0].ID);
             Assert.AreEqual("RUNNING", slotCollection[0].Status);
-            Assert.AreEqual(SlotStatus.Running, slotCollection[0].SlotStatus);
             Assert.AreEqual("smp:4", slotCollection[0].Description);
             Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
         }
@@ -25,14 +24,23 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(2, slotCollection.Count);
             Assert.AreEqual(0, slotCollection[0].ID);
             Assert.AreEqual("RUNNING", slotCollection[0].Status);
-            Assert.AreEqual(SlotStatus.Running, slotCollection[0].SlotStatus);
             Assert.AreEqual("smp:4", slotCollection[0].Description);
             Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
             Assert.AreEqual(1, slotCollection[1].ID);
             Assert.AreEqual("RUNNING", slotCollection[1].Status);
-            Assert.AreEqual(SlotStatus.Running, slotCollection[1].SlotStatus);
             Assert.AreEqual("gpu:0:\"GT200b [GeForce GTX 285]\"", slotCollection[1].Description);
             Assert.AreEqual(true, slotCollection[1].SlotOptions.PauseOnStart);
+        }
+
+        [Test]
+        public void SlotCollection_Load_SlotOptionsDoesNotExist()
+        {
+            // Arrange
+            const string json = @"[ { ""id"": ""00"" } ]";
+            // Act
+            var slotCollection = SlotCollection.Load(json);
+            // Assert
+            Assert.IsNull(slotCollection[0].SlotOptions);
         }
     }
 }

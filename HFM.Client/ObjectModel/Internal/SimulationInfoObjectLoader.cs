@@ -10,31 +10,31 @@ namespace HFM.Client.ObjectModel.Internal
         {
             var obj = LoadJObject(textReader);
             
-            var result = new SimulationInfo();
-            result.User = GetValue<string>(obj, "user");
-            result.Team = GetValue<int?>(obj, "team");
-            result.Project = GetValue<int?>(obj, "project");
-            result.Run = GetValue<int?>(obj, "run");
-            result.Clone = GetValue<int?>(obj, "clone");
-            result.Gen = GetValue<int?>(obj, "gen");
-            result.CoreType = GetValue<int?>(obj, "core_type");
-            result.Core = GetValue<string>(obj, "core");
-            result.Description = GetValue<string>(obj, "description");
-            result.TotalIterations = GetValue<int?>(obj, "total_iterations");
-            result.IterationsDone = GetValue<int?>(obj, "iterations_done");
-            result.Energy = GetValue<int?>(obj, "energy");
-            result.Temperature = GetValue<int?>(obj, "temperature");
-            result.StartTime = GetValue<string>(obj, "start_time");
-            result.StartTimeDateTime = Internal.DateTimeConverter.ConvertToDateTime(result.StartTime);
-            result.Timeout = GetValue<int?>(obj, "timeout");
-            result.TimeoutDateTime = ConvertToDateTime(result.Timeout);
-            result.Deadline = GetValue<int?>(obj, "deadline");
-            result.DeadlineDateTime = ConvertToDateTime(result.Deadline);
-            result.ETA = GetValue<int?>(obj, "eta");
-            result.ETATimeSpan = ConvertToTimeSpan(result.ETA);
-            result.News = GetValue<string>(obj, "news");
-            result.Slot = GetValue<int?>(obj, "slot");
-            return result;
+            var si = new SimulationInfo();
+            si.User = GetValue<string>(obj, "user");
+            si.Team = GetValue<int?>(obj, "team");
+            si.Project = GetValue<int?>(obj, "project");
+            si.Run = GetValue<int?>(obj, "run");
+            si.Clone = GetValue<int?>(obj, "clone");
+            si.Gen = GetValue<int?>(obj, "gen");
+            si.CoreType = GetValue<int?>(obj, "core_type");
+            si.Core = GetValue<string>(obj, "core");
+            si.Description = GetValue<string>(obj, "description");
+            si.TotalIterations = GetValue<int?>(obj, "total_iterations");
+            si.IterationsDone = GetValue<int?>(obj, "iterations_done");
+            si.Energy = GetValue<int?>(obj, "energy");
+            si.Temperature = GetValue<int?>(obj, "temperature");
+            si.StartTime = GetValue<string>(obj, "start_time");
+            si.StartTimeDateTime = DateTimeConverter.ConvertToDateTime(si.StartTime);
+            si.Timeout = GetValue<int?>(obj, "timeout");
+            si.TimeoutDateTime = ConvertToDateTime(si.Timeout);
+            si.Deadline = GetValue<int?>(obj, "deadline");
+            si.DeadlineDateTime = ConvertToDateTime(si.Deadline);
+            si.ETA = GetValue<int?>(obj, "eta");
+            si.ETATimeSpan = ConvertToTimeSpan(si.ETA);
+            si.News = GetValue<string>(obj, "news");
+            si.Slot = GetValue<int?>(obj, "slot");
+            return si;
         }
 
         private static DateTime? ConvertToDateTime(int? input)

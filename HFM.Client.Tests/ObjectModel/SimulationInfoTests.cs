@@ -65,5 +65,32 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(String.Empty, simulationInfo.News);
             Assert.AreEqual(null, simulationInfo.Slot);
         }
+
+        [Test]
+        public void SimulationInfo_Load_DateTimeValueDoesNotExist()
+        {
+            // Act
+            var si = SimulationInfo.Load("{ }");
+            // Assert
+            Assert.IsNull(si.StartTimeDateTime);
+        }
+
+        [Test]
+        public void SimulationInfo_Load_MalformedDateTimeValue()
+        {
+            // Act
+            var si = SimulationInfo.Load(@"{ ""start_time"": ""May 29 2019-00:11:22"" }");
+            // Assert
+            Assert.IsNull(si.StartTimeDateTime);
+        }
+
+        [Test]
+        public void SimulationInfo_Load_TimeSpanValueDoesNotExist()
+        {
+            // Act
+            var si = SimulationInfo.Load("{ }");
+            // Assert
+            Assert.IsNull(si.ETATimeSpan);
+        }
     }
 }

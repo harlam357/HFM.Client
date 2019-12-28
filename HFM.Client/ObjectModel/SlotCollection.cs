@@ -34,7 +34,6 @@ namespace HFM.Client.ObjectModel
     {
         public int? ID { get; set; }
         public string Status { get; set; }
-        public SlotStatus SlotStatus { get; set; }
         public string Description { get; set; }
         public SlotOptions SlotOptions { get; set; }
     }

@@ -27,34 +27,34 @@ namespace HFM.Client.ObjectModel.Internal
             info.Build.Version = GetValue<string>(build, "Version");
             info.Build.Date = GetValue<string>(build, "Date");
             info.Build.Time = GetValue<string>(build, "Time");
-            info.Build.SVNRev = GetValue<int>(build, "SVN Rev");
+            info.Build.SVNRev = GetValue<int?>(build, "SVN Rev");
             info.Build.Branch = GetValue<string>(build, "Branch");
             info.Build.Compiler = GetValue<string>(build, "Compiler");
             info.Build.Options = GetValue<string>(build, "Options");
             info.Build.Platform = GetValue<string>(build, "Platform");
-            info.Build.Bits = GetValue<int>(build, "Bits");
+            info.Build.Bits = GetValue<int?>(build, "Bits");
             info.Build.Mode = GetValue<string>(build, "Mode");
 
             var system = GetArrayToken(array, "System");
             info.System.OS = GetValue<string>(system, "OS");
             info.System.CPU = GetValue<string>(system, "CPU");
             info.System.CPUID = GetValue<string>(system, "CPU ID");
-            info.System.CPUs = GetValue<int>(system, "CPUs");
+            info.System.CPUs = GetValue<int?>(system, "CPUs");
             info.System.Memory = GetValue<string>(system, "Memory");
             info.System.MemoryValue = ConvertToMemoryValue(info.System.Memory);
             info.System.FreeMemory = GetValue<string>(system, "Free Memory");
             info.System.FreeMemoryValue = ConvertToMemoryValue(info.System.FreeMemory);
             info.System.Threads = GetValue<string>(system, "Threads");
-            info.System.GPUs = GetValue<int>(system, "GPUs");
+            info.System.GPUs = GetValue<int?>(system, "GPUs");
             info.System.GPUInfos = BuildGPUInfos(system);
             info.System.CUDA = GetValue<string>(system, "CUDA");
             info.System.CUDADriver = GetValue<string>(system, "CUDA Driver");
-            info.System.HasBattery = GetValue<bool>(system, "Has Battery");
-            info.System.OnBattery = GetValue<bool>(system, "On Battery");
-            info.System.UtcOffset = GetValue<int>(system, "UTC offset");
-            info.System.PID = GetValue<int>(system, "PID");
+            info.System.HasBattery = GetValue<bool?>(system, "Has Battery");
+            info.System.OnBattery = GetValue<bool?>(system, "On Battery");
+            info.System.UtcOffset = GetValue<int?>(system, "UTC offset");
+            info.System.PID = GetValue<int?>(system, "PID");
             info.System.CWD = GetValue<string>(system, "CWD");
-            info.System.Win32Service = GetValue<bool>(system, "Win32 Service");
+            info.System.Win32Service = GetValue<bool?>(system, "Win32 Service");
 
             return info;
         }
@@ -80,7 +80,7 @@ namespace HFM.Client.ObjectModel.Internal
                     // no longer be converted to the target CLR type
                 }
             }
-            return default(T);
+            return default;
         }
 
         private static IDictionary<int, GPUInfo> BuildGPUInfos(JToken token)

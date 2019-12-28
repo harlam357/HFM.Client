@@ -41,7 +41,7 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual("ATI:2 Mobility Radeon HD 3600 Series", info.System.GPUInfos[0].FriendlyName);
             Assert.AreEqual("Not detected", info.System.CUDA);
             Assert.AreEqual(null, info.System.CUDADriver);
-            Assert.AreEqual(false, info.System.HasBattery);
+            Assert.AreEqual(null, info.System.HasBattery);
             Assert.AreEqual(false, info.System.OnBattery);
             Assert.AreEqual(-5, info.System.UtcOffset);
             Assert.AreEqual(3080, info.System.PID);
@@ -84,7 +84,7 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual("GeForce GTX 285", info.System.GPUInfos[0].FriendlyName);
             Assert.AreEqual("1.3", info.System.CUDA);
             Assert.AreEqual("3010", info.System.CUDADriver);
-            Assert.AreEqual(false, info.System.HasBattery);
+            Assert.AreEqual(null, info.System.HasBattery);
             Assert.AreEqual(false, info.System.OnBattery);
             Assert.AreEqual(-6, info.System.UtcOffset);
             Assert.AreEqual(1520, info.System.PID);
@@ -134,6 +134,17 @@ namespace HFM.Client.ObjectModel
             var info = Info.Load(json);
             // Assert
             Assert.IsNull(info.System.MemoryValue);
+        }
+
+        [Test]
+        public void Info_Load_MalformedInt32Value()
+        {
+            // Arrange
+            const string json = @"[ [ ""System"", [ ""GPUs"", ""A"" ] ] ]";
+            // Act
+            var info = Info.Load(json);
+            // Assert
+            Assert.IsNull(info.System.GPUs);
         }
     }
 }
