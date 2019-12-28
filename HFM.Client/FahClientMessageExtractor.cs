@@ -30,16 +30,16 @@ namespace HFM.Client
         /// <returns>A new <see cref="FahClientMessage"/> or null if a message is not available.</returns>
         public override FahClientMessage Extract(StringBuilder buffer)
         {
-            if (buffer == null) return null;
+            if (buffer is null) return null;
 
             var indexes = new Dictionary<string, int>();
             if (!ExtractIndexes(buffer, indexes)) return null;
 
             string messageType = ExtractMessageType(buffer, indexes);
-            if (messageType == null) return null;
+            if (messageType is null) return null;
 
             var messageText = ExtractMessageText(buffer, indexes);
-            if (messageText == null) return null;
+            if (messageText is null) return null;
 
             int endFooterIndex = indexes[IndexKey.EndFooter];
             // remove the extracted message from the buffer

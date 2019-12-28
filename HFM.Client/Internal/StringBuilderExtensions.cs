@@ -17,8 +17,8 @@ namespace HFM.Client.Internal
         /// <returns>The zero-based index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is startIndex.</returns>
         internal static int IndexOf(this StringBuilder source, string value, int startIndex)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (value == null) throw new ArgumentNullException(nameof(value));
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (value is null) throw new ArgumentNullException(nameof(value));
             if (startIndex < 0 || startIndex > source.Length) throw new ArgumentOutOfRangeException(nameof(startIndex));
 
             if (value.Length == 0)
@@ -56,8 +56,8 @@ namespace HFM.Client.Internal
         /// <returns>The same source instance with the string content that remains after all occurrences of the characters in the trimChars parameter are removed from the start and end of the source instance.</returns>
         internal static StringBuilder Trim(this StringBuilder source, params char[] trimChars)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (trimChars == null) throw new ArgumentNullException(nameof(trimChars));
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (trimChars is null) throw new ArgumentNullException(nameof(trimChars));
             
             TrimHelper(source, trimChars, 2);
             return source;
@@ -126,8 +126,8 @@ namespace HFM.Client.Internal
         /// <exception cref="ArgumentException">sourceIndex + count is greater than the length of this instance.</exception>
         internal static void CopyTo(this StringBuilder source, int sourceIndex, StringBuilder destination, int destinationIndex, int count)
         {
-            if (source == null) throw new ArgumentNullException(nameof(source));
-            if (destination == null) throw new ArgumentNullException(nameof(destination));
+            if (source is null) throw new ArgumentNullException(nameof(source));
+            if (destination is null) throw new ArgumentNullException(nameof(destination));
             if (sourceIndex < 0 || sourceIndex > source.Length) throw new ArgumentOutOfRangeException(nameof(sourceIndex));
             if (destinationIndex < 0) throw new ArgumentOutOfRangeException(nameof(destinationIndex));
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));

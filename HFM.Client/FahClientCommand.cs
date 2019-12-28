@@ -127,7 +127,7 @@ namespace HFM.Client
         private Stream GetStream()
         {
             var stream = Connection.TcpConnection?.GetStream();
-            if (stream == null)
+            if (stream is null)
             {
                 throw new InvalidOperationException("The connection is not open.");
             }
@@ -136,7 +136,7 @@ namespace HFM.Client
 
         private static byte[] GetBuffer(string commandText)
         {
-            if (commandText == null)
+            if (commandText is null)
             {
                 return new byte[0];
             }

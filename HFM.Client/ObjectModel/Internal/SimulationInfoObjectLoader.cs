@@ -41,14 +41,14 @@ namespace HFM.Client.ObjectModel.Internal
 
         private static DateTime? ConvertToDateTime(int? input)
         {
-            if (input == null || input == 0) return null;
+            if (input is null || input == 0) return null;
 
             return new DateTime(1970, 1, 1).AddSeconds((int)input);
         }
 
         private static TimeSpan? ConvertToTimeSpan(int? input)
         {
-            if (input == null) return null;
+            if (input is null) return null;
 
             return TimeSpan.FromSeconds((int)input);
         }

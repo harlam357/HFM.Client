@@ -8,7 +8,7 @@ namespace HFM.Client.ObjectModel.Internal
     {
         internal static DateTime? ConvertToDateTime(string input)
         {
-            if (input == null || input == "<invalid>") return null;
+            if (input is null || input == "<invalid>") return null;
 
             // ISO 8601
             if (DateTime.TryParse(input, CultureInfo.InvariantCulture,

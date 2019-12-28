@@ -46,7 +46,7 @@ namespace HFM.Client.Sockets
         {
             if (_disposed) throw new ObjectDisposedException(GetType().FullName);
             if (Connected) throw new InvalidOperationException("The connection is already connected.");
-            if (host == null) throw new ArgumentNullException(nameof(host));
+            if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
             if (!TcpClient.ConnectAsync(host, port).Wait(timeout))
@@ -71,7 +71,7 @@ namespace HFM.Client.Sockets
         {
             if (_disposed) throw new ObjectDisposedException(GetType().FullName);
             if (Connected) throw new InvalidOperationException("The connection is already connected.");
-            if (host == null) throw new ArgumentNullException(nameof(host));
+            if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
             var connectTask = TcpClient.ConnectAsync(host, port);

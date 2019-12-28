@@ -153,7 +153,7 @@ namespace HFM.Client
         private Stream GetStream()
         {
             var stream = Connection.TcpConnection?.GetStream();
-            if (stream == null)
+            if (stream is null)
             {
                 throw new InvalidOperationException("The connection is not open.");
             }

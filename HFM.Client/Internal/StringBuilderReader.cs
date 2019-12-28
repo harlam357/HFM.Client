@@ -57,11 +57,11 @@ namespace HFM.Client.Internal
         /// <returns>The total number of characters read into the buffer. This can be less than the number of characters requested if that many characters are not currently available, or zero if the end of the underlying string has been reached.</returns>
         public override int Read(char[] buffer, int index, int count)
         {
-            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
             if (index < 0) throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0) throw new ArgumentOutOfRangeException(nameof(count));
             if (buffer.Length - index < count) throw new ArgumentException("The buffer length minus index is less than count.");
-            if (_s == null) throw new ObjectDisposedException(nameof(StringBuilderReader));
+            if (_s is null) throw new ObjectDisposedException(nameof(StringBuilderReader));
 
             int count1 = _length - _pos;
             if (count1 > 0)

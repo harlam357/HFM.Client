@@ -56,7 +56,7 @@ namespace HFM.Client
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
         protected FahClientConnectionBase(string host, int port)
         {
-            if (host == null) throw new ArgumentNullException(nameof(host));
+            if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
             Host = host;
