@@ -88,7 +88,7 @@ namespace HFM.Client
         {
             int start = indexes[IndexKey.StartHeader];
             int end = indexes[IndexKey.EndFooter];
-            var text = new StringBuilder();
+            var text = new StringBuilder(end - start);
             buffer.CopyTo(start, text, 0, end - start);
             return text;
         }
@@ -159,7 +159,7 @@ namespace HFM.Client
         /// <summary>
         /// Provides well-known key values for the indexes dictionary.
         /// </summary>
-        protected static class IndexKey
+        private static class IndexKey
         {
             public const string StartHeader = nameof(StartHeader);
             public const string EndHeader = nameof(EndHeader);
@@ -172,7 +172,7 @@ namespace HFM.Client
         /// <summary>
         /// Provides well-known string values for searching the buffer for indexes.
         /// </summary>
-        protected static class SearchValue
+        private static class SearchValue
         {
             public const string NewLineCrLf = "\r\n";
             public const string NewLineLf = "\n";

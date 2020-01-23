@@ -11,8 +11,6 @@ namespace HFM.Client
     /// </summary>
     public class FahClientJsonMessageExtractor : FahClientPyonMessageExtractor
     {
-        private const string BeginObject = nameof(BeginObject);
-
         /// <summary>
         /// Extracts indexes from the <paramref name="buffer"/> and stores them in the <paramref name="indexes"/> dictionary for later processing.
         /// </summary>
@@ -29,8 +27,8 @@ namespace HFM.Client
                 SearchValue.NewLineCrLf,
                 SearchValue.NewLineLf
             };
-            indexes[BeginObject] = EndIndexOfAny(buffer, newLineValues, indexes[IndexKey.EndMessageType]);
-            if (indexes[BeginObject] < 0)
+            indexes[IndexKey.BeginObject] = EndIndexOfAny(buffer, newLineValues, indexes[IndexKey.EndMessageType]);
+            if (indexes[IndexKey.BeginObject] < 0)
             {
                 return false;
             }
@@ -44,9 +42,9 @@ namespace HFM.Client
         /// <returns>The message text as a string.</returns>
         protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
         {
-            int start = indexes[BeginObject];
+            int start = indexes[IndexKey.BeginObject];
             int end = indexes[IndexKey.StartFooter];
-            var text = new StringBuilder();
+            var text = new StringBuilder(end - start);
             buffer.CopyTo(start, text, 0, end - start);
             ConvertPyonValuesToJsonValues(text);
             return text;
@@ -54,9 +52,28 @@ namespace HFM.Client
 
         private static void ConvertPyonValuesToJsonValues(StringBuilder buffer)
         {
-            buffer.Replace(": None", ": null");
-            buffer.Replace(": True", ": true");
-            buffer.Replace(": False", ": false");
+            buffer.Replace(": None", ": null")
+                .Replace(": True", ": true")
+                .Replace(": False", ": false");
+        }
+
+        /// <summary>
+        /// Provides well-known key values for the indexes dictionary.
+        /// </summary>
+        private static class IndexKey
+        {
+            public const string EndMessageType = nameof(EndMessageType);
+            public const string BeginObject = nameof(BeginObject);
+            public const string StartFooter = nameof(StartFooter);
+        }
+
+        /// <summary>
+        /// Provides well-known string values for searching the buffer for indexes.
+        /// </summary>
+        private static class SearchValue
+        {
+            public const string NewLineCrLf = "\r\n";
+            public const string NewLineLf = "\n";
         }
     }
 }
