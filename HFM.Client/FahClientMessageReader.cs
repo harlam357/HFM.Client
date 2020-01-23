@@ -36,7 +36,7 @@ namespace HFM.Client
         public int BufferSize { get; set; } = 1024;
 
         /// <summary>
-        /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReader.Message"/> property.
+        /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
         /// <returns>true if a message was read; otherwise false.</returns>
@@ -45,7 +45,7 @@ namespace HFM.Client
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
             int bytesRead;
-            var buffer = new byte[BufferSize];
+            var buffer = GetBuffer();
             while ((bytesRead = ReadInternal(buffer)) != 0)
             {
                 if (GetNextMessage(buffer, bytesRead))
@@ -58,10 +58,9 @@ namespace HFM.Client
 
         private int ReadInternal(byte[] buffer)
         {
-            var stream = GetStream();
-
             try
             {
+                var stream = GetStream();
                 return stream.Read(buffer, 0, buffer.Length);
             }
             catch (Exception)
@@ -72,7 +71,7 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReader.Message"/> property.
+        /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
         /// <returns>A task representing the asynchronous operation that can return true if a message was read; otherwise false.</returns>
@@ -81,7 +80,7 @@ namespace HFM.Client
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
             int bytesRead;
-            var buffer = new byte[BufferSize];
+            var buffer = GetBuffer();
             while ((bytesRead = await ReadAsyncInternal(buffer).ConfigureAwait(false)) != 0)
             {
                 if (GetNextMessage(buffer, bytesRead))
@@ -94,10 +93,9 @@ namespace HFM.Client
 
         private async Task<int> ReadAsyncInternal(byte[] buffer)
         {
-            var stream = GetStream();
-
             try
             {
+                var stream = GetStream();
                 return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             }
             catch (Exception)
@@ -105,6 +103,17 @@ namespace HFM.Client
                 Connection.Close();
                 throw;
             }
+        }
+
+        private byte[] _buffer;
+
+        private byte[] GetBuffer()
+        {
+            if (_buffer is null || _buffer.Length != BufferSize)
+            {
+                return _buffer = new byte[BufferSize];
+            }
+            return _buffer;
         }
 
         private Stream GetStream()
