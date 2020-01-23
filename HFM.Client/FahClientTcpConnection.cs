@@ -119,13 +119,13 @@ namespace HFM.Client
         /// </summary>
         public new FahClientTextCommand CreateCommand()
         {
-            return (FahClientTextCommand)CreateClientCommand();
+            return (FahClientTextCommand)OnCreateCommand();
         }
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        protected override FahClientCommand CreateClientCommand()
+        protected override FahClientCommand OnCreateCommand()
         {
             return new FahClientTextCommand(this);
         }
@@ -135,13 +135,13 @@ namespace HFM.Client
         /// </summary>
         public new FahClientMessageReader CreateReader()
         {
-            return (FahClientMessageReader)CreateClientReader();
+            return (FahClientMessageReader)OnCreateReader();
         }
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
-        protected override FahClientReader CreateClientReader()
+        protected override FahClientReader OnCreateReader()
         {
             return new FahClientMessageReader(this);
         }

@@ -82,25 +82,25 @@ namespace HFM.Client
         /// </summary>
         public FahClientCommand CreateCommand()
         {
-            return CreateClientCommand();
+            return OnCreateCommand();
         }
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        protected abstract FahClientCommand CreateClientCommand();
+        protected abstract FahClientCommand OnCreateCommand();
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
         public FahClientReader CreateReader()
         {
-            return CreateClientReader();
+            return OnCreateReader();
         }
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
-        protected abstract FahClientReader CreateClientReader();
+        protected abstract FahClientReader OnCreateReader();
     }
 }
