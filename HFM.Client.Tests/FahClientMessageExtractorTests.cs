@@ -196,10 +196,10 @@ namespace HFM.Client
 }";
 
         [Test]
-        public void FahClientMessageExtractor_ReturnsNullWhenBufferIsNull()
+        public void FahClientPyonMessageExtractor_ReturnsNullWhenBufferIsNull()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             // Act
             var result = extractor.Extract(null);
             // Assert
@@ -207,10 +207,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_ExtractsSingleMessageFromSingleMessage()
+        public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromSingleMessage()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder(SimulationInfo);
             // Act
             var result = extractor.Extract(buffer);
@@ -220,10 +220,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_ExtractsSingleMessageFromMultipleMessages()
+        public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromMultipleMessages()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder(Info + SimulationInfo);
             // Act
             var result = extractor.Extract(buffer);
@@ -233,10 +233,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_ExtractsMultipleMessagesFromMultipleMessages()
+        public void FahClientPyonMessageExtractor_ExtractsMultipleMessagesFromMultipleMessages()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder(Info + SimulationInfo);
             // Act (First Message)
             var result = extractor.Extract(buffer);
@@ -251,10 +251,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_CannotExtractMessageWithNoHeader()
+        public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoHeader()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder();
             // Act
             var result = extractor.Extract(buffer);
@@ -263,10 +263,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_CannotExtractMessageWithOnlyHeader()
+        public void FahClientPyonMessageExtractor_CannotExtractMessageWithOnlyHeader()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder(Info.Substring(0, 11));
             // Act
             var result = extractor.Extract(buffer);
@@ -275,10 +275,10 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_CannotExtractMessageWithNoFooter()
+        public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoFooter()
         {
             // Arrange
-            var extractor = new FahClientMessageExtractor();
+            var extractor = new FahClientPyonMessageExtractor();
             var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
             // Act
             var result = extractor.Extract(buffer);
@@ -336,7 +336,7 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_HandlesNullMessageType()
+        public void FahClientPyonMessageExtractor_HandlesNullMessageType()
         {
             // Arrange
             var extractor = new MessageExtractorReturnsNullMessageType();
@@ -347,7 +347,7 @@ namespace HFM.Client
             Assert.IsNull(result);
         }
 
-        private class MessageExtractorReturnsNullMessageType : FahClientMessageExtractor
+        private class MessageExtractorReturnsNullMessageType : FahClientPyonMessageExtractor
         {
             protected override string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
             {
@@ -356,7 +356,7 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientMessageExtractor_HandlesNullMessageText()
+        public void FahClientPyonMessageExtractor_HandlesNullMessageText()
         {
             // Arrange
             var extractor = new MessageExtractorReturnsNullMessageText();
@@ -367,7 +367,7 @@ namespace HFM.Client
             Assert.IsNull(result);
         }
 
-        private class MessageExtractorReturnsNullMessageText : FahClientMessageExtractor
+        private class MessageExtractorReturnsNullMessageText : FahClientPyonMessageExtractor
         {
             protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
             {

@@ -10,7 +10,7 @@ namespace HFM.Client
     /// <summary>
     /// Provides the abstract base class for a Folding@Home client message extraction.
     /// </summary>
-    public abstract class FahClientMessageExtractorBase
+    public abstract class FahClientMessageExtractor
     {
         /// <summary>
         /// Extracts a new <see cref="FahClientMessage"/> from the <paramref name="buffer"/> if a message is available.
@@ -22,7 +22,7 @@ namespace HFM.Client
     /// <summary>
     /// Folding@Home client message extractor that extracts messages in PyON format.
     /// </summary>
-    public class FahClientMessageExtractor : FahClientMessageExtractorBase
+    public class FahClientPyonMessageExtractor : FahClientMessageExtractor
     {
         /// <summary>
         /// Extracts a new <see cref="FahClientMessage"/> from the <paramref name="buffer"/> if a message is available.
@@ -198,7 +198,7 @@ namespace HFM.Client
     /// <summary>
     /// Folding@Home client message extractor that extracts messages in JSON format.
     /// </summary>
-    public class FahClientJsonMessageExtractor : FahClientMessageExtractor
+    public class FahClientJsonMessageExtractor : FahClientPyonMessageExtractor
     {
         private const string BeginObject = nameof(BeginObject);
 

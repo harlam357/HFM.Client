@@ -119,11 +119,11 @@ namespace HFM.Client
 
         private readonly StringBuilder _readBuffer = new StringBuilder();
 
-        private FahClientMessageExtractorBase _messageExtractor;
+        private FahClientMessageExtractor _messageExtractor;
         /// <summary>
         /// Gets or sets the message extractor responsible for extracting messages from the data received from the Folding@Home client.  The default implementation extracts messages as JSON text.
         /// </summary>
-        public FahClientMessageExtractorBase MessageExtractor
+        public FahClientMessageExtractor MessageExtractor
         {
             get => _messageExtractor ?? (_messageExtractor = new FahClientJsonMessageExtractor());
             set => _messageExtractor = value;
