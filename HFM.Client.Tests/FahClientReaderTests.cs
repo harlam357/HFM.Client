@@ -2,7 +2,6 @@
 using System;
 using System.IO;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 
 using NUnit.Framework;
@@ -111,38 +110,6 @@ namespace HFM.Client
             }
         }
 
-        [Test]
-        public void FahClientReader_ReadWithTimeoutRethrowsExceptionFromStreamReadAndClosesTheConnection()
-        {
-            // Arrange
-            Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
-            {
-                connection.Open();
-                var reader = new FahClientReader(connection);
-                reader.ReadTimeout = 1000;
-                // Act & Assert
-                Assert.Throws<IOException>(() => reader.Read());
-                Assert.IsFalse(connection.Connected);
-            }
-        }
-
-        [Test]
-        public void FahClientReader_ReadAsyncWithTimeoutRethrowsExceptionFromStreamReadAsyncAndClosesTheConnection()
-        {
-            // Arrange
-            Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
-            {
-                connection.Open();
-                var reader = new FahClientReader(connection);
-                reader.ReadTimeout = 1000;
-                // Act & Assert
-                Assert.ThrowsAsync<IOException>(() => reader.ReadAsync());
-                Assert.IsFalse(connection.Connected);
-            }
-        }
-
         private class MockStreamThrowsOnRead : MemoryStream
         {
             public override int Read(byte[] buffer, int offset, int count)
@@ -219,63 +186,5 @@ namespace HFM.Client
                                                  "    \"Folding@home Client\",\r\n" +
                                                  "  ]\r\n" +
                                                  "]";
-
-        [Test]
-        public void FahClientReader_ReadReturnsFalseWhenReadTimesOut()
-        {
-            // Arrange
-            using (var stream = new MockStreamDelaysOnBeginRead(1000))
-            {
-                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
-                {
-                    connection.Open();
-                    var reader = new FahClientReader(connection);
-                    reader.ReadTimeout = 250;
-                    // Act
-                    bool result = reader.Read();
-                    // Assert
-                    Assert.IsFalse(result);
-                    Assert.IsNull(reader.Message);
-                }
-            }
-        }
-
-        [Test]
-        public async Task FahClientReader_ReadAsyncReturnsFalseWhenReadTimesOut()
-        {
-            // Arrange
-            using (var stream = new MockStreamDelaysOnBeginRead(1000))
-            {
-                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
-                {
-                    connection.Open();
-                    var reader = new FahClientReader(connection);
-                    reader.ReadTimeout = 250;
-                    // Act
-                    bool result = await reader.ReadAsync();
-                    // Assert
-                    Assert.IsFalse(result);
-                    Assert.IsNull(reader.Message);
-                }
-            }
-        }
-
-        private class MockStreamDelaysOnBeginRead : MemoryStream
-        {
-            private readonly int _timeout;
-
-            public MockStreamDelaysOnBeginRead(int timeout)
-            {
-                _timeout = timeout;
-            }
-
-            public override async Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
-            {
-                await Task.Delay(_timeout);
-                return await base.ReadAsync(buffer, offset, count, cancellationToken);
-            }
-        }
     }
 }

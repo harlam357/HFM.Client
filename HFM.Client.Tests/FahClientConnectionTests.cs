@@ -257,20 +257,6 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientConnection_CreateReaderReturnsReaderWithReadTimeout()
-        {
-            // Arrange
-            using (var connection = new FahClientConnection("foo", 2000))
-            {
-                // Act
-                var reader = connection.CreateReader(1000);
-                // Assert
-                Assert.IsNotNull(reader);
-                Assert.AreEqual(1000, reader.ReadTimeout);
-            }
-        }
-
-        [Test]
         public void FahClientConnection_CreateReaderReturnsReaderWhenNotConnected()
         {
             // Arrange

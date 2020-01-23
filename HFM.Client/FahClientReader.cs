@@ -1,11 +1,8 @@
 ﻿
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-
-using HFM.Client.Internal;
 
 namespace HFM.Client
 {
@@ -57,11 +54,6 @@ namespace HFM.Client
         public int BufferSize { get; set; } = 1024;
 
         /// <summary>
-        /// Gets or sets the amount of time a <see cref="FahClientReaderBase" /> will wait to read the next message.  The default value is zero and specifies no timeout.
-        /// </summary>
-        public int ReadTimeout { get; set; } = 0;
-
-        /// <summary>
         /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReaderBase.Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
@@ -88,14 +80,6 @@ namespace HFM.Client
 
             try
             {
-                int timeout = ReadTimeout;
-                if (timeout > 0)
-                {
-                    var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-                    return readTask == Task.WhenAny(readTask, Task.Delay(timeout)).GetAwaiter().GetResult()
-                       ? readTask.GetAwaiter().GetResult()
-                       : 0;
-                }
                 return stream.Read(buffer, 0, buffer.Length);
             }
             catch (Exception)
@@ -132,16 +116,7 @@ namespace HFM.Client
 
             try
             {
-                var readTask = stream.ReadAsync(buffer, 0, buffer.Length);
-
-                int timeout = ReadTimeout;
-                if (timeout > 0)
-                {
-                    return readTask == await Task.WhenAny(readTask, Task.Delay(timeout)).ConfigureAwait(false)
-                       ? await readTask.ConfigureAwait(false)
-                       : 0;
-                }
-                return await readTask.ConfigureAwait(false);
+                return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
             }
             catch (Exception)
             {

@@ -232,17 +232,6 @@ namespace HFM.Client
         /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
-        /// <param name="readTimeout">The amount of time the <see cref="FahClientReader"/> will wait to read the next message.  Value of zero specifies no timeout.</param>
-        public FahClientReader CreateReader(int readTimeout)
-        {
-            var reader = CreateReader();
-            reader.ReadTimeout = readTimeout;
-            return reader;
-        }
-
-        /// <summary>
-        /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
-        /// </summary>
         public new FahClientReader CreateReader()
         {
             return (FahClientReader)CreateClientReader();
