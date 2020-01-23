@@ -48,11 +48,11 @@ namespace HFM.Client
             int end = indexes[IndexKey.StartFooter];
             var text = new StringBuilder();
             buffer.CopyTo(start, text, 0, end - start);
-            ConvertPythonValuesToJsonValues(text);
+            ConvertPyonValuesToJsonValues(text);
             return text;
         }
 
-        private static void ConvertPythonValuesToJsonValues(StringBuilder buffer)
+        private static void ConvertPyonValuesToJsonValues(StringBuilder buffer)
         {
             buffer.Replace(": None", ": null");
             buffer.Replace(": True", ": true");

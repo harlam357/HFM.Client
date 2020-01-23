@@ -42,7 +42,7 @@ namespace HFM.Client
         /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
         protected virtual bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
         {
-            var headerIndexes = IndexesOf(buffer, SearchValue.PyONHeader, 0);
+            var headerIndexes = IndexesOf(buffer, SearchValue.PyonHeader, 0);
             if (headerIndexes.Start < 0) return false;
             indexes[IndexKey.StartHeader] = headerIndexes.Start;
             indexes[IndexKey.EndHeader] = headerIndexes.End;
@@ -58,8 +58,8 @@ namespace HFM.Client
 
             string[] footerValues =
             {
-                String.Concat(SearchValue.NewLineCrLf, SearchValue.PyONFooter, SearchValue.NewLineCrLf),
-                String.Concat(SearchValue.NewLineLf, SearchValue.PyONFooter, SearchValue.NewLineLf)
+                String.Concat(SearchValue.NewLineCrLf, SearchValue.PyonFooter, SearchValue.NewLineCrLf),
+                String.Concat(SearchValue.NewLineLf, SearchValue.PyonFooter, SearchValue.NewLineLf)
             };
             var footerIndexes = IndexesOfAny(buffer, footerValues, indexes[IndexKey.EndMessageType]);
             if (footerIndexes.Start < 0) return false;
@@ -177,8 +177,8 @@ namespace HFM.Client
             public const string NewLineCrLf = "\r\n";
             public const string NewLineLf = "\n";
             // ReSharper disable InconsistentNaming
-            public const string PyONHeader = "PyON 1 ";
-            public const string PyONFooter = "---";
+            public const string PyonHeader = "PyON 1 ";
+            public const string PyonFooter = "---";
             // ReSharper restore InconsistentNaming
         }
     }
