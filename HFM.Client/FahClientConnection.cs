@@ -78,17 +78,17 @@ namespace HFM.Client
         public abstract void Close();
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
+        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        public FahClientCommandBase CreateCommand()
+        public FahClientCommand CreateCommand()
         {
             return CreateClientCommand();
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
+        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        protected abstract FahClientCommandBase CreateClientCommand();
+        protected abstract FahClientCommand CreateClientCommand();
 
         /// <summary>
         /// Creates and returns a <see cref="FahClientReaderBase"/> object associated with the current connection.

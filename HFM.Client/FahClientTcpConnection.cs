@@ -104,10 +104,10 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
+        /// Creates and returns a <see cref="FahClientTextCommand"/> object associated with the current connection.
         /// </summary>
         /// <param name="commandText">The Folding@Home client command statement.</param>
-        public FahClientCommand CreateCommand(string commandText)
+        public FahClientTextCommand CreateCommand(string commandText)
         {
             var command = CreateCommand();
             command.CommandText = commandText;
@@ -115,19 +115,19 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
+        /// Creates and returns a <see cref="FahClientTextCommand"/> object associated with the current connection.
         /// </summary>
-        public new FahClientCommand CreateCommand()
+        public new FahClientTextCommand CreateCommand()
         {
-            return (FahClientCommand)CreateClientCommand();
+            return (FahClientTextCommand)CreateClientCommand();
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientCommandBase"/> object associated with the current connection.
+        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        protected override FahClientCommandBase CreateClientCommand()
+        protected override FahClientCommand CreateClientCommand()
         {
-            return new FahClientCommand(this);
+            return new FahClientTextCommand(this);
         }
 
         /// <summary>
