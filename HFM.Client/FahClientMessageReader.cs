@@ -7,43 +7,43 @@ using System.Threading.Tasks;
 namespace HFM.Client
 {
     /// <summary>
-    /// Provides the abstract base class for a Folding@Home client message reader.
+    /// Provides the abstract base class for a Folding@Home client reader.
     /// </summary>
-    public abstract class FahClientReaderBase
+    public abstract class FahClientReader
     {
         /// <summary>
-        /// Gets the last message read by the reader.
+        /// Advances the reader to the next data received from the Folding@Home client.
         /// </summary>
-        public FahClientMessage Message { get; protected set; }
-
-        /// <summary>
-        /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
-        /// </summary>
-        /// <returns>true if a message was read; otherwise false.</returns>
+        /// <returns>true if data was read; otherwise false.</returns>
         public abstract bool Read();
 
         /// <summary>
-        /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
+        /// Asynchronously advances the reader to the next data received from the Folding@Home client.
         /// </summary>
-        /// <returns>A task representing the asynchronous operation that can return true if a message was read; otherwise false.</returns>
+        /// <returns>A task representing the asynchronous operation that can return true if data was read; otherwise false.</returns>
         public abstract Task<bool> ReadAsync();
     }
 
     /// <summary>
     /// Folding@Home client message reader.
     /// </summary>
-    public class FahClientReader : FahClientReaderBase
+    public class FahClientMessageReader : FahClientReader
     {
         /// <summary>
-        /// Gets the <see cref="FahClientTcpConnection"/> used by this <see cref="FahClientReader"/>.
+        /// Gets the <see cref="FahClientTcpConnection"/> used by this <see cref="FahClientMessageReader"/>.
         /// </summary>
         public FahClientTcpConnection Connection { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientReader"/> class.
+        /// Gets the last message read by the reader.
+        /// </summary>
+        public FahClientMessage Message { get; protected set; }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FahClientMessageReader"/> class.
         /// </summary>
         /// <param name="connection">A <see cref="FahClientTcpConnection"/> that represents the connection to a Folding@Home client.</param>
-        public FahClientReader(FahClientTcpConnection connection)
+        public FahClientMessageReader(FahClientTcpConnection connection)
         {
             Connection = connection;
         }
@@ -54,7 +54,7 @@ namespace HFM.Client
         public int BufferSize { get; set; } = 1024;
 
         /// <summary>
-        /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReaderBase.Message"/> property.
+        /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReader.Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
         /// <returns>true if a message was read; otherwise false.</returns>
@@ -90,7 +90,7 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReaderBase.Message"/> property.
+        /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="FahClientReader.Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
         /// <returns>A task representing the asynchronous operation that can return true if a message was read; otherwise false.</returns>

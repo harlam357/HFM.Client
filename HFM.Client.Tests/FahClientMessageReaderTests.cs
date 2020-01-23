@@ -12,47 +12,47 @@ using HFM.Client.Sockets;
 namespace HFM.Client
 {
     [TestFixture]
-    public class FahClientReaderTests
+    public class FahClientMessageReaderTests
     {
         [Test]
-        public void FahClientReader_ReadThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
+        public void FahClientMessageReader_ReadThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientTcpConnection("foo", 2000));
+            var reader = new FahClientMessageReader(new FahClientTcpConnection("foo", 2000));
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => reader.Read());
         }
 
         [Test]
-        public void FahClientReader_ReadAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
+        public void FahClientMessageReader_ReadAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientTcpConnection("foo", 2000));
+            var reader = new FahClientMessageReader(new FahClientTcpConnection("foo", 2000));
             // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(() => reader.ReadAsync());
         }
 
         [Test]
-        public void FahClientReader_ReadThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
+        public void FahClientMessageReader_ReadThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
             using (var connection = new MockFahClientTcpConnection())
             {
                 connection.Open();
-                var reader = new FahClientReader(connection);
+                var reader = new FahClientMessageReader(connection);
                 // Act & Assert
                 Assert.Throws<InvalidOperationException>(() => reader.Read());
             }
         }
 
         [Test]
-        public void FahClientReader_ReadAsyncThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
+        public void FahClientMessageReader_ReadAsyncThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
             using (var connection = new MockFahClientTcpConnection())
             {
                 connection.Open();
-                var reader = new FahClientReader(connection);
+                var reader = new FahClientMessageReader(connection);
                 // Act & Assert
                 Assert.ThrowsAsync<InvalidOperationException>(() => reader.ReadAsync());
             }
@@ -81,14 +81,14 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientReader_ReadRethrowsExceptionFromStreamReadAndClosesTheConnection()
+        public void FahClientMessageReader_ReadRethrowsExceptionFromStreamReadAndClosesTheConnection()
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
             using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
-                var reader = new FahClientReader(connection);
+                var reader = new FahClientMessageReader(connection);
                 // Act & Assert
                 Assert.Throws<IOException>(() => reader.Read());
                 Assert.IsFalse(connection.Connected);
@@ -96,14 +96,14 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientReader_ReadAsyncRethrowsExceptionFromStreamReadAsyncAndClosesTheConnection()
+        public void FahClientMessageReader_ReadAsyncRethrowsExceptionFromStreamReadAsyncAndClosesTheConnection()
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
             using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
-                var reader = new FahClientReader(connection);
+                var reader = new FahClientMessageReader(connection);
                 // Act & Assert
                 Assert.ThrowsAsync<IOException>(() => reader.ReadAsync());
                 Assert.IsFalse(connection.Connected);
@@ -119,7 +119,7 @@ namespace HFM.Client
         }
 
         [Test]
-        public void FahClientReader_ReadReadsMessageFromConnection()
+        public void FahClientMessageReader_ReadReadsMessageFromConnection()
         {
             // Arrange
             using (var stream = CreateStreamWithMessage())
@@ -128,7 +128,7 @@ namespace HFM.Client
                 using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
                 {
                     connection.Open();
-                    var reader = new FahClientReader(connection);
+                    var reader = new FahClientMessageReader(connection);
                     reader.BufferSize = 8;
                     // Act
                     bool result = reader.Read();
@@ -142,7 +142,7 @@ namespace HFM.Client
         }
 
         [Test]
-        public async Task FahClientReader_ReadAsyncReadsMessageFromConnection()
+        public async Task FahClientMessageReader_ReadAsyncReadsMessageFromConnection()
         {
             // Arrange
             using (var stream = CreateStreamWithMessage())
@@ -151,7 +151,7 @@ namespace HFM.Client
                 using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
                 {
                     connection.Open();
-                    var reader = new FahClientReader(connection);
+                    var reader = new FahClientMessageReader(connection);
                     reader.BufferSize = 8;
                     // Act
                     bool result = await reader.ReadAsync();
