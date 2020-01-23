@@ -18,7 +18,7 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var command = new FahClientCommand(new FahClientConnection("foo", 2000));
+            var command = new FahClientCommand(new FahClientTcpConnection("foo", 2000));
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => command.Execute());
         }
@@ -27,7 +27,7 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var command = new FahClientCommand(new FahClientConnection("foo", 2000));
+            var command = new FahClientCommand(new FahClientTcpConnection("foo", 2000));
             // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(() => command.ExecuteAsync());
         }
@@ -36,7 +36,7 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
-            using (var connection = new MockFahClientConnection())
+            using (var connection = new MockFahClientTcpConnection())
             {
                 connection.Open();
                 var command = new FahClientCommand(connection);
@@ -49,7 +49,7 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteAsyncThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
-            using (var connection = new MockFahClientConnection())
+            using (var connection = new MockFahClientTcpConnection())
             {
                 connection.Open();
                 var command = new FahClientCommand(connection);
@@ -58,16 +58,16 @@ namespace HFM.Client
             }
         }
 
-        private class MockFahClientConnection : FahClientConnection
+        private class MockFahClientTcpConnection : FahClientTcpConnection
         {
             private bool _connected;
 
             public override bool Connected => _connected;
 
-            // simulate losing the TcpConnection after the FahClientConnection has been opened
+            // simulate losing the TcpConnection after the FahClientTcpConnection has been opened
             public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
 
-            public MockFahClientConnection()
+            public MockFahClientTcpConnection()
                : base(new MockTcpConnectionFactory(), "foo", 2000)
             {
 
@@ -85,7 +85,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnWrite());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection);
@@ -100,7 +100,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnWrite());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection);
@@ -123,7 +123,7 @@ namespace HFM.Client
         {
             // Arrange
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection, "command text");
@@ -141,7 +141,7 @@ namespace HFM.Client
         {
             // Arrange
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection, "command text");
@@ -159,7 +159,7 @@ namespace HFM.Client
         {
             // Arrange
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection, null);
@@ -177,7 +177,7 @@ namespace HFM.Client
         {
             // Arrange
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "foo", 2000))
             {
                 connection.Open();
                 var command = new FahClientCommand(connection, null);

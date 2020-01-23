@@ -16,7 +16,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public void FahClientConnection_WritesCommandsAndReadsMessageSynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 connection.Open();
 
@@ -43,7 +43,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public async Task FahClientConnection_WritesCommandsAndReadsMessageAsynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 await connection.OpenAsync();
 
@@ -70,7 +70,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public void FahClientConnection_SimulateHFMUpdateCommandsSynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 connection.Open();
 
@@ -92,7 +92,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public async Task FahClientConnection_SimulateHFMUpdateCommandsAsynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 await connection.OpenAsync();
 
@@ -114,7 +114,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public void FahClientConnection_CloseConnectionWhileExecutingCommandSynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 connection.Open();
                 CloseConnectionAfter(1000, connection);
@@ -142,7 +142,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public async Task FahClientConnection_CloseConnectionWhileExecutingCommandAsynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 await connection.OpenAsync();
                 CloseConnectionAfter(1000, connection);
@@ -170,7 +170,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public void FahClientConnection_CloseConnectionWhileExecutingReaderSynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 connection.Open();
                 CloseConnectionAfter(3000, connection);
@@ -201,7 +201,7 @@ namespace HFM.Client
         [Category(TestCategoryNames.Integration)]
         public async Task FahClientConnection_CloseConnectionWhileExecutingReaderAsynchronously()
         {
-            using (var connection = new FahClientConnection(Host, Port))
+            using (var connection = new FahClientTcpConnection(Host, Port))
             {
                 await connection.OpenAsync();
                 CloseConnectionAfter(3000, connection);
@@ -228,7 +228,7 @@ namespace HFM.Client
             }
         }
 
-        private static void CloseConnectionAfter(int millisecondsDelay, FahClientConnectionBase connection)
+        private static void CloseConnectionAfter(int millisecondsDelay, FahClientConnection connection)
         {
             Task.Delay(millisecondsDelay).ContinueWith(t => connection.Close());
         }

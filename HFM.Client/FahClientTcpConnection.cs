@@ -10,7 +10,7 @@ namespace HFM.Client
     /// <summary>
     /// Provides the abstract base class for a Folding@Home client connection.
     /// </summary>
-    public abstract class FahClientConnectionBase
+    public abstract class FahClientConnection
     {
         /// <summary>
         /// Occurs when the value of the <see cref="Connected"/> property has changed.
@@ -48,13 +48,13 @@ namespace HFM.Client
         public abstract bool Connected { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientConnectionBase"/> class.
+        /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
         /// </summary>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        protected FahClientConnectionBase(string host, int port)
+        protected FahClientConnection(string host, int port)
         {
             if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
@@ -108,7 +108,7 @@ namespace HFM.Client
     /// <summary>
     /// Folding@Home client connection.
     /// </summary>
-    public class FahClientConnection : FahClientConnectionBase, IDisposable
+    public class FahClientTcpConnection : FahClientConnection, IDisposable
     {
         /// <summary>
         /// Gets a value indicating whether the connection is connected to a client.
@@ -118,13 +118,13 @@ namespace HFM.Client
         public virtual TcpConnection TcpConnection { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
+        /// Initializes a new instance of the <see cref="FahClientTcpConnection"/> class.
         /// </summary>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        public FahClientConnection(string host, int port)
+        public FahClientTcpConnection(string host, int port)
            : this(TcpConnectionFactory.Default, host, port)
         {
 
@@ -133,14 +133,14 @@ namespace HFM.Client
         private readonly TcpConnectionFactory _tcpConnectionFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
+        /// Initializes a new instance of the <see cref="FahClientTcpConnection"/> class.
         /// </summary>
         /// <param name="tcpConnectionFactory">The factory that will be used to create connections for TCP network services.</param>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        public FahClientConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
+        public FahClientTcpConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
            : base(host, port)
         {
             _tcpConnectionFactory = tcpConnectionFactory;
@@ -248,7 +248,7 @@ namespace HFM.Client
         private bool _disposed;
 
         /// <summary>
-        /// Releases all resources used by the <see cref="FahClientConnection"/>.
+        /// Releases all resources used by the <see cref="FahClientTcpConnection"/>.
         /// </summary>
         public void Dispose()
         {
@@ -257,7 +257,7 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FahClientConnection"/> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used by the <see cref="FahClientTcpConnection"/> and optionally releases the managed resources.
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
