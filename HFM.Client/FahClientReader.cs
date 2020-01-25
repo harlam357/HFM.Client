@@ -61,24 +61,19 @@ namespace HFM.Client
         {
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
-            int bytesRead;
-            var buffer = GetBuffer();
-            while ((bytesRead = ReadInternal(buffer)) != 0)
-            {
-                if (ExtractMessage(buffer, bytesRead))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private int ReadInternal(byte[] buffer)
-        {
             try
             {
+                int bytesRead;
                 var stream = GetStream();
-                return stream.Read(buffer, 0, buffer.Length);
+                var buffer = GetBuffer();
+                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
+                {
+                    if (ExtractMessage(buffer, bytesRead))
+                    {
+                        break;
+                    }
+                }
+                return true;
             }
             catch (Exception)
             {
@@ -96,24 +91,19 @@ namespace HFM.Client
         {
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
-            int bytesRead;
-            var buffer = GetBuffer();
-            while ((bytesRead = await ReadAsyncInternal(buffer).ConfigureAwait(false)) != 0)
-            {
-                if (ExtractMessage(buffer, bytesRead))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        private async Task<int> ReadAsyncInternal(byte[] buffer)
-        {
             try
             {
+                int bytesRead;
                 var stream = GetStream();
-                return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+                var buffer = GetBuffer();
+                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0)
+                {
+                    if (ExtractMessage(buffer, bytesRead))
+                    {
+                        break;
+                    }
+                }
+                return true;
             }
             catch (Exception)
             {
