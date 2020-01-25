@@ -1,5 +1,8 @@
 ﻿
+using System.Collections.Generic;
 using System.Text;
+
+using HFM.Client.Internal;
 
 namespace HFM.Client
 {
@@ -13,5 +16,68 @@ namespace HFM.Client
         /// </summary>
         /// <returns>A new <see cref="FahClientMessage"/> or null if a message is not available.</returns>
         public abstract FahClientMessage Extract(StringBuilder buffer);
+
+        /// <summary>
+        /// Reports the indexes of the first occurrence of any of the specified strings in the given StringBuilder object.
+        /// </summary>
+        protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+        {
+            foreach (var value in values)
+            {
+                int index = buffer.IndexOf(value, startIndex);
+                if (index >= 0)
+                {
+                    return (index, index + value.Length);
+                }
+            }
+            return NoIndexTuple;
+        }
+
+        /// <summary>
+        /// Reports the index of the first occurrence of any of the specified strings in the given StringBuilder object.
+        /// </summary>
+        protected static int IndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+        {
+            foreach (var value in values)
+            {
+                int index = buffer.IndexOf(value, startIndex);
+                if (index >= 0)
+                {
+                    return index;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Reports the end index of the first occurrence of any of the specified strings in the given StringBuilder object.
+        /// </summary>
+        protected static int EndIndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+        {
+            foreach (var value in values)
+            {
+                int index = buffer.IndexOf(value, startIndex);
+                if (index >= 0)
+                {
+                    return index + value.Length;
+                }
+            }
+            return -1;
+        }
+
+        /// <summary>
+        /// Reports the indexes of the first occurrence of the specified string in the given StringBuilder object.
+        /// </summary>
+        protected static (int Start, int End) IndexesOf(StringBuilder buffer, string value, int startIndex)
+        {
+            int index = buffer.IndexOf(value, startIndex);
+            if (index >= 0)
+            {
+                return (index, index + value.Length);
+            }
+            return NoIndexTuple;
+        }
+
+        private static readonly (int, int) NoIndexTuple = (-1, -1);
     }
 }

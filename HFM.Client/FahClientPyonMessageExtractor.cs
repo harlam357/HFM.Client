@@ -94,69 +94,6 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Reports the indexes of the first occurrence of any of the specified strings in the given StringBuilder object.
-        /// </summary>
-        protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
-        {
-            foreach (var value in values)
-            {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
-                {
-                    return (index, index + value.Length);
-                }
-            }
-            return NoIndexTuple;
-        }
-
-        /// <summary>
-        /// Reports the index of the first occurrence of any of the specified strings in the given StringBuilder object.
-        /// </summary>
-        protected static int IndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
-        {
-            foreach (var value in values)
-            {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
-                {
-                    return index;
-                }
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Reports the end index of the first occurrence of any of the specified strings in the given StringBuilder object.
-        /// </summary>
-        protected static int EndIndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
-        {
-            foreach (var value in values)
-            {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
-                {
-                    return index + value.Length;
-                }
-            }
-            return -1;
-        }
-
-        /// <summary>
-        /// Reports the indexes of the first occurrence of the specified string in the given StringBuilder object.
-        /// </summary>
-        protected static (int Start, int End) IndexesOf(StringBuilder buffer, string value, int startIndex)
-        {
-            int index = buffer.IndexOf(value, startIndex);
-            if (index >= 0)
-            {
-                return (index, index + value.Length);
-            }
-            return NoIndexTuple;
-        }
-
-        private static readonly (int, int) NoIndexTuple = (-1, -1);
-
-        /// <summary>
         /// Provides well-known key values for the indexes dictionary.
         /// </summary>
         private static class IndexKey

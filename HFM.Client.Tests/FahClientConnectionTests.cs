@@ -59,7 +59,7 @@ namespace HFM.Client
         public void FahClientConnection_OpenSuccessfullyAndClose()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 bool connectedChanged = false;
                 connection.ConnectedChanged += (s, e) => connectedChanged = e.Connected;
@@ -80,7 +80,7 @@ namespace HFM.Client
         public async Task FahClientConnection_OpenAsyncSuccessfullyAndClose()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 bool connectedChanged = false;
                 connection.ConnectedChanged += (s, e) => connectedChanged = e.Connected;
@@ -101,7 +101,7 @@ namespace HFM.Client
         public void FahClientConnection_OpenSuccessfullyAndCloseMultipleTimes()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 int connectedChangedCount = 0;
                 connection.ConnectedChanged += (s, e) => connectedChangedCount++;
@@ -121,7 +121,7 @@ namespace HFM.Client
         public void FahClientConnection_OpenThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 // Act (Open)
                 connection.Open();
@@ -134,7 +134,7 @@ namespace HFM.Client
         public async Task FahClientConnection_OpenAsyncThrowsInvalidOperationExceptionWhenConnectionIsAlreadyConnected()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 // Act (Open)
                 await connection.OpenAsync();
@@ -177,7 +177,7 @@ namespace HFM.Client
         public void FahClientConnection_ReopenConnectionThatWasPreviouslyOpenedAndClosed()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 // Act (Open)
                 connection.Open();
@@ -198,7 +198,7 @@ namespace HFM.Client
         public async Task FahClientConnection_ReopenAsyncConnectionThatWasPreviouslyOpenedAndClosed()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 // Act (Open)
                 await connection.OpenAsync();
@@ -270,7 +270,7 @@ namespace HFM.Client
         public void FahClientConnection_TcpConnectionReturnsInstanceWhenConnectionIsOpen()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 connection.Open();
                 // Act & Assert
@@ -282,7 +282,7 @@ namespace HFM.Client
         public void FahClientConnection_TcpConnectionReturnsNullAfterConnectionIsOpenedAndClosed()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 connection.Open();
                 Assert.IsNotNull(connection.TcpConnection);
@@ -296,7 +296,7 @@ namespace HFM.Client
         public void FahClientConnection_TcpConnectionReturnsSameInstanceWhileConnectionRemainsOpen()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 connection.Open();
                 // Act
@@ -311,7 +311,7 @@ namespace HFM.Client
         public void FahClientConnection_TcpConnectionReturnsDifferentInstanceEachTimeConnectionIsOpened()
         {
             // Arrange
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
                 connection.Open();
                 // Act
@@ -331,7 +331,7 @@ namespace HFM.Client
         {
             // Arrange
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientConnection(tcpConnectionFactory, "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, tcpConnectionFactory))
             {
                 // Act (Open)
                 connection.Open();

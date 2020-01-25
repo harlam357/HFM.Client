@@ -13,7 +13,11 @@ namespace HFM.Client
         /// </summary>
         public bool Connected { get; }
 
-        internal FahClientConnectedChangedEventArgs(bool connected)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
+        /// </summary>
+        /// <param name="connected">Value indicating whether the connection is connected to a client.</param>
+        public FahClientConnectedChangedEventArgs(bool connected)
         {
             Connected = connected;
         }

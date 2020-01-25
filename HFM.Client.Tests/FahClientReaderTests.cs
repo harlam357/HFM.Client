@@ -68,7 +68,7 @@ namespace HFM.Client
             public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
 
             public MockFahClientConnection()
-               : base(new MockTcpConnectionFactory(), "foo", 2000)
+               : base("foo", 2000, new MockTcpConnectionFactory())
             {
 
             }
@@ -85,7 +85,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -100,7 +100,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -125,7 +125,7 @@ namespace HFM.Client
             using (var stream = CreateStreamWithMessage())
             {
                 Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
                 {
                     connection.Open();
                     var reader = new FahClientReader(connection);
@@ -148,7 +148,7 @@ namespace HFM.Client
             using (var stream = CreateStreamWithMessage())
             {
                 Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
                 {
                     connection.Open();
                     var reader = new FahClientReader(connection);

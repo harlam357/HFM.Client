@@ -56,7 +56,7 @@ namespace HFM.Client
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
         public FahClientConnection(string host, int port)
-           : this(TcpConnectionFactory.Default, host, port)
+           : this(host, port, TcpConnectionFactory.Default)
         {
 
         }
@@ -66,12 +66,12 @@ namespace HFM.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
         /// </summary>
-        /// <param name="tcpConnectionFactory">The factory that will be used to create connections for TCP network services.</param>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
+        /// <param name="tcpConnectionFactory">The factory that will be used to create connections for TCP network services.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        public FahClientConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
+        public FahClientConnection(string host, int port, TcpConnectionFactory tcpConnectionFactory)
         {
             if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
@@ -140,7 +140,6 @@ namespace HFM.Client
         /// <summary>
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        /// <param name="commandText">The Folding@Home client command statement.</param>
         public FahClientCommand CreateCommand()
         {
             return OnCreateCommand();
@@ -150,7 +149,7 @@ namespace HFM.Client
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
         /// <param name="commandText">The Folding@Home client command statement.</param>
-        public virtual FahClientCommand CreateCommand(string commandText)
+        public FahClientCommand CreateCommand(string commandText)
         {
             var command = OnCreateCommand();
             command.CommandText = commandText;
