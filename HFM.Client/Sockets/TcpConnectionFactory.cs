@@ -15,17 +15,5 @@ namespace HFM.Client.Sockets
         /// Gets the default <see cref="TcpConnectionFactory"/> that creates <see cref="TcpClientConnection"/> connections.
         /// </summary>
         public static TcpConnectionFactory Default { get; } = new TcpClientConnectionFactory();
-
-        private class TcpClientConnectionFactory : TcpConnectionFactory
-        {
-            public override TcpConnection Create()
-            {
-                var connection = new TcpClientConnection();
-                connection.TcpClient.NoDelay = true;
-                connection.TcpClient.SendBufferSize = 1024 * 8;
-                connection.TcpClient.ReceiveBufferSize = 1024 * 8;
-                return connection;
-            }
-        }
     }
 }
