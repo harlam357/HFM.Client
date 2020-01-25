@@ -17,6 +17,16 @@ namespace HFM.Client
         public FahClientConnection Connection { get; }
 
         /// <summary>
+        /// Gets the <see cref="FahClientMessageExtractor"/> used by this <see cref="FahClientReader"/>.
+        /// </summary>
+        public FahClientMessageExtractor MessageExtractor { get; }
+
+        /// <summary>
+        /// Gets or sets the size of the read buffer, in bytes. The default value is 1024 bytes.
+        /// </summary>
+        public int BufferSize { get; set; } = 1024;
+
+        /// <summary>
         /// Gets the last message read by the reader.
         /// </summary>
         public FahClientMessage Message { get; protected set; }
@@ -26,14 +36,21 @@ namespace HFM.Client
         /// </summary>
         /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
         public FahClientReader(FahClientConnection connection)
+            : this(connection, FahClientMessageExtractor.Default)
         {
-            Connection = connection;
+
         }
 
         /// <summary>
-        /// Gets or sets the size of the read buffer, in bytes. The default value is 1024 bytes.
+        /// Initializes a new instance of the <see cref="FahClientReader"/> class.
         /// </summary>
-        public int BufferSize { get; set; } = 1024;
+        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
+        /// <param name="extractor">A <see cref="FahClientMessageExtractor"/> that extracts <see cref="FahClientMessage"/> objects from the data read by this reader.</param>
+        public FahClientReader(FahClientConnection connection, FahClientMessageExtractor extractor)
+        {
+            Connection = connection;
+            MessageExtractor = extractor;
+        }
 
         /// <summary>
         /// Advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
@@ -48,7 +65,7 @@ namespace HFM.Client
             var buffer = GetBuffer();
             while ((bytesRead = ReadInternal(buffer)) != 0)
             {
-                if (GetNextMessage(buffer, bytesRead))
+                if (ExtractMessage(buffer, bytesRead))
                 {
                     return true;
                 }
@@ -83,7 +100,7 @@ namespace HFM.Client
             var buffer = GetBuffer();
             while ((bytesRead = await ReadAsyncInternal(buffer).ConfigureAwait(false)) != 0)
             {
-                if (GetNextMessage(buffer, bytesRead))
+                if (ExtractMessage(buffer, bytesRead))
                 {
                     return true;
                 }
@@ -128,17 +145,7 @@ namespace HFM.Client
 
         private readonly StringBuilder _readBuffer = new StringBuilder();
 
-        private FahClientMessageExtractor _messageExtractor;
-        /// <summary>
-        /// Gets or sets the message extractor responsible for extracting messages from the data received from the Folding@Home client.  The default implementation extracts messages as JSON text.
-        /// </summary>
-        public FahClientMessageExtractor MessageExtractor
-        {
-            get => _messageExtractor ?? (_messageExtractor = new FahClientJsonMessageExtractor());
-            set => _messageExtractor = value;
-        }
-
-        private bool GetNextMessage(byte[] buffer, int bytesRead)
+        private bool ExtractMessage(byte[] buffer, int bytesRead)
         {
             _readBuffer.Append(Encoding.ASCII.GetChars(buffer, 0, bytesRead));
             var nextMessage = MessageExtractor.Extract(_readBuffer);

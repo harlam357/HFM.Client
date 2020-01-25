@@ -12,6 +12,11 @@ namespace HFM.Client
     public abstract class FahClientMessageExtractor
     {
         /// <summary>
+        /// Gets the default <see cref="FahClientMessageExtractor"/> that extracts <see cref="FahClientMessage"/> objects.
+        /// </summary>
+        public static FahClientMessageExtractor Default { get; } = new FahClientJsonMessageExtractor();
+
+        /// <summary>
         /// Extracts a new <see cref="FahClientMessage"/> from the <paramref name="buffer"/> if a message is available.
         /// </summary>
         /// <returns>A new <see cref="FahClientMessage"/> or null if a message is not available.</returns>
