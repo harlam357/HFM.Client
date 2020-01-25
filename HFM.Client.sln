@@ -7,26 +7,68 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HFM.Client", "HFM.Client\HF
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HFM.Client.Tests", "HFM.Client.Tests\HFM.Client.Tests.csproj", "{165BFF0A-3094-4953-8033-4624F29BDC7A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HFM.Client.Bench", "HFM.Client.Bench\HFM.Client.Bench.csproj", "{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HFM.Client.Bench", "HFM.Client.Bench\HFM.Client.Bench.csproj", "{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HFM.Client.Tool", "HFM.Client.Tool\HFM.Client.Tool.csproj", "{6166E2AF-F49B-4FEA-8528-9E806766052B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
 		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+		ReleaseMerge|Any CPU = ReleaseMerge|Any CPU
+		ReleaseMerge|x86 = ReleaseMerge|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{777C0169-49C5-4726-A137-496C7094C60B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{777C0169-49C5-4726-A137-496C7094C60B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.Debug|x86.Build.0 = Debug|Any CPU
 		{777C0169-49C5-4726-A137-496C7094C60B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{777C0169-49C5-4726-A137-496C7094C60B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.Release|x86.ActiveCfg = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.Release|x86.Build.0 = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.ReleaseMerge|Any CPU.ActiveCfg = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.ReleaseMerge|Any CPU.Build.0 = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.ReleaseMerge|x86.ActiveCfg = Release|Any CPU
+		{777C0169-49C5-4726-A137-496C7094C60B}.ReleaseMerge|x86.Build.0 = Release|Any CPU
 		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Debug|x86.Build.0 = Debug|Any CPU
 		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Release|x86.ActiveCfg = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.Release|x86.Build.0 = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.ReleaseMerge|Any CPU.ActiveCfg = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.ReleaseMerge|Any CPU.Build.0 = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.ReleaseMerge|x86.ActiveCfg = Release|Any CPU
+		{165BFF0A-3094-4953-8033-4624F29BDC7A}.ReleaseMerge|x86.Build.0 = Release|Any CPU
 		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Debug|x86.Build.0 = Debug|Any CPU
 		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Release|x86.ActiveCfg = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.Release|x86.Build.0 = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.ReleaseMerge|Any CPU.ActiveCfg = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.ReleaseMerge|Any CPU.Build.0 = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.ReleaseMerge|x86.ActiveCfg = Release|Any CPU
+		{4709ADC2-1AD6-47AA-96F9-EF9D1F2B394F}.ReleaseMerge|x86.Build.0 = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Debug|x86.Build.0 = Debug|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Release|x86.ActiveCfg = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.Release|x86.Build.0 = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.ReleaseMerge|Any CPU.ActiveCfg = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.ReleaseMerge|Any CPU.Build.0 = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.ReleaseMerge|x86.ActiveCfg = Release|Any CPU
+		{6166E2AF-F49B-4FEA-8528-9E806766052B}.ReleaseMerge|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
