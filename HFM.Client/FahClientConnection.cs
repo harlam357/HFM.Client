@@ -46,6 +46,9 @@ namespace HFM.Client
         /// </summary>
         public virtual bool Connected => (TcpConnection?.Connected).GetValueOrDefault();
 
+        /// <summary>
+        /// Gets the current <see cref="Sockets.TcpConnection"/>.
+        /// </summary>
         public virtual TcpConnection TcpConnection { get; private set; }
 
         /// <summary>
