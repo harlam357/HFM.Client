@@ -123,19 +123,11 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Creates and returns a <see cref="FahClientMessageReader"/> object associated with the current connection.
-        /// </summary>
-        public new FahClientMessageReader CreateReader()
-        {
-            return (FahClientMessageReader)OnCreateReader();
-        }
-
-        /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
         protected override FahClientReader OnCreateReader()
         {
-            return new FahClientMessageReader(this);
+            return new FahClientReader(this);
         }
 
         private bool _disposed;
