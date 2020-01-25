@@ -43,7 +43,7 @@ namespace HFM.Client.Bench
         public int Execute()
         {
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "", 0))
+            using (var connection = new FahClientConnection(tcpConnectionFactory, "", 0))
             {
                 connection.Open();
                 var command = connection.CreateCommand("updates add 0 60 $heartbeat");
@@ -55,7 +55,7 @@ namespace HFM.Client.Bench
         public async Task<int> ExecuteAsync()
         {
             var tcpConnectionFactory = new MockTcpConnectionFactory();
-            using (var connection = new FahClientTcpConnection(tcpConnectionFactory, "", 0))
+            using (var connection = new FahClientConnection(tcpConnectionFactory, "", 0))
             {
                 connection.Open();
                 var command = connection.CreateCommand("updates add 0 60 $heartbeat");

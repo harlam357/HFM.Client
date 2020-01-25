@@ -12,9 +12,9 @@ namespace HFM.Client
     public class FahClientReader
     {
         /// <summary>
-        /// Gets the <see cref="FahClientTcpConnection"/> used by this <see cref="FahClientReader"/>.
+        /// Gets the <see cref="FahClientConnection"/> used by this <see cref="FahClientReader"/>.
         /// </summary>
-        public FahClientTcpConnection Connection { get; }
+        public FahClientConnection Connection { get; }
 
         /// <summary>
         /// Gets the last message read by the reader.
@@ -24,8 +24,8 @@ namespace HFM.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="FahClientReader"/> class.
         /// </summary>
-        /// <param name="connection">A <see cref="FahClientTcpConnection"/> that represents the connection to a Folding@Home client.</param>
-        public FahClientReader(FahClientTcpConnection connection)
+        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
+        public FahClientReader(FahClientConnection connection)
         {
             Connection = connection;
         }

@@ -12,9 +12,9 @@ namespace HFM.Client
     public class FahClientCommand
     {
         /// <summary>
-        /// Gets the <see cref="FahClientTcpConnection"/> used by this <see cref="FahClientCommand"/>.
+        /// Gets the <see cref="FahClientConnection"/> used by this <see cref="FahClientCommand"/>.
         /// </summary>
-        public FahClientTcpConnection Connection { get; }
+        public FahClientConnection Connection { get; }
 
         /// <summary>
         /// Gets or sets the Folding@Home client command statement.
@@ -24,8 +24,8 @@ namespace HFM.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
         /// </summary>
-        /// <param name="connection">A <see cref="FahClientTcpConnection"/> that represents the connection to a Folding@Home client.</param>
-        public FahClientCommand(FahClientTcpConnection connection)
+        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
+        public FahClientCommand(FahClientConnection connection)
         {
             Connection = connection;
         }
@@ -33,9 +33,9 @@ namespace HFM.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
         /// </summary>
-        /// <param name="connection">A <see cref="FahClientTcpConnection"/> that represents the connection to a Folding@Home client.</param>
+        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
         /// <param name="commandText">The Folding@Home client command statement.</param>
-        public FahClientCommand(FahClientTcpConnection connection, string commandText)
+        public FahClientCommand(FahClientConnection connection, string commandText)
         {
             Connection = connection;
             CommandText = commandText;

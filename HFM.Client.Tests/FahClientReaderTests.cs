@@ -18,7 +18,7 @@ namespace HFM.Client
         public void FahClientReader_ReadThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientTcpConnection("foo", 2000));
+            var reader = new FahClientReader(new FahClientConnection("foo", 2000));
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => reader.Read());
         }
@@ -27,7 +27,7 @@ namespace HFM.Client
         public void FahClientReader_ReadAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientTcpConnection("foo", 2000));
+            var reader = new FahClientReader(new FahClientConnection("foo", 2000));
             // Act & Assert
             Assert.ThrowsAsync<InvalidOperationException>(() => reader.ReadAsync());
         }
@@ -36,7 +36,7 @@ namespace HFM.Client
         public void FahClientReader_ReadThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
-            using (var connection = new MockFahClientTcpConnection())
+            using (var connection = new MockFahClientConnection())
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -49,7 +49,7 @@ namespace HFM.Client
         public void FahClientReader_ReadAsyncThrowsInvalidOperationExceptionWhenTcpConnectionIsNoLongerConnected()
         {
             // Arrange
-            using (var connection = new MockFahClientTcpConnection())
+            using (var connection = new MockFahClientConnection())
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -58,16 +58,16 @@ namespace HFM.Client
             }
         }
 
-        private class MockFahClientTcpConnection : FahClientTcpConnection
+        private class MockFahClientConnection : FahClientConnection
         {
             private bool _connected;
 
             public override bool Connected => _connected;
 
-            // simulate losing the TcpConnection after the FahClientTcpConnection has been opened
+            // simulate losing the TcpConnection after the FahClientConnection has been opened
             public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
 
-            public MockFahClientTcpConnection()
+            public MockFahClientConnection()
                : base(new MockTcpConnectionFactory(), "foo", 2000)
             {
 
@@ -85,7 +85,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -100,7 +100,7 @@ namespace HFM.Client
         {
             // Arrange
             Func<TcpConnection> factory = () => new MockTcpConnection(() => new MockStreamThrowsOnRead());
-            using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+            using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
             {
                 connection.Open();
                 var reader = new FahClientReader(connection);
@@ -125,7 +125,7 @@ namespace HFM.Client
             using (var stream = CreateStreamWithMessage())
             {
                 Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
                 {
                     connection.Open();
                     var reader = new FahClientReader(connection);
@@ -148,7 +148,7 @@ namespace HFM.Client
             using (var stream = CreateStreamWithMessage())
             {
                 Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientTcpConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
+                using (var connection = new FahClientConnection(new MockTcpConnectionFactory(factory), "foo", 2000))
                 {
                     connection.Open();
                     var reader = new FahClientReader(connection);

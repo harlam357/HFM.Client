@@ -1,7 +1,7 @@
 ﻿
 using System;
 using System.Threading.Tasks;
-
+using HFM.Client.Internal;
 using HFM.Client.Sockets;
 
 namespace HFM.Client
@@ -9,23 +9,53 @@ namespace HFM.Client
     /// <summary>
     /// Folding@Home client connection.
     /// </summary>
-    public class FahClientTcpConnection : FahClientConnection, IDisposable
+    public class FahClientConnection : IDisposable
     {
+        /// <summary>
+        /// Occurs when the value of the <see cref="Connected"/> property has changed.
+        /// </summary>
+        public event EventHandler<FahClientConnectedChangedEventArgs> ConnectedChanged;
+
+        /// <summary>
+        /// Raises the <see cref="ConnectedChanged"/> event.
+        /// </summary>
+        /// <param name="e">A <see cref="FahClientConnectedChangedEventArgs"/> that contains event data.</param>
+        protected virtual void OnConnectedChanged(FahClientConnectedChangedEventArgs e)
+        {
+            ConnectedChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// Gets the name of the remote host.
+        /// </summary>
+        public string Host { get; }
+
+        /// <summary>
+        /// Gets the port number of the remote host.
+        /// </summary>
+        public int Port { get; }
+
+        /// <summary>
+        /// Gets or sets the time to wait while trying to establish a connection before terminating the attempt and generating an error.
+        /// </summary>
+        /// <returns>The time (in milliseconds) to wait for a connection to open. The default value is 5000 milliseconds.</returns>
+        public int ConnectionTimeout { get; set; } = 5000;
+
         /// <summary>
         /// Gets a value indicating whether the connection is connected to a client.
         /// </summary>
-        public override bool Connected => (TcpConnection?.Connected).GetValueOrDefault();
+        public virtual bool Connected => (TcpConnection?.Connected).GetValueOrDefault();
 
         public virtual TcpConnection TcpConnection { get; private set; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientTcpConnection"/> class.
+        /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
         /// </summary>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        public FahClientTcpConnection(string host, int port)
+        public FahClientConnection(string host, int port)
            : this(TcpConnectionFactory.Default, host, port)
         {
 
@@ -34,16 +64,20 @@ namespace HFM.Client
         private readonly TcpConnectionFactory _tcpConnectionFactory;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientTcpConnection"/> class.
+        /// Initializes a new instance of the <see cref="FahClientConnection"/> class.
         /// </summary>
         /// <param name="tcpConnectionFactory">The factory that will be used to create connections for TCP network services.</param>
         /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
         /// <param name="port">The port number of the remote host.</param>
         /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-        public FahClientTcpConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
-           : base(host, port)
+        public FahClientConnection(TcpConnectionFactory tcpConnectionFactory, string host, int port)
         {
+            if (host is null) throw new ArgumentNullException(nameof(host));
+            if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
+
+            Host = host;
+            Port = port;
             _tcpConnectionFactory = tcpConnectionFactory;
         }
 
@@ -51,7 +85,7 @@ namespace HFM.Client
         /// Opens the connection to the client.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is already open.</exception>
-        public override void Open()
+        public virtual void Open()
         {
             if (Connected) throw new InvalidOperationException("The connection is already open.");
 
@@ -71,7 +105,7 @@ namespace HFM.Client
         /// Asynchronously opens the connection to the client.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is already open.</exception>
-        public override async Task OpenAsync()
+        public virtual async Task OpenAsync()
         {
             if (Connected) throw new InvalidOperationException("The connection is already open.");
 
@@ -90,7 +124,7 @@ namespace HFM.Client
         /// <summary>
         /// Closes the connection to the client.
         /// </summary>
-        public override void Close()
+        public virtual void Close()
         {
             bool connected = Connected;
             // dispose of existing connection
@@ -107,9 +141,18 @@ namespace HFM.Client
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
         /// <param name="commandText">The Folding@Home client command statement.</param>
-        public FahClientCommand CreateCommand(string commandText)
+        public FahClientCommand CreateCommand()
         {
-            var command = CreateCommand();
+            return OnCreateCommand();
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
+        /// </summary>
+        /// <param name="commandText">The Folding@Home client command statement.</param>
+        public virtual FahClientCommand CreateCommand(string commandText)
+        {
+            var command = OnCreateCommand();
             command.CommandText = commandText;
             return command;
         }
@@ -117,7 +160,7 @@ namespace HFM.Client
         /// <summary>
         /// Creates and returns a <see cref="FahClientCommand"/> object associated with the current connection.
         /// </summary>
-        protected override FahClientCommand OnCreateCommand()
+        protected virtual FahClientCommand OnCreateCommand()
         {
             return new FahClientCommand(this);
         }
@@ -125,7 +168,15 @@ namespace HFM.Client
         /// <summary>
         /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
         /// </summary>
-        protected override FahClientReader OnCreateReader()
+        public FahClientReader CreateReader()
+        {
+            return OnCreateReader();
+        }
+
+        /// <summary>
+        /// Creates and returns a <see cref="FahClientReader"/> object associated with the current connection.
+        /// </summary>
+        protected virtual FahClientReader OnCreateReader()
         {
             return new FahClientReader(this);
         }
@@ -133,7 +184,7 @@ namespace HFM.Client
         private bool _disposed;
 
         /// <summary>
-        /// Releases all resources used by the <see cref="FahClientTcpConnection"/>.
+        /// Releases all resources used by the <see cref="FahClientConnection"/>.
         /// </summary>
         public void Dispose()
         {
@@ -142,7 +193,7 @@ namespace HFM.Client
         }
 
         /// <summary>
-        /// Releases the unmanaged resources used by the <see cref="FahClientTcpConnection"/> and optionally releases the managed resources.
+        /// Releases the unmanaged resources used by the <see cref="FahClientConnection"/> and optionally releases the managed resources.
         /// </summary>
         protected virtual void Dispose(bool disposing)
         {
