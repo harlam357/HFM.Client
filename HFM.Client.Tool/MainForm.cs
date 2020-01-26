@@ -32,9 +32,6 @@ namespace HFM.Client.Tool
     public partial class MainForm : Form
     {
         private FahClientConnection _fahClient;
-
-        private int _totalBytesSent;
-        private int _totalBytesReceived;
         private string _debugBufferFileName;
 
         public MainForm()
@@ -56,6 +53,10 @@ namespace HFM.Client.Tool
                 _fahClient = new FahClientConnection(HostAddressTextBox.Text, Int32.Parse(PortTextBox.Text));
                 _fahClient.ConnectedChanged += FahClientConnectedChanged;
                 _fahClient.Open();
+
+                ResetFahClientDataSent();
+                ResetFahClientDataReceived();
+
                 if (!String.IsNullOrWhiteSpace(PasswordTextBox.Text))
                 {
                     // TODO: send password
@@ -76,11 +77,6 @@ namespace HFM.Client.Tool
                         _fahClient.Close();
                     }
                 });
-
-                _totalBytesSent = 0;
-                SetDataSentValueLabelText(_totalBytesSent);
-                _totalBytesReceived = 0;
-                SetDataReceivedValueLabelText(_totalBytesReceived);
             }
             catch (Exception ex)
             {
@@ -91,6 +87,7 @@ namespace HFM.Client.Tool
         private void FahClientConnectedChanged(object sender, FahClientConnectedChangedEventArgs e)
         {
             SetConnectionButtonsEnabled(e.Connected);
+            SetStatusLabelText(e.Connected ? "Connected" : "Connection Closed");
         }
 
         private void FahClientMessageReceived(FahClientMessage message)
@@ -199,6 +196,14 @@ namespace HFM.Client.Tool
             FahClientDataSent(_fahClient.CreateCommand(commandText).Execute());
         }
 
+        private int _totalBytesSent;
+        
+        private void ResetFahClientDataSent()
+        {
+            _totalBytesSent = 0;
+            SetDataSentValueLabelText(_totalBytesSent);
+        }
+
         private void FahClientDataSent(int length)
         {
             unchecked
@@ -206,6 +211,14 @@ namespace HFM.Client.Tool
                 _totalBytesSent += length;
             }
             SetDataSentValueLabelText(_totalBytesSent);
+        }
+
+        private int _totalBytesReceived;
+
+        private void ResetFahClientDataReceived()
+        {
+            _totalBytesReceived = 0;
+            SetDataReceivedValueLabelText(_totalBytesReceived);
         }
 
         private void FahClientDataReceived(int length)
