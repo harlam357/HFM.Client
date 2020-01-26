@@ -153,6 +153,7 @@ namespace HFM.Client.Tool
                 if (_fahClient != null)
                 {
                     _fahClient.ConnectedChanged -= FahClientConnectedChanged;
+                    _fahClient.Dispose();
                 }
                 _fahClient = new FahClientConnection(HostAddressTextBox.Text, Int32.Parse(PortTextBox.Text));
                 _fahClient.ConnectedChanged += FahClientConnectedChanged;
@@ -200,7 +201,7 @@ namespace HFM.Client.Tool
 
         private void SendCommandButtonClick(object sender, EventArgs e)
         {
-            if (!_fahClient.Connected)
+            if (_fahClient == null || !_fahClient.Connected)
             {
                 MessageBox.Show("Not connected.");
                 return;
@@ -289,8 +290,7 @@ namespace HFM.Client.Tool
 
         private void ExecuteCommand(string commandText)
         {
-            _totalBytesSent = _fahClient.CreateCommand(commandText).Execute();
-            FahClientDataSent(_totalBytesSent);
+            FahClientDataSent(_fahClient.CreateCommand(commandText).Execute());
         }
 
         #region TextBox KeyPress Event Handler (to enforce digits only)
@@ -313,5 +313,34 @@ namespace HFM.Client.Tool
         }
 
         #endregion
+
+        private void StatusMessageListBox_Click(object sender, EventArgs e)
+        {
+            string value = StatusMessageListBox.SelectedItem as string;
+            if (!String.IsNullOrWhiteSpace(value))
+            {
+                var lines = MessageDisplayTextBox.Lines;    
+
+                int lineToGoto;
+                for (lineToGoto = 0; lineToGoto < lines.Length; lineToGoto++)
+                {
+                    string line = lines[lineToGoto];
+                    if (line.Contains(value))
+                    {
+                        break;
+                    }
+                }
+                if (lineToGoto < lines.Length)
+                {
+                    int position = 0;
+                    for (int i = 0; i < lineToGoto; i++)
+                    {
+                        position += lines[i].Length + Environment.NewLine.Length;
+                    }
+                    MessageDisplayTextBox.SelectionStart = position;
+                    MessageDisplayTextBox.ScrollToCaret();
+                }
+            }
+        }
     }
 }
