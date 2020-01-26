@@ -66,7 +66,7 @@ namespace HFM.Client
                 int bytesRead;
                 var stream = GetStream();
                 var buffer = GetBuffer();
-                while ((bytesRead = stream.Read(buffer, 0, buffer.Length)) != 0)
+                while ((bytesRead = OnReadStream(stream, buffer, 0, buffer.Length)) != 0)
                 {
                     if (ExtractMessage(buffer, bytesRead))
                     {
@@ -83,6 +83,19 @@ namespace HFM.Client
         }
 
         /// <summary>
+        /// Reads a sequence of bytes from the given stream and advances the position within the stream by the number of bytes read.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream" /> used to receive data.</param>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
+        protected virtual int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+        {
+            return stream.Read(buffer, 0, buffer.Length);
+        }
+
+        /// <summary>
         /// Asynchronously advances the reader to the next message received from the Folding@Home client and stores it in the <see cref="Message"/> property.
         /// </summary>
         /// <exception cref="InvalidOperationException">The connection is not open.</exception>
@@ -96,7 +109,7 @@ namespace HFM.Client
                 int bytesRead;
                 var stream = GetStream();
                 var buffer = GetBuffer();
-                while ((bytesRead = await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false)) != 0)
+                while ((bytesRead = await OnReadStreamAsync(stream, buffer, 0, buffer.Length).ConfigureAwait(false)) != 0)
                 {
                     if (ExtractMessage(buffer, bytesRead))
                     {
@@ -110,6 +123,19 @@ namespace HFM.Client
                 Connection.Close();
                 throw;
             }
+        }
+
+        /// <summary>
+        /// Asynchronously reads a sequence of bytes from the given stream and advances the position within the stream by the number of bytes read.
+        /// </summary>
+        /// <param name="stream">The <see cref="Stream" /> used to receive data.</param>
+        /// <param name="buffer">An array of bytes. When this method returns, the buffer contains the specified byte array with the values between offset and (offset + count - 1) replaced by the bytes read from the current stream.</param>
+        /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
+        /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
+        /// <returns>A task that represents the asynchronous read operation. The value of the TResult parameter contains the total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
+        protected virtual async Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+        {
+            return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
         }
 
         private byte[] _buffer;

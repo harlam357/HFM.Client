@@ -218,7 +218,6 @@
             this.LogMessagesCheckBox.TabIndex = 13;
             this.LogMessagesCheckBox.Text = "Log Messages";
             this.LogMessagesCheckBox.UseVisualStyleBackColor = true;
-            this.LogMessagesCheckBox.CheckedChanged += new System.EventHandler(this.LogMessagesCheckBoxCheckedChanged);
             // 
             // DataReceivedValueLabel
             // 

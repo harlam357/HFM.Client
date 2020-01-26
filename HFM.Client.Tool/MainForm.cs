@@ -32,7 +32,6 @@ namespace HFM.Client.Tool
     public partial class MainForm : Form
     {
         private FahClientConnection _fahClient;
-        private string _debugBufferFileName;
 
         public MainForm()
         {
@@ -50,7 +49,7 @@ namespace HFM.Client.Tool
                     _fahClient.ConnectedChanged -= FahClientConnectedChanged;
                     _fahClient.Dispose();
                 }
-                _fahClient = new FahClientConnection(HostAddressTextBox.Text, Int32.Parse(PortTextBox.Text));
+                _fahClient = CreateFahClientConnection();
                 _fahClient.ConnectedChanged += FahClientConnectedChanged;
                 _fahClient.Open();
 
@@ -82,6 +81,16 @@ namespace HFM.Client.Tool
             {
                 MessageBox.Show(ex.Message);
             }
+        }
+
+        private FahClientConnection CreateFahClientConnection()
+        {
+            string host = HostAddressTextBox.Text;
+            int port = Int32.Parse(PortTextBox.Text);
+
+            return LogMessagesCheckBox.Enabled
+                ? new LoggingFahClientConnection(host, port)
+                : new FahClientConnection(host, port);
         }
 
         private void FahClientConnectedChanged(object sender, FahClientConnectedChangedEventArgs e)
@@ -266,55 +275,6 @@ namespace HFM.Client.Tool
         private void SetDataReceivedValueLabelText(int value)
         {
             DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
-        }
-
-        private void LogMessagesCheckBoxCheckedChanged(object sender, EventArgs e)
-        {
-            if (LogMessagesCheckBox.Checked)
-            {
-                if (String.IsNullOrEmpty(_debugBufferFileName))
-                {
-                    using (var dlg = new OpenFileDialog { CheckFileExists = false })
-                    {
-                        if (dlg.ShowDialog(this).Equals(DialogResult.OK))
-                        {
-                            _debugBufferFileName = dlg.FileName;
-                        }
-                        else
-                        {
-                            LogMessagesCheckBox.Checked = false;
-                            return;
-                        }
-                    }
-                }
-
-                if (File.Exists(_debugBufferFileName))
-                {
-                    string message = String.Format(CultureInfo.CurrentCulture,
-                       "Do you want to delete the existing {0} file?", _debugBufferFileName);
-                    if (MessageBox.Show(this, message, Text, MessageBoxButtons.YesNo).Equals(DialogResult.Yes))
-                    {
-                        try
-                        {
-                            File.Delete(_debugBufferFileName);
-                        }
-                        catch (Exception)
-                        {
-                            MessageBox.Show(String.Format(CultureInfo.CurrentCulture,
-                               "Could not delete {0}.  Make sure the file is not already in use.", _debugBufferFileName));
-                            LogMessagesCheckBox.Checked = false;
-                            return;
-                        }
-                    }
-                }
-
-                //_fahClient.DebugBufferFileName = _debugBufferFileName;
-                //_fahClient.DebugReceiveBuffer = true;
-            }
-            else
-            {
-                //_fahClient.DebugReceiveBuffer = false;
-            }
         }
     }
 }
