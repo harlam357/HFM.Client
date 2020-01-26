@@ -44,14 +44,10 @@ namespace HFM.Client.Tool
         {
             try
             {
-                if (_fahClient != null)
-                {
-                    _fahClient.ConnectedChanged -= FahClientConnectedChanged;
-                    _fahClient.Dispose();
-                }
+                _fahClient?.Dispose();
                 _fahClient = CreateFahClientConnection();
-                _fahClient.ConnectedChanged += FahClientConnectedChanged;
                 _fahClient.Open();
+                FahClientConnectedChanged(_fahClient.Connected);
 
                 ResetFahClientDataSent();
                 ResetFahClientDataReceived();
@@ -74,8 +70,10 @@ namespace HFM.Client.Tool
                     }
                     catch (Exception)
                     {
-                        _fahClient.Close();
+                        // connection died
                     }
+                    _fahClient.Close();
+                    FahClientConnectedChanged(_fahClient.Connected);
                 });
             }
             catch (Exception ex)
@@ -94,10 +92,10 @@ namespace HFM.Client.Tool
                 : new FahClientConnection(host, port);
         }
 
-        private void FahClientConnectedChanged(object sender, FahClientConnectedChangedEventArgs e)
+        private void FahClientConnectedChanged(bool connected)
         {
-            SetConnectionButtonsEnabled(e.Connected);
-            SetStatusLabelText(e.Connected ? "Connected" : "Connection Closed");
+            SetConnectionButtonsEnabled(connected);
+            SetStatusLabelText(connected ? "Connected" : "Connection Closed");
         }
 
         private void FahClientMessageReceived(FahClientMessage message)

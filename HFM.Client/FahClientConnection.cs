@@ -13,20 +13,6 @@ namespace HFM.Client
     public class FahClientConnection : IDisposable
     {
         /// <summary>
-        /// Occurs when the value of the <see cref="Connected"/> property has changed.
-        /// </summary>
-        public event EventHandler<FahClientConnectedChangedEventArgs> ConnectedChanged;
-
-        /// <summary>
-        /// Raises the <see cref="ConnectedChanged"/> event.
-        /// </summary>
-        /// <param name="e">A <see cref="FahClientConnectedChangedEventArgs"/> that contains event data.</param>
-        protected virtual void OnConnectedChanged(FahClientConnectedChangedEventArgs e)
-        {
-            ConnectedChanged?.Invoke(this, e);
-        }
-
-        /// <summary>
         /// Gets the name of the remote host.
         /// </summary>
         public string Host { get; }
@@ -98,11 +84,6 @@ namespace HFM.Client
             // create new TcpConnection and connect
             TcpConnection = _tcpConnectionFactory.Create();
             TcpConnection.Connect(Host, Port, ConnectionTimeout);
-            // if connection state changed, raise event
-            if (Connected)
-            {
-                OnConnectedChanged(new FahClientConnectedChangedEventArgs(Connected));
-            }
         }
 
         /// <summary>
@@ -118,11 +99,6 @@ namespace HFM.Client
             // create new TcpConnection and connect
             TcpConnection = _tcpConnectionFactory.Create();
             await TcpConnection.ConnectAsync(Host, Port, ConnectionTimeout).ConfigureAwait(false);
-            // if connection state changed, raise event
-            if (Connected)
-            {
-                OnConnectedChanged(new FahClientConnectedChangedEventArgs(Connected));
-            }
         }
 
         /// <summary>
@@ -130,15 +106,9 @@ namespace HFM.Client
         /// </summary>
         public virtual void Close()
         {
-            bool connected = Connected;
             // dispose of existing connection
             TcpConnection?.Close();
             TcpConnection = null;
-            // if connection state changed, raise event
-            if (connected != Connected)
-            {
-                OnConnectedChanged(new FahClientConnectedChangedEventArgs(Connected));
-            }
         }
 
         /// <summary>

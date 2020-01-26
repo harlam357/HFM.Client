@@ -61,18 +61,14 @@ namespace HFM.Client
             // Arrange
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
-                bool connectedChanged = false;
-                connection.ConnectedChanged += (s, e) => connectedChanged = e.Connected;
                 // Act (Open)
                 connection.Open();
                 // Assert
                 Assert.IsTrue(connection.Connected);
-                Assert.IsTrue(connectedChanged);
                 // Act (Close)
                 connection.Close();
                 // Assert
                 Assert.IsFalse(connection.Connected);
-                Assert.IsFalse(connectedChanged);
             }
         }
 
@@ -82,18 +78,14 @@ namespace HFM.Client
             // Arrange
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
-                bool connectedChanged = false;
-                connection.ConnectedChanged += (s, e) => connectedChanged = e.Connected;
                 // Act (Open)
                 await connection.OpenAsync();
                 // Assert
                 Assert.IsTrue(connection.Connected);
-                Assert.IsTrue(connectedChanged);
                 // Act (Close)
                 connection.Close();
                 // Assert
                 Assert.IsFalse(connection.Connected);
-                Assert.IsFalse(connectedChanged);
             }
         }
 
@@ -103,8 +95,6 @@ namespace HFM.Client
             // Arrange
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory()))
             {
-                int connectedChangedCount = 0;
-                connection.ConnectedChanged += (s, e) => connectedChangedCount++;
                 // Act (Open)
                 connection.Open();
                 // Act (Close)
@@ -112,8 +102,6 @@ namespace HFM.Client
                 {
                     connection.Close();
                 }
-                // Assert - ConnectedChanged raised twice, on Open() and first Close()
-                Assert.AreEqual(2, connectedChangedCount);
             }
         }
 
