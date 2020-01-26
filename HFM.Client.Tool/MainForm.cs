@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -32,12 +33,23 @@ namespace HFM.Client.Tool
     public partial class MainForm : Form
     {
         private FahClientConnection _fahClient;
+        private readonly BlockingCollection<FahClientMessage> _messageQueue;
 
         public MainForm()
         {
             InitializeComponent();
 
             base.Text = $"HFM Client Tool v{FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion}";
+
+            _messageQueue = new BlockingCollection<FahClientMessage>();
+            Task.Run(() =>
+            {
+                FahClientMessage message;
+                while ((message = _messageQueue.Take()) != null)
+                {
+                    FahClientMessageReceived(message);
+                }
+            });
         }
 
         private void ConnectButtonClick(object sender, EventArgs e)
@@ -65,7 +77,7 @@ namespace HFM.Client.Tool
                     {
                         while (reader.Read())
                         {
-                            FahClientMessageReceived(reader.Message);
+                            _messageQueue.Add(reader.Message);
                         }
                     }
                     catch (Exception)
