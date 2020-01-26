@@ -186,5 +186,45 @@ namespace HFM.Client
                                                  "    \"Folding@home Client\",\r\n" +
                                                  "  ]\r\n" +
                                                  "]";
+
+        [Test]
+        public void FahClientReader_ReadReadsNoMessageFromConnection()
+        {
+            // Arrange
+            using (var stream = new MemoryStream())
+            {
+                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
+                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+                {
+                    connection.Open();
+                    var reader = new FahClientReader(connection);
+                    // Act
+                    bool result = reader.Read();
+                    // Assert
+                    Assert.IsFalse(result);
+                    Assert.IsNull(reader.Message);
+                }
+            }
+        }
+
+        [Test]
+        public async Task FahClientReader_ReadAsyncReadsNoMessageFromConnection()
+        {
+            // Arrange
+            using (var stream = new MemoryStream())
+            {
+                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
+                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+                {
+                    connection.Open();
+                    var reader = new FahClientReader(connection);
+                    // Act
+                    bool result = await reader.ReadAsync();
+                    // Assert
+                    Assert.IsFalse(result);
+                    Assert.IsNull(reader.Message);
+                }
+            }
+        }
     }
 }

@@ -66,14 +66,15 @@ namespace HFM.Client
                 int bytesRead;
                 var stream = GetStream();
                 var buffer = GetBuffer();
+
+                bool result = false;
                 while ((bytesRead = OnReadStream(stream, buffer, 0, buffer.Length)) != 0)
                 {
-                    if (ExtractMessage(buffer, bytesRead))
-                    {
-                        break;
-                    }
+                    if (!ExtractMessage(buffer, bytesRead)) continue;
+                    result = true;
+                    break;
                 }
-                return true;
+                return result;
             }
             catch (Exception)
             {
@@ -109,14 +110,15 @@ namespace HFM.Client
                 int bytesRead;
                 var stream = GetStream();
                 var buffer = GetBuffer();
+
+                bool result = false;
                 while ((bytesRead = await OnReadStreamAsync(stream, buffer, 0, buffer.Length).ConfigureAwait(false)) != 0)
                 {
-                    if (ExtractMessage(buffer, bytesRead))
-                    {
-                        break;
-                    }
+                    if (!ExtractMessage(buffer, bytesRead)) continue;
+                    result = true;
+                    break;
                 }
-                return true;
+                return result;
             }
             catch (Exception)
             {
