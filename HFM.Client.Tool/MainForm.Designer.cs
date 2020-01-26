@@ -286,7 +286,7 @@
             this.StatusMessageListBox.Name = "StatusMessageListBox";
             this.StatusMessageListBox.Size = new System.Drawing.Size(246, 184);
             this.StatusMessageListBox.TabIndex = 4;
-            this.StatusMessageListBox.Click += new System.EventHandler(this.StatusMessageListBox_Click);
+            this.StatusMessageListBox.Click += new System.EventHandler(this.StatusMessageListBoxClick);
             // 
             // MainForm
             // 
