@@ -56,9 +56,10 @@ namespace HFM.Client.Tool
                 ResetFahClientDataSent();
                 ResetFahClientDataReceived();
 
-                if (!String.IsNullOrWhiteSpace(PasswordTextBox.Text))
+                string password = PasswordTextBox.Text;
+                if (!String.IsNullOrWhiteSpace(password))
                 {
-                    // TODO: send password
+                    ExecuteFahClientCommand("auth " + password);
                 }
 
                 Task.Run(() =>
@@ -88,7 +89,7 @@ namespace HFM.Client.Tool
             string host = HostAddressTextBox.Text;
             int port = Int32.Parse(PortTextBox.Text);
 
-            return LogMessagesCheckBox.Enabled
+            return LogMessagesCheckBox.Checked
                 ? new LoggingFahClientConnection(host, port)
                 : new FahClientConnection(host, port);
         }
@@ -139,24 +140,31 @@ namespace HFM.Client.Tool
                 return;
             }
 
-            string command = CommandTextBox.Text;
-            if (command == "test-commands")
+            try
             {
-                ExecuteFahClientCommand("info");
-                ExecuteFahClientCommand("options -a");
-                ExecuteFahClientCommand("queue-info");
-                ExecuteFahClientCommand("slot-info");
-                ExecuteFahClientCommand("log-updates restart");
+                string command = CommandTextBox.Text;
+                if (command == "test-commands")
+                {
+                    ExecuteFahClientCommand("info");
+                    ExecuteFahClientCommand("options -a");
+                    ExecuteFahClientCommand("queue-info");
+                    ExecuteFahClientCommand("slot-info");
+                    ExecuteFahClientCommand("log-updates restart");
+                }
+                else
+                {
+                    ExecuteFahClientCommand(CommandTextBox.Text);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                ExecuteFahClientCommand(CommandTextBox.Text);
+                Console.WriteLine(ex.Message);
             }
         }
 
         private void DigitsOnlyKeyPress(object sender, KeyPressEventArgs e)
         {
-            Debug.WriteLine($"Keystroke: {(int) e.KeyChar}");
+            Debug.WriteLine($"Keystroke: {(int)e.KeyChar}");
 
             // only allow digits & special keystrokes
             if (char.IsDigit(e.KeyChar) == false &&
@@ -176,7 +184,7 @@ namespace HFM.Client.Tool
             string value = StatusMessageListBox.SelectedItem as string;
             if (!String.IsNullOrWhiteSpace(value))
             {
-                var lines = MessageDisplayTextBox.Lines;    
+                var lines = MessageDisplayTextBox.Lines;
 
                 int lineToGoto;
                 for (lineToGoto = 0; lineToGoto < lines.Length; lineToGoto++)
@@ -206,7 +214,7 @@ namespace HFM.Client.Tool
         }
 
         private int _totalBytesSent;
-        
+
         private void ResetFahClientDataSent()
         {
             _totalBytesSent = 0;
@@ -271,7 +279,7 @@ namespace HFM.Client.Tool
         {
             DataSentValueLabel.BeginInvokeOnUIThread(v => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
         }
-        
+
         private void SetDataReceivedValueLabelText(int value)
         {
             DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
