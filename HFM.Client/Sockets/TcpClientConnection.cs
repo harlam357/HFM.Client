@@ -32,35 +32,7 @@ namespace HFM.Client.Sockets
         /// <summary>
         /// Gets a value indicating whether the TCP connection is connected to a remote host.
         /// </summary>
-        public override bool Connected => TcpClient.Client != null && TcpClient.Connected; //&& GetTcpState(TcpClient) == TcpState.Established;
-
-        // https://stackoverflow.com/questions/1387459/how-to-check-if-tcpclient-connection-is-closed
-        private static TcpState GetTcpState(TcpClient tcpClient)
-        {
-            var localEndPoint = ToIPEndPoint(tcpClient.Client.LocalEndPoint);
-            var remoteEndPoint = ToIPEndPoint(tcpClient.Client.RemoteEndPoint);
-            
-            // if not IPEndPoints, assume Established state
-            if (localEndPoint == null || remoteEndPoint == null) return TcpState.Established;
-
-            var information = IPGlobalProperties.GetIPGlobalProperties()
-                .GetActiveTcpConnections()
-                .FirstOrDefault(x =>
-                    x.LocalEndPoint.Equals(localEndPoint) &&
-                    x.RemoteEndPoint.Equals(remoteEndPoint)
-                );
-
-            return information?.State ?? TcpState.Unknown;
-        }
-
-        private static IPEndPoint ToIPEndPoint(EndPoint endPoint)
-        {
-            return endPoint is IPEndPoint ipEndPoint
-                ? ipEndPoint.Address.IsIPv4MappedToIPv6
-                    ? new IPEndPoint(ipEndPoint.Address.MapToIPv4(), ipEndPoint.Port)
-                    : ipEndPoint
-                : null;
-        }
+        public override bool Connected => TcpClient.Client != null && TcpClient.Connected;
 
         /// <summary>
         /// Connects to a remote TCP host using the specified host and port number.
