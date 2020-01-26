@@ -51,9 +51,11 @@ namespace HFM.Client.Tool
 
         private void FahClientMessageReceived(FahClientMessage message)
         {
-            AppendToMessageDisplayTextBox(String.Empty);
-            AppendToMessageDisplayTextBox(message.ToString());
-            UpdateStatusLabel(message.Identifier.ToString());
+            AppendTextToMessageDisplayTextBox(String.Empty);
+            AppendTextToMessageDisplayTextBox(FahClientMessageHelper.FormatForDisplay(message));
+            var identifier = message.Identifier.ToString();
+            SetStatusLabelText(identifier);
+            AddTextToStatusMessageListBox(identifier);
             FahClientDataReceived(message);
 
             if (message.Identifier.MessageType == FahClientMessageType.SlotInfo)
@@ -67,34 +69,23 @@ namespace HFM.Client.Tool
             }
         }
 
-        private void AppendToMessageDisplayTextBox(string text)
+        private void AppendTextToMessageDisplayTextBox(string text)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<string>(AppendToMessageDisplayTextBox), text);
-                return;
-            }
-
-            MessageDisplayTextBox.AppendText(SetEnvironmentNewLineCharacters(text));
+            MessageDisplayTextBox.BeginInvokeOnUIThread(t => MessageDisplayTextBox.AppendText(t), text);
         }
 
-        private static string SetEnvironmentNewLineCharacters(string text)
+        private void SetStatusLabelText(string text)
         {
-            text = text.Replace("\n", Environment.NewLine);
-            return text.Replace("\\n", Environment.NewLine);
+            this.BeginInvokeOnUIThread(t => StatusLabel.Text = t, text);
         }
 
-        private void UpdateStatusLabel(string text)
+        private void AddTextToStatusMessageListBox(string text)
         {
-            if (InvokeRequired)
+            StatusMessageListBox.BeginInvokeOnUIThread(t =>
             {
-                BeginInvoke(new Action<string>(UpdateStatusLabel), text);
-                return;
-            }
-
-            StatusLabel.Text = text;
-            StatusMessageListBox.Items.Add(text);
-            StatusMessageListBox.SelectedIndex = StatusMessageListBox.Items.Count - 1;
+                StatusMessageListBox.Items.Add(text);
+                StatusMessageListBox.SelectedIndex = StatusMessageListBox.Items.Count - 1;
+            }, text);
         }
 
         private void LogMessagesCheckBoxCheckedChanged(object sender, EventArgs e)
@@ -180,9 +171,9 @@ namespace HFM.Client.Tool
                 });
 
                 _totalBytesSent = 0;
-                UpdateDataSentValueLabel(_totalBytesSent);
+                SetDataSentValueLabelText(_totalBytesSent);
                 _totalBytesReceived = 0;
-                UpdateDataReceivedValueLabel(_totalBytesReceived);
+                SetDataReceivedValueLabelText(_totalBytesReceived);
             }
             catch (InvalidOperationException ex)
             {
@@ -224,19 +215,16 @@ namespace HFM.Client.Tool
 
         private void FahClientConnectedChanged(object sender, FahClientConnectedChangedEventArgs e)
         {
-            SetConnectionButtons(e.Connected);
+            SetConnectionButtonsEnabled(e.Connected);
         }
 
-        private void SetConnectionButtons(bool connected)
+        private void SetConnectionButtonsEnabled(bool connected)
         {
-            if (InvokeRequired)
+            this.BeginInvokeOnUIThread(c =>
             {
-                BeginInvoke(new Action<bool>(SetConnectionButtons), connected);
-                return;
-            }
-
-            ConnectButton.Enabled = !connected;
-            CloseButton.Enabled = connected;
+                ConnectButton.Enabled = !connected;
+                CloseButton.Enabled = connected;
+            }, connected);
         }
 
         private void ClearMessagesButtonClick(object sender, EventArgs e)
@@ -252,19 +240,12 @@ namespace HFM.Client.Tool
             {
                 _totalBytesSent += length;
             }
-            UpdateDataSentValueLabel(_totalBytesSent);
+            SetDataSentValueLabelText(_totalBytesSent);
         }
 
-        private void UpdateDataSentValueLabel(int value)
+        private void SetDataSentValueLabelText(int value)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<int>(UpdateDataSentValueLabel), value);
-                return;
-            }
-
-            DataSentValueLabel.Text = String.Format(CultureInfo.CurrentCulture,
-               "{0:0.0} KBs", value / 1024.0);
+            DataSentValueLabel.BeginInvokeOnUIThread(v => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
         }
 
         private void FahClientDataReceived(FahClientMessage message)
@@ -273,19 +254,12 @@ namespace HFM.Client.Tool
             {
                 _totalBytesReceived += message.MessageText.Length;
             }
-            UpdateDataReceivedValueLabel(_totalBytesReceived);
+            SetDataReceivedValueLabelText(_totalBytesReceived);
         }
 
-        private void UpdateDataReceivedValueLabel(int value)
+        private void SetDataReceivedValueLabelText(int value)
         {
-            if (InvokeRequired)
-            {
-                BeginInvoke(new Action<int>(UpdateDataReceivedValueLabel), value);
-                return;
-            }
-
-            DataReceivedValueLabel.Text = String.Format(CultureInfo.CurrentCulture,
-               "{0:0.0} KBs", value / 1024.0);
+            DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
         }
 
         private void ExecuteCommand(string commandText)
