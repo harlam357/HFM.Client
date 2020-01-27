@@ -173,6 +173,61 @@ namespace HFM.Client
             return stream;
         }
 
+        [Test]
+        public void FahClientReader_ReadExtractsExistingMessage()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReader(connection, new FahClientMessageExtractorWithMessage(MessageFromStream));
+                reader.BufferSize = 8;
+                // Act
+                bool result = reader.Read();
+                // Assert
+                Assert.IsTrue(result);
+                var message = reader.Message;
+                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+                Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
+            }
+        }
+
+        [Test]
+        public async Task FahClientReader_ReadAsyncExtractsExistingMessage()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReader(connection, new FahClientMessageExtractorWithMessage(MessageFromStream));
+                reader.BufferSize = 8;
+                // Act
+                bool result = await reader.ReadAsync();
+                // Assert
+                Assert.IsTrue(result);
+                var message = reader.Message;
+                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+                Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
+            }
+        }
+
+        private class FahClientMessageExtractorWithMessage : FahClientJsonMessageExtractor
+        {
+            private readonly string _messageText;
+
+            public FahClientMessageExtractorWithMessage(string messageText)
+            {
+                _messageText = messageText;
+            }
+
+            public override FahClientMessage Extract(StringBuilder buffer)
+            {
+                return base.Extract(new StringBuilder(_messageText));
+            }
+        }
+
         private const string MessageFromStream = "PyON 1 info\r\n" +
                                                  "[\r\n" +
                                                  "  [\r\n" +
@@ -191,19 +246,16 @@ namespace HFM.Client
         public void FahClientReader_ReadReadsNoMessageFromConnection()
         {
             // Arrange
-            using (var stream = new MemoryStream())
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
-                {
-                    connection.Open();
-                    var reader = new FahClientReader(connection);
-                    // Act
-                    bool result = reader.Read();
-                    // Assert
-                    Assert.IsFalse(result);
-                    Assert.IsNull(reader.Message);
-                }
+                connection.Open();
+                var reader = new FahClientReader(connection);
+                // Act
+                bool result = reader.Read();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
             }
         }
 
@@ -211,19 +263,16 @@ namespace HFM.Client
         public async Task FahClientReader_ReadAsyncReadsNoMessageFromConnection()
         {
             // Arrange
-            using (var stream = new MemoryStream())
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
-                using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
-                {
-                    connection.Open();
-                    var reader = new FahClientReader(connection);
-                    // Act
-                    bool result = await reader.ReadAsync();
-                    // Assert
-                    Assert.IsFalse(result);
-                    Assert.IsNull(reader.Message);
-                }
+                connection.Open();
+                var reader = new FahClientReader(connection);
+                // Act
+                bool result = await reader.ReadAsync();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
             }
         }
     }

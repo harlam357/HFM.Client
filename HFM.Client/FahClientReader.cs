@@ -61,6 +61,11 @@ namespace HFM.Client
         {
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
 
+            if (ExtractMessage(null, 0))
+            {
+                return true;
+            }
+
             try
             {
                 int bytesRead;
@@ -104,6 +109,11 @@ namespace HFM.Client
         public virtual async Task<bool> ReadAsync()
         {
             if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
+
+            if (ExtractMessage(null, 0))
+            {
+                return true;
+            }
 
             try
             {
@@ -165,7 +175,10 @@ namespace HFM.Client
 
         private bool ExtractMessage(byte[] buffer, int bytesRead)
         {
-            _readBuffer.Append(Encoding.ASCII.GetChars(buffer, 0, bytesRead));
+            if (buffer != null)
+            {
+                _readBuffer.Append(Encoding.ASCII.GetChars(buffer, 0, bytesRead));
+            }
             var nextMessage = MessageExtractor.Extract(_readBuffer);
             if (nextMessage != null)
             {
