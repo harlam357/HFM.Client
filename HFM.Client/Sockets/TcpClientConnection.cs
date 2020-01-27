@@ -1,9 +1,6 @@
 ﻿
 using System;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -88,10 +85,7 @@ namespace HFM.Client.Sockets
         /// <summary>
         /// Disposes this <see cref="TcpClientConnection" /> instance and requests that the TCP connection be closed.
         /// </summary>
-        public override void Close()
-        {
-            ((IDisposable)this).Dispose();
-        }
+        public override void Close() => Dispose();
 
         /// <summary>
         /// Returns the <see cref="NetworkStream" /> used to send and receive data if connected; otherwise, null.
@@ -103,10 +97,29 @@ namespace HFM.Client.Sockets
 
         private bool _disposed;
 
-        void IDisposable.Dispose()
+        /// <summary>
+        /// Releases the unmanaged resources used by the <see cref="TcpClientConnection"/> and optionally releases the managed resources.
+        /// </summary>
+        /// <param name="disposing">Set to true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
         {
-            TcpClient.Close();
+            if (!_disposed)
+            {
+                if (disposing)
+                {
+                    TcpClient.Dispose();
+                }
+            }
             _disposed = true;
+        }
+
+        /// <summary>
+        /// Releases the managed and unmanaged resources used by the <see cref="TcpClientConnection"/>.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

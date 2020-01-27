@@ -36,7 +36,7 @@ namespace HFM.Client
         /// <returns>true if the current <see cref="FahClientMessageIdentifier"/> is equal to the <paramref name="other" /> parameter; otherwise, false.</returns>
         public bool Equals(FahClientMessageIdentifier other)
         {
-            return String.Equals(MessageType, other.MessageType) && Received.Equals(other.Received);
+            return String.Equals(MessageType, other.MessageType, StringComparison.Ordinal) && Received.Equals(other.Received);
         }
 
         /// <summary>
@@ -46,7 +46,7 @@ namespace HFM.Client
         /// <returns>true if <paramref name="obj" /> and this instance are the same type and represent the same value; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (obj is null) return false;
             return obj is FahClientMessageIdentifier other && Equals(other);
         }
 
@@ -69,5 +69,17 @@ namespace HFM.Client
         {
             return $"Message Type: {MessageType} - Received at: {Received}";
         }
+        
+#pragma warning disable 1591
+        public static bool operator ==(FahClientMessageIdentifier left, FahClientMessageIdentifier right)
+        {
+            return left.Equals(right);
+        }
+        
+        public static bool operator !=(FahClientMessageIdentifier left, FahClientMessageIdentifier right)
+        {
+            return !(left == right);
+        }
+#pragma warning restore 1591
     }
 }
