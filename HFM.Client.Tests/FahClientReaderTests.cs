@@ -275,5 +275,109 @@ namespace HFM.Client
                 Assert.IsNull(reader.Message);
             }
         }
+
+        [Test]
+        public void FahClientReader_OnReadStream_ReturnsZeroWhenStreamIsNull()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReaderReturnsZeroWhenStreamIsNull(connection);
+                // Act
+                bool result = reader.Read();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
+            }
+        }
+
+        [Test]
+        public async Task FahClientReader_OnReadStreamAsync_ReturnsZeroWhenStreamIsNull()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReaderReturnsZeroWhenStreamIsNull(connection);
+                // Act
+                bool result = await reader.ReadAsync();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
+            }
+        }
+
+        private class FahClientReaderReturnsZeroWhenStreamIsNull : FahClientReader
+        {
+            public FahClientReaderReturnsZeroWhenStreamIsNull(FahClientConnection connection) : base(connection)
+            {
+
+            }
+
+            protected override int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+            {
+                return base.OnReadStream(null, buffer, offset, count);
+            }
+
+            protected override Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+            {
+                return base.OnReadStreamAsync(null, buffer, offset, count);
+            }
+        }
+
+        [Test]
+        public void FahClientReader_OnReadStream_ReturnsZeroWhenBufferIsNull()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReaderReturnsZeroWhenBufferIsNull(connection);
+                // Act
+                bool result = reader.Read();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
+            }
+        }
+
+        [Test]
+        public async Task FahClientReader_OnReadStreamAsync_ReturnsZeroWhenBufferIsNull()
+        {
+            // Arrange
+            Func<TcpConnection> factory = () => new MockTcpConnection();
+            using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
+            {
+                connection.Open();
+                var reader = new FahClientReaderReturnsZeroWhenBufferIsNull(connection);
+                // Act
+                bool result = await reader.ReadAsync();
+                // Assert
+                Assert.IsFalse(result);
+                Assert.IsNull(reader.Message);
+            }
+        }
+
+        private class FahClientReaderReturnsZeroWhenBufferIsNull : FahClientReader
+        {
+            public FahClientReaderReturnsZeroWhenBufferIsNull(FahClientConnection connection) : base(connection)
+            {
+
+            }
+
+            protected override int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+            {
+                return base.OnReadStream(stream, null, offset, count);
+            }
+
+            protected override Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+            {
+                return base.OnReadStreamAsync(stream, null, offset, count);
+            }
+        }
     }
 }

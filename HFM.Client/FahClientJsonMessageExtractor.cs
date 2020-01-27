@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,9 +15,13 @@ namespace HFM.Client
         /// <summary>
         /// Extracts indexes from the <paramref name="buffer"/> and stores them in the <paramref name="indexes"/> dictionary for later processing.
         /// </summary>
+        /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
         /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
         protected override bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
         {
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
+            if (indexes is null) throw new ArgumentNullException(nameof(indexes));
+
             if (!base.ExtractIndexes(buffer, indexes))
             {
                 return false;
@@ -39,9 +44,13 @@ namespace HFM.Client
         /// <summary>
         /// Extracts the message text from the <paramref name="buffer"/>.
         /// </summary>
+        /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
         /// <returns>The message text as a string.</returns>
         protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
         {
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
+            if (indexes is null) throw new ArgumentNullException(nameof(indexes));
+
             int start = indexes[IndexKey.BeginObject];
             int end = indexes[IndexKey.StartFooter];
             var text = new StringBuilder(end - start);

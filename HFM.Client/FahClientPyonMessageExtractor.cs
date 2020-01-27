@@ -39,9 +39,13 @@ namespace HFM.Client
         /// <summary>
         /// Extracts indexes from the <paramref name="buffer"/> and stores them in the <paramref name="indexes"/> dictionary for later processing.
         /// </summary>
+        /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
         /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
         protected virtual bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
         {
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
+            if (indexes is null) throw new ArgumentNullException(nameof(indexes));
+
             var headerIndexes = IndexesOf(buffer, SearchValue.PyonHeader, 0);
             if (headerIndexes.Start < 0) return false;
             indexes[IndexKey.StartHeader] = headerIndexes.Start;
@@ -72,9 +76,13 @@ namespace HFM.Client
         /// <summary>
         /// Extracts the message type from the <paramref name="buffer"/>.
         /// </summary>
+        /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
         /// <returns>The message type as a string.</returns>
         protected virtual string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
         {
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
+            if (indexes is null) throw new ArgumentNullException(nameof(indexes));
+
             int start = indexes[IndexKey.StartMessageType];
             int end = indexes[IndexKey.EndMessageType];
             return buffer.ToString(start, end - start);
@@ -83,9 +91,13 @@ namespace HFM.Client
         /// <summary>
         /// Extracts the message text from the <paramref name="buffer"/>.
         /// </summary>
+        /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
         /// <returns>The message text as a string.</returns>
         protected virtual StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
         {
+            if (buffer is null) throw new ArgumentNullException(nameof(buffer));
+            if (indexes is null) throw new ArgumentNullException(nameof(indexes));
+
             int start = indexes[IndexKey.StartHeader];
             int end = indexes[IndexKey.EndFooter];
             var text = new StringBuilder(end - start);

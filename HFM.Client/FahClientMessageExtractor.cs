@@ -27,14 +27,18 @@ namespace HFM.Client
         /// </summary>
         protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
         {
-            foreach (var value in values)
+            if (values != null)
             {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
+                foreach (var value in values)
                 {
-                    return (index, index + value.Length);
+                    int index = buffer.IndexOf(value, startIndex);
+                    if (index >= 0)
+                    {
+                        return (index, index + value.Length);
+                    }
                 }
             }
+
             return NoIndexTuple;
         }
 
@@ -43,14 +47,18 @@ namespace HFM.Client
         /// </summary>
         protected static int IndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
         {
-            foreach (var value in values)
+            if (values != null)
             {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
+                foreach (var value in values)
                 {
-                    return index;
+                    int index = buffer.IndexOf(value, startIndex);
+                    if (index >= 0)
+                    {
+                        return index;
+                    }
                 }
             }
+
             return -1;
         }
 
@@ -59,14 +67,18 @@ namespace HFM.Client
         /// </summary>
         protected static int EndIndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
         {
-            foreach (var value in values)
+            if (values != null)
             {
-                int index = buffer.IndexOf(value, startIndex);
-                if (index >= 0)
+                foreach (var value in values)
                 {
-                    return index + value.Length;
+                    int index = buffer.IndexOf(value, startIndex);
+                    if (index >= 0)
+                    {
+                        return index + value.Length;
+                    }
                 }
             }
+
             return -1;
         }
 
@@ -75,11 +87,15 @@ namespace HFM.Client
         /// </summary>
         protected static (int Start, int End) IndexesOf(StringBuilder buffer, string value, int startIndex)
         {
-            int index = buffer.IndexOf(value, startIndex);
-            if (index >= 0)
+            if (value != null)
             {
-                return (index, index + value.Length);
+                int index = buffer.IndexOf(value, startIndex);
+                if (index >= 0)
+                {
+                    return (index, index + value.Length);
+                }
             }
+
             return NoIndexTuple;
         }
 

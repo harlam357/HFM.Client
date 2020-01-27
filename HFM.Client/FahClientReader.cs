@@ -98,6 +98,9 @@ namespace HFM.Client
         /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
         protected virtual int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
         {
+            if (stream is null) return 0;
+            if (buffer is null) return 0;
+
             return stream.Read(buffer, 0, buffer.Length);
         }
 
@@ -147,6 +150,9 @@ namespace HFM.Client
         /// <returns>A task that represents the asynchronous read operation. The value of the TResult parameter contains the total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
         protected virtual async Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
         {
+            if (stream is null) return 0;
+            if (buffer is null) return 0;
+
             return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
         }
 
