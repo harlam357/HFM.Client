@@ -68,23 +68,20 @@ namespace HFM.Client.Tool
                     await ExecuteFahClientCommandAsync("auth " + password);
                 }
 
-                _ = Task.Run(async () =>
+                var reader = _fahClient.CreateReader();
+                try
+                {
+                    while (await reader.ReadAsync().ConfigureAwait(false))
                     {
-                        var reader = _fahClient.CreateReader();
-                        try
-                        {
-                            while (await reader.ReadAsync())
-                            {
-                                _messageQueue.Add(reader.Message);
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            // connection died
-                        }
-                        _fahClient.Close();
-                        FahClientConnectedChanged(_fahClient.Connected);
-                    });
+                        _messageQueue.Add(reader.Message);
+                    }
+                }
+                catch (Exception)
+                {
+                    // connection died
+                }
+                _fahClient.Close();
+                FahClientConnectedChanged(_fahClient.Connected);
             }
             catch (Exception ex)
             {
