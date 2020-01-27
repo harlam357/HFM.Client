@@ -94,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\HFM.Client\HFM.Client.csproj">
-      <Project>{B1BB2AF4-5C2F-42A7-80B4-7291D3E4BC39}</Project>
+      <Project>{777c0169-49c5-4726-a137-496c7094c60b}</Project>
       <Name>HFM.Client</Name>
     </ProjectReference>
   </ItemGroup>

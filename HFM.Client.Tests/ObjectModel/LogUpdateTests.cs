@@ -26,9 +26,11 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void LogUpdate_Load_TextReader_FromClientVersion_7_1_24()
         {
-            using var reader = new StreamReader(TestDataReader.ReadStream("Client_7_1_24_log-restart.txt"));
-            var logUpdate = LogUpdate.Load(reader);
-            Assert.AreEqual(65571, logUpdate.Value.Length);
+            using (var reader = new StreamReader(TestDataReader.ReadStream("Client_7_1_24_log-restart.txt")))
+            {
+                var logUpdate = LogUpdate.Load(reader);
+                Assert.AreEqual(65571, logUpdate.Value.Length);
+            }
         }
 
         [Test]

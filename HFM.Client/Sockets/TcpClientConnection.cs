@@ -107,7 +107,7 @@ namespace HFM.Client.Sockets
             {
                 if (disposing)
                 {
-                    TcpClient.Dispose();
+                    TcpClient.Close();
                 }
             }
             _disposed = true;

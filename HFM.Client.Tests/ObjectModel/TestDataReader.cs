@@ -10,8 +10,10 @@ namespace HFM.Client.ObjectModel
     {
         internal static string ReadString(string resourceName)
         {
-            using var reader = new StreamReader(ReadStream(resourceName));
-            return reader.ReadToEnd();
+            using (var reader = new StreamReader(ReadStream(resourceName)))
+            {
+                return reader.ReadToEnd();
+            }
         }
 
         internal static StringBuilder ReadStringBuilder(string resourceName)
@@ -40,11 +42,13 @@ namespace HFM.Client.ObjectModel
             var result = new StringBuilder((int)stream.Length);
             Span<char> buffer = stackalloc char[128];
 
-            using var reader = new StreamReader(stream);
-            int bytesRead;
-            while ((bytesRead = reader.ReadBlock(buffer)) > 0)
+            using (var reader = new StreamReader(stream))
             {
-                result.Append(buffer.Slice(0, bytesRead));
+                int bytesRead;
+                while ((bytesRead = reader.ReadBlock(buffer)) > 0)
+                {
+                    result.Append(buffer.Slice(0, bytesRead));
+                }
             }
             return result;
         }

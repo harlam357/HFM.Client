@@ -101,7 +101,11 @@ namespace HFM.Client
         {
             if (commandText is null)
             {
+#if NET45
+                return new byte[0];
+#else
                 return Array.Empty<byte>();
+#endif
             }
             if (!commandText.EndsWith("\n", StringComparison.Ordinal))
             {

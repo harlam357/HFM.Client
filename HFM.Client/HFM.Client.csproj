@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;net47</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net47;net45</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>harlam357</Authors>
     <Copyright>Copyright (C) 2009-2020 Ryan Harlamert (harlam357)</Copyright>
@@ -25,8 +25,8 @@
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Properties\" />
+  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>
