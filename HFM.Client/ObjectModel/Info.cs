@@ -17,13 +17,10 @@ namespace HFM.Client.ObjectModel
         public Info()
         {
             Client = new ClientInfo();
-            Build = new BuildInfo();
             System = new SystemInfo();
         }
 
         public ClientInfo Client { get; }
-
-        public BuildInfo Build { get; }
 
         public SystemInfo System { get; }
 
@@ -48,28 +45,21 @@ namespace HFM.Client.ObjectModel
     /// </summary>
     public class ClientInfo
     {
-        public string Website { get; set; }
-        public string Copyright { get; set; }
-        public string Author { get; set; }
-        public string Args { get; set; }
-        public string Config { get; set; }
-    }
-
-    /// <summary>
-    /// Folding@Home client build information.
-    /// </summary>
-    public class BuildInfo
-    {
         public string Version { get; set; }
+        public string Author { get; set; }
+        public string Copyright { get; set; }
+        public string Homepage { get; set; }
         public string Date { get; set; }
         public string Time { get; set; }
-        public int? SVNRev { get; set; }
+        public string Revision { get; set; }
         public string Branch { get; set; }
         public string Compiler { get; set; }
         public string Options { get; set; }
         public string Platform { get; set; }
         public int? Bits { get; set; }
         public string Mode { get; set; }
+        public string Args { get; set; }
+        public string Config { get; set; }
     }
 
     /// <summary>
@@ -77,7 +67,6 @@ namespace HFM.Client.ObjectModel
     /// </summary>
     public class SystemInfo
     {
-        public string OS { get; set; }
         public string CPU { get; set; }
         public string CPUID { get; set; }
         public int? CPUs { get; set; }
@@ -86,15 +75,16 @@ namespace HFM.Client.ObjectModel
         public string FreeMemory { get; set; }
         public double? FreeMemoryValue { get; set; }
         public string Threads { get; set; }
-        public int? GPUs { get; set; }
-        public IDictionary<int, GPUInfo> GPUInfos { get; set; }
-        public string CUDA { get; set; }
-        public string CUDADriver { get; set; }
+        public string OSVersion { get; set; }
         public bool? HasBattery { get; set; }
         public bool? OnBattery { get; set; }
         public int? UtcOffset { get; set; }
         public int? PID { get; set; }
         public string CWD { get; set; }
+        public string OS { get; set; }
+        public string OSArch { get; set; }
+        public int? GPUs { get; set; }
+        public IDictionary<int, GPUInfo> GPUInfos { get; set; }
         public bool? Win32Service { get; set; }
     }
 
@@ -106,5 +96,7 @@ namespace HFM.Client.ObjectModel
         public int ID { get; set; }
         public string GPU { get; set; }
         public string FriendlyName { get; set; }
+        public string CUDADevice { get; set; }
+        public string OpenCLDevice { get; set; }
     }
 }

@@ -7,8 +7,8 @@
     <Copyright>Copyright (C) 2009-2020 Ryan Harlamert (harlam357)</Copyright>
     <Description>Client API for Folding@Home version 7 clients</Description>
     <PackageTags>Folding@Home HFM TCP Client</PackageTags>
-    <Version>0.1.1</Version>
-    <AssemblyVersion>0.1.0.0</AssemblyVersion>
+    <Version>0.2.0</Version>
+    <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\HFM.Client.xml</DocumentationFile>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\harlam357.snk</AssemblyOriginatorKeyFile>

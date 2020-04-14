@@ -18,28 +18,20 @@ namespace HFM.Client.ObjectModel.Internal
             var array = LoadJArray(textReader);
 
             var info = new Info();
-            var client = GetArrayToken(array, "Folding@home Client");
-            info.Client.Website = GetValue<string>(client, "Website");
-            info.Client.Copyright = GetValue<string>(client, "Copyright");
-            info.Client.Author = GetValue<string>(client, "Author");
-            info.Client.Args = GetValue<string>(client, "Args")?.Trim();
-            info.Client.Config = GetValue<string>(client, "Config");
-
-            var build = GetArrayToken(array, "Build");
-            info.Build.Version = GetValue<string>(build, "Version");
-            info.Build.Date = GetValue<string>(build, "Date");
-            info.Build.Time = GetValue<string>(build, "Time");
-            info.Build.SVNRev = GetValue<int?>(build, "SVN Rev");
-            info.Build.Branch = GetValue<string>(build, "Branch");
-            info.Build.Compiler = GetValue<string>(build, "Compiler");
-            info.Build.Options = GetValue<string>(build, "Options");
-            info.Build.Platform = GetValue<string>(build, "Platform");
-            info.Build.Bits = GetValue<int?>(build, "Bits");
-            info.Build.Mode = GetValue<string>(build, "Mode");
+            var client = GetArrayToken(array, "FAHClient");
+            if (client != null)
+            {
+                FahClientLoader(client, info.Client);
+            }
+            else
+            {
+                client = GetArrayToken(array, "Folding@home Client");
+                var build = GetArrayToken(array, "Build");
+                FoldingAtHomeClientLoader(client, build, info.Client);
+            }
 
             var system = GetArrayToken(array, "System");
-            info.System.OS = GetValue<string>(system, "OS");
-            info.System.CPU = GetValue<string>(system, "CPU");
+            info.System.CPU = GetValue<string>(system, "CPU")?.Trim();
             info.System.CPUID = GetValue<string>(system, "CPU ID");
             info.System.CPUs = GetValue<int?>(system, "CPUs");
             info.System.Memory = GetValue<string>(system, "Memory");
@@ -47,18 +39,57 @@ namespace HFM.Client.ObjectModel.Internal
             info.System.FreeMemory = GetValue<string>(system, "Free Memory");
             info.System.FreeMemoryValue = ConvertToMemoryValue(info.System.FreeMemory);
             info.System.Threads = GetValue<string>(system, "Threads");
-            info.System.GPUs = GetValue<int?>(system, "GPUs");
-            info.System.GPUInfos = BuildGPUInfos(system);
-            info.System.CUDA = GetValue<string>(system, "CUDA");
-            info.System.CUDADriver = GetValue<string>(system, "CUDA Driver");
+            info.System.OSVersion = GetValue<string>(system, "OS Version");
             info.System.HasBattery = GetValue<bool?>(system, "Has Battery");
             info.System.OnBattery = GetValue<bool?>(system, "On Battery");
-            info.System.UtcOffset = GetValue<int?>(system, "UTC offset");
+            info.System.UtcOffset = GetValue<int?>(system, "UTC Offset", StringComparison.OrdinalIgnoreCase);
             info.System.PID = GetValue<int?>(system, "PID");
             info.System.CWD = GetValue<string>(system, "CWD");
+            info.System.OS = GetValue<string>(system, "OS");
+            info.System.OSArch = GetValue<string>(system, "OS Arch");
+            info.System.GPUs = GetValue<int?>(system, "GPUs");
+            info.System.GPUInfos = BuildGPUInfos(system);
             info.System.Win32Service = GetValue<bool?>(system, "Win32 Service");
 
             return info;
+        }
+
+        private static void FahClientLoader(JToken client, ClientInfo clientInfo)
+        {
+            clientInfo.Version = GetValue<string>(client, "Version");
+            clientInfo.Author = GetValue<string>(client, "Author");
+            clientInfo.Copyright = GetValue<string>(client, "Copyright");
+            clientInfo.Homepage = GetValue<string>(client, "Homepage");
+            clientInfo.Date = GetValue<string>(client, "Date");
+            clientInfo.Time = GetValue<string>(client, "Time");
+            clientInfo.Revision = GetValue<string>(client, "Revision");
+            clientInfo.Branch = GetValue<string>(client, "Branch");
+            clientInfo.Compiler = GetValue<string>(client, "Compiler");
+            clientInfo.Options = GetValue<string>(client, "Options");
+            clientInfo.Platform = GetValue<string>(client, "Platform");
+            clientInfo.Bits = GetValue<int?>(client, "Bits");
+            clientInfo.Mode = GetValue<string>(client, "Mode");
+            clientInfo.Args = GetValue<string>(client, "Args")?.Trim();
+            clientInfo.Config = GetValue<string>(client, "Config");
+        }
+
+        private static void FoldingAtHomeClientLoader(JToken client, JToken build, ClientInfo clientInfo)
+        {
+            clientInfo.Homepage = GetValue<string>(client, "Website");
+            clientInfo.Copyright = GetValue<string>(client, "Copyright");
+            clientInfo.Author = GetValue<string>(client, "Author");
+            clientInfo.Args = GetValue<string>(client, "Args")?.Trim();
+            clientInfo.Config = GetValue<string>(client, "Config");
+
+            clientInfo.Version = GetValue<string>(build, "Version");
+            clientInfo.Date = GetValue<string>(build, "Date");
+            clientInfo.Time = GetValue<string>(build, "Time");
+            clientInfo.Branch = GetValue<string>(build, "Branch");
+            clientInfo.Compiler = GetValue<string>(build, "Compiler");
+            clientInfo.Options = GetValue<string>(build, "Options");
+            clientInfo.Platform = GetValue<string>(build, "Platform");
+            clientInfo.Bits = GetValue<int?>(build, "Bits");
+            clientInfo.Mode = GetValue<string>(build, "Mode");
         }
 
         private static JToken GetArrayToken(JArray array, string name)
@@ -66,9 +97,9 @@ namespace HFM.Client.ObjectModel.Internal
             return array.Descendants().FirstOrDefault(x => x.Type == JTokenType.String && x.Value<string>() == name)?.Parent;
         }
 
-        private static T GetValue<T>(JToken token, string name)
+        private static T GetValue<T>(JToken token, string name, StringComparison nameComparison = StringComparison.Ordinal)
         {
-            var innerArray = token?.FirstOrDefault(x => x.FirstOrDefault()?.Value<string>() == name);
+            var innerArray = token?.FirstOrDefault(x => String.Equals(x.FirstOrDefault()?.Value<string>(), name, nameComparison));
             var valueElement = innerArray?.ElementAtOrDefault(1);
             if (valueElement != null)
             {
@@ -91,7 +122,16 @@ namespace HFM.Client.ObjectModel.Internal
                 .Select(id =>
                 {
                     var gpu = GetValue<string>(token, String.Concat("GPU ", id));
-                    return gpu != null ? new GPUInfo { ID = id, GPU = gpu, FriendlyName = ConvertToGPUFriendlyName(gpu) } : null;
+                    return gpu != null 
+                        ? new GPUInfo
+                        {
+                            ID = id, 
+                            GPU = gpu, 
+                            FriendlyName = ConvertToGPUFriendlyName(gpu),
+                            CUDADevice = GetValue<string>(token, String.Concat("CUDA Device ", id)),
+                            OpenCLDevice = GetValue<string>(token, String.Concat("OpenCL Device ", id))
+                        } 
+                        : null;
                 })
                 .Where(x => x != null)
                 .ToDictionary(x => x.ID);
