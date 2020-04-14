@@ -11,10 +11,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="ObjectModel\TestData\Client_7_6_6_info.txt" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_info.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options.txt" />
@@ -29,6 +25,8 @@
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_slots.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_units.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_info.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_options.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_slot-options.txt" />
   </ItemGroup>
 
   <ItemGroup>

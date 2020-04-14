@@ -33,7 +33,6 @@ namespace HFM.Client.ObjectModel
         public int? Gen { get; set; }
         public int? CoreType { get; set; }
         public string Core { get; set; }
-        public string Description { get; set; }
         public int? TotalIterations { get; set; }
         public int? IterationsDone { get; set; }
         public int? Energy { get; set; }
@@ -46,7 +45,7 @@ namespace HFM.Client.ObjectModel
         public DateTime? DeadlineDateTime { get; set; }
         public int? ETA { get; set; }
         public TimeSpan? ETATimeSpan { get; set; }
-        public string News { get; set; }
+        public double? Progress { get; set; }
         public int? Slot { get; set; }
     }
 }

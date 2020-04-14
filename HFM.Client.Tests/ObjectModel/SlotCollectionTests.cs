@@ -17,7 +17,7 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(0, slotCollection[0].ID);
             Assert.AreEqual("RUNNING", slotCollection[0].Status);
             Assert.AreEqual("smp:4", slotCollection[0].Description);
-            Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
+            Assert.AreEqual("true", slotCollection[0].SlotOptions[Options.PauseOnStart]);
         }
 
         [Test]
@@ -28,11 +28,11 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(0, slotCollection[0].ID);
             Assert.AreEqual("RUNNING", slotCollection[0].Status);
             Assert.AreEqual("smp:4", slotCollection[0].Description);
-            Assert.AreEqual(true, slotCollection[0].SlotOptions.PauseOnStart);
+            Assert.AreEqual("true", slotCollection[0].SlotOptions[Options.PauseOnStart]);
             Assert.AreEqual(1, slotCollection[1].ID);
             Assert.AreEqual("RUNNING", slotCollection[1].Status);
             Assert.AreEqual("gpu:0:\"GT200b [GeForce GTX 285]\"", slotCollection[1].Description);
-            Assert.AreEqual(true, slotCollection[1].SlotOptions.PauseOnStart);
+            Assert.AreEqual("true", slotCollection[1].SlotOptions[Options.PauseOnStart]);
         }
 
         [Test]

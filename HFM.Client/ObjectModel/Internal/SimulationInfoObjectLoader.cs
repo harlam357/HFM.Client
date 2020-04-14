@@ -21,7 +21,6 @@ namespace HFM.Client.ObjectModel.Internal
             si.Gen = GetValue<int?>(obj, "gen");
             si.CoreType = GetValue<int?>(obj, "core_type");
             si.Core = GetValue<string>(obj, "core");
-            si.Description = GetValue<string>(obj, "description");
             si.TotalIterations = GetValue<int?>(obj, "total_iterations");
             si.IterationsDone = GetValue<int?>(obj, "iterations_done");
             si.Energy = GetValue<int?>(obj, "energy");
@@ -34,7 +33,7 @@ namespace HFM.Client.ObjectModel.Internal
             si.DeadlineDateTime = ConvertToDateTime(si.Deadline);
             si.ETA = GetValue<int?>(obj, "eta");
             si.ETATimeSpan = ConvertToTimeSpan(si.ETA);
-            si.News = GetValue<string>(obj, "news");
+            si.Progress = GetValue<double?>(obj, "progress");
             si.Slot = GetValue<int?>(obj, "slot");
             return si;
         }

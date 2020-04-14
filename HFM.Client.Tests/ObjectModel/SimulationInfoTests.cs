@@ -22,7 +22,6 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(24, simulationInfo.Gen);
             Assert.AreEqual(163, simulationInfo.CoreType);
             Assert.AreEqual("GROGBSMP", simulationInfo.Core);
-            Assert.AreEqual(String.Empty, simulationInfo.Description);
             Assert.AreEqual(1000, simulationInfo.TotalIterations);
             Assert.AreEqual(590, simulationInfo.IterationsDone);
             Assert.AreEqual(0, simulationInfo.Energy);
@@ -35,7 +34,7 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(new DateTime(2011, 6, 8, 19, 34, 24), simulationInfo.DeadlineDateTime);
             Assert.AreEqual(8844, simulationInfo.ETA);
             Assert.AreEqual(new TimeSpan(2, 27, 24), simulationInfo.ETATimeSpan);
-            Assert.AreEqual(String.Empty, simulationInfo.News);
+            Assert.AreEqual(null, simulationInfo.Progress);
             Assert.AreEqual(null, simulationInfo.Slot);
         }
 
@@ -51,7 +50,6 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(59, simulationInfo.Gen);
             Assert.AreEqual(164, simulationInfo.CoreType);
             Assert.AreEqual("GROGBA4", simulationInfo.Core);
-            Assert.AreEqual("This project involves additional sampling of the FiP35 WW domain shot from the ultra-long trajectories run by DE Shaw on their new supercomputer ANTON. We are testing the differences between these new ultra-long trajectories and shorter ones from FAH, to test how simulations run on FAH stack up to more traditional methods.\r\n", simulationInfo.Description);
             Assert.AreEqual(2000, simulationInfo.TotalIterations);
             Assert.AreEqual(660, simulationInfo.IterationsDone);
             Assert.AreEqual(0, simulationInfo.Energy);
@@ -64,7 +62,7 @@ namespace HFM.Client.ObjectModel
             Assert.AreEqual(new DateTime(2012, 1, 30, 11, 49, 15), simulationInfo.DeadlineDateTime);
             Assert.AreEqual(8682, simulationInfo.ETA);
             Assert.AreEqual(new TimeSpan(2, 24, 42), simulationInfo.ETATimeSpan);
-            Assert.AreEqual(String.Empty, simulationInfo.News);
+            Assert.AreEqual(null, simulationInfo.Progress);
             Assert.AreEqual(null, simulationInfo.Slot);
         }
 

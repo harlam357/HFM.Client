@@ -13,36 +13,44 @@ namespace HFM.Client.ObjectModel
         public void SlotOptions_Load_FromClientVersion_7_1_24()
         {
             var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_slot-options.txt"));
-            Assert.AreEqual("normal", slotOptions.ClientType);
-            Assert.AreEqual("SMP", slotOptions.ClientSubType);
-            Assert.AreEqual(null, slotOptions.CPUUsage);
-            Assert.AreEqual(0, slotOptions.MachineID);
-            Assert.AreEqual("normal", slotOptions.MaxPacketSize);
-            Assert.AreEqual("idle", slotOptions.CorePriority);
-            Assert.AreEqual(99, slotOptions.NextUnitPercentage);
-            Assert.AreEqual(0, slotOptions.MaxUnits);
-            Assert.AreEqual(15, slotOptions.Checkpoint);
-            Assert.AreEqual(true, slotOptions.PauseOnStart);
-            Assert.AreEqual(null, slotOptions.GPUIndex);
-            Assert.AreEqual(null, slotOptions.GPUUsage);
+            Assert.AreEqual("normal", slotOptions[Options.ClientType]);
+            Assert.AreEqual("SMP", slotOptions["client-subtype"]);
+            Assert.AreEqual("0", slotOptions[Options.MachineID]);
+            Assert.AreEqual("normal", slotOptions[Options.MaxPacketSize]);
+            Assert.AreEqual("idle", slotOptions[Options.CorePriority]);
+            Assert.AreEqual("99", slotOptions[Options.NextUnitPercentage]);
+            Assert.AreEqual("0", slotOptions["max-units"]);
+            Assert.AreEqual("15", slotOptions[Options.Checkpoint]);
+            Assert.AreEqual("true", slotOptions[Options.PauseOnStart]);
         }
 
         [Test]
         public void SlotOptions_Load_FromClientVersion_7_1_43()
         {
             var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_slot-options.txt"));
-            Assert.AreEqual("normal", slotOptions.ClientType);
-            Assert.AreEqual("GPU", slotOptions.ClientSubType);
-            Assert.AreEqual(null, slotOptions.CPUUsage);
-            Assert.AreEqual(1, slotOptions.MachineID);
-            Assert.AreEqual("normal", slotOptions.MaxPacketSize);
-            Assert.AreEqual("idle", slotOptions.CorePriority);
-            Assert.AreEqual(99, slotOptions.NextUnitPercentage);
-            Assert.AreEqual(0, slotOptions.MaxUnits);
-            Assert.AreEqual(15, slotOptions.Checkpoint);
-            Assert.AreEqual(true, slotOptions.PauseOnStart);
-            Assert.AreEqual(null, slotOptions.GPUIndex);
-            Assert.AreEqual(null, slotOptions.GPUUsage);
+            Assert.AreEqual("normal", slotOptions[Options.ClientType]);
+            Assert.AreEqual("GPU", slotOptions["client-subtype"]);
+            Assert.AreEqual("1", slotOptions[Options.MachineID]);
+            Assert.AreEqual("normal", slotOptions[Options.MaxPacketSize]);
+            Assert.AreEqual("idle", slotOptions[Options.CorePriority]);
+            Assert.AreEqual("99", slotOptions[Options.NextUnitPercentage]);
+            Assert.AreEqual("0", slotOptions["max-units"]);
+            Assert.AreEqual("15", slotOptions[Options.Checkpoint]);
+            Assert.AreEqual("true", slotOptions[Options.PauseOnStart]);
+        }
+
+        [Test]
+        public void SlotOptions_Load_FromClientVersion_7_6_6()
+        {
+            var slotOptions = SlotOptions.Load(TestDataReader.ReadStringBuilder("Client_7_6_6_slot-options.txt"));
+            Assert.AreEqual("advanced", slotOptions[Options.ClientType]);
+            Assert.AreEqual("0", slotOptions[Options.CUDAIndex]);
+            Assert.AreEqual("0", slotOptions[Options.GPUIndex]);
+            Assert.AreEqual("1", slotOptions[Options.MachineID]);
+            Assert.AreEqual("big", slotOptions[Options.MaxPacketSize]);
+            Assert.AreEqual("0", slotOptions[Options.OpenCLIndex]);
+            Assert.AreEqual("True", slotOptions[Options.PauseOnStart]);
+            Assert.AreEqual("false", slotOptions[Options.Paused]);
         }
 
         [Test]

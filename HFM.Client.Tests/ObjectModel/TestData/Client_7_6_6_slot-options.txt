@@ -1,0 +1,10 @@
+﻿{
+  "client-type": "advanced",
+  "cuda-index": "0",
+  "gpu-index": "0",
+  "machine-id": "1",
+  "max-packet-size": "big",
+  "opencl-index": "0",
+  "pause-on-start": "True",
+  "paused": "false"
+}
