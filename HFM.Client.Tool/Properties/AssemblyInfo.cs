@@ -23,4 +23,4 @@ using System.Resources;
 [assembly: Guid("173402f6-5614-48b1-a2a5-d4439c8b5e45")]
 
 [assembly: AssemblyVersion("0.2.0.0")]
-[assembly: AssemblyFileVersion("0.2.0.0")]
+[assembly: AssemblyFileVersion("0.2.1.0")]
