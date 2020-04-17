@@ -31,3 +31,10 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+    testFiltercriteria: 'Category!=Integration'
+
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: '$(System.DefaultWorkingDirectory)'
+    Contents: '**\bin\$(buildConfiguration)\**'
+    TargetFolder: '$(Build.ArtifactsStaging)'
