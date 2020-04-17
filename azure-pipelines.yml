@@ -29,9 +29,15 @@ steps:
 
 - task: VSTest@2
   inputs:
+    testSelector: 'testAssemblies'
+    testAssemblyVer2: |
+      **\*Tests.dll
+      !**\*TestAdapter.dll
+      !**\obj\**
+    searchFolder: '$(System.DefaultWorkingDirectory)'
+    testFiltercriteria: 'Category!=Integration'
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
-    testFiltercriteria: 'Category!=Integration'
 
 - task: CopyFiles@2
   inputs:
