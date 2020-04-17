@@ -59,10 +59,10 @@ stages:
 
 - stage: Deploy
   jobs:
-  - deployment: NuGet.org
+  - deployment: NuGet_org
     pool:
       vmImage: 'windows-latest'
-    environment: 'NuGet.org'
+    environment: 'NuGet_org'
     strategy:
       runOnce:
         deploy:
