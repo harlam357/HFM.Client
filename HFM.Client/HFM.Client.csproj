@@ -11,7 +11,7 @@
     <Copyright>Copyright (C) 2020 Ryan Harlamert (harlam357)</Copyright>
     <Description>Client API for Folding@Home version 7 clients</Description>
     <PackageTags>Folding@Home HFM TCP Client</PackageTags>
-    <PackageLicenseUrl>https://github.com/harlam357/HFM.Client/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Version>0.2.1</Version>
     <AssemblyVersion>0.2.0.0</AssemblyVersion>
     <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\HFM.Client.xml</DocumentationFile>
