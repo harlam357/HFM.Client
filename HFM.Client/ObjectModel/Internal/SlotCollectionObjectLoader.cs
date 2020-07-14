@@ -28,7 +28,7 @@ namespace HFM.Client.ObjectModel.Internal
             slot.ID = GetValue<int?>(obj, "id");
             slot.Status = GetValue<string>(obj, "status");
             slot.Description = GetValue<string>(obj, "description");
-            slot.SlotOptions = new SlotOptionsObjectLoader().Load((JObject)obj["options"]);
+            slot.SlotOptions = SlotOptionsObjectLoader.Load((JObject)obj["options"]);
             return slot;
         }
     }

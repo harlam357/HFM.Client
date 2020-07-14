@@ -15,7 +15,7 @@ namespace HFM.Client.ObjectModel.Internal
             return Load(obj);
         }
 
-        internal SlotOptions Load(JObject obj)
+        internal static SlotOptions Load(JObject obj)
         {
             if (obj is null) return null;
 
