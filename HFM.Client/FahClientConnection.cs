@@ -64,7 +64,7 @@ namespace HFM.Client
         public FahClientConnection(string host, int port, TcpConnectionFactory tcpConnectionFactory)
         {
             if (host is null) throw new ArgumentNullException(nameof(host));
-            if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
+            if (!TcpPort.Validate(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
             Host = host;
             Port = port;
