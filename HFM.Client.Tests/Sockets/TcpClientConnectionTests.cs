@@ -11,6 +11,7 @@ namespace HFM.Client.Sockets
     public class TcpClientConnectionTests
     {
         private int _shortTimeout = 250;
+        private int _longTimeout = 60 * 1000;
 
         [Test]
         public void TcpClientConnection_ConnectedReturnsFalseOnNewInstance()
@@ -119,6 +120,27 @@ namespace HFM.Client.Sockets
 
         [Test]
         [Category(TestCategoryNames.Integration)]
+        public void TcpClientConnection_ConnectAttemptThrows()
+        {
+            // Arrange
+            var connection = new TcpClientConnection();
+            // use a local IP that no physical machine is using
+            var host = "172.20.0.1";
+            // Act & Assert
+            try
+            {
+                connection.Connect(host, LocalTcpListener.Port, _longTimeout);
+                Assert.Fail($"Expected: {typeof(SocketException)}");
+            }
+            catch (SocketException)
+            {
+                
+            }
+            Assert.IsFalse(connection.Connected);
+        }
+
+        [Test]
+        [Category(TestCategoryNames.Integration)]
         public void TcpClientConnection_ConnectThrowsObjectDisposedExceptionWhenAttemptingToConnectUsingConnectionThatWasClosed()
         {
             // Arrange
@@ -179,6 +201,27 @@ namespace HFM.Client.Sockets
             var host = "172.20.0.1";
             // Act & Assert
             Assert.ThrowsAsync<TimeoutException>(() => connection.ConnectAsync(host, LocalTcpListener.Port, _shortTimeout));
+            Assert.IsFalse(connection.Connected);
+        }
+
+        [Test]
+        [Category(TestCategoryNames.Integration)]
+        public async Task TcpClientConnection_ConnectAsyncAttemptThrows()
+        {
+            // Arrange
+            var connection = new TcpClientConnection();
+            // use a local IP that no physical machine is using
+            var host = "172.20.0.1";
+            // Act & Assert
+            try
+            {
+                await connection.ConnectAsync(host, LocalTcpListener.Port, _longTimeout);
+                Assert.Fail($"Expected: {typeof(SocketException)}");
+            }
+            catch (SocketException)
+            {
+                
+            }
             Assert.IsFalse(connection.Connected);
         }
 

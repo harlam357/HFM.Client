@@ -49,11 +49,14 @@ namespace HFM.Client.Sockets
             if (host is null) throw new ArgumentNullException(nameof(host));
             if (!ValidationHelper.ValidateTcpPort(port)) throw new ArgumentOutOfRangeException(nameof(port));
 
-            if (!TcpClient.ConnectAsync(host, port).Wait(timeout))
+            var connectTask = TcpClient.ConnectAsync(host, port);
+            if (connectTask != Task.WhenAny(connectTask, Task.Delay(timeout)).GetAwaiter().GetResult())
             {
                 Close();
                 throw new TimeoutException("Connection attempt has timed out.");
             }
+
+            ThrowIfConnectTaskIsFaulted(connectTask);
         }
 
         /// <summary>
@@ -79,6 +82,17 @@ namespace HFM.Client.Sockets
             {
                 Close();
                 throw new TimeoutException("Connection attempt has timed out.");
+            }
+
+            ThrowIfConnectTaskIsFaulted(connectTask);
+        }
+
+        private static void ThrowIfConnectTaskIsFaulted(Task connectTask)
+        {
+            if (connectTask.IsFaulted)
+            {
+                // throw the one Task exception, not AggregateException
+                connectTask.GetAwaiter().GetResult();
             }
         }
 

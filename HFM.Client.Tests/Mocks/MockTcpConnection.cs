@@ -43,7 +43,7 @@ namespace HFM.Client.Mocks
         public override void Close()
         {
             _connected = false;
-            _stream.Dispose();
+            _stream?.Dispose();
             _stream = null;
         }
 
