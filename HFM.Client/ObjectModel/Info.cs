@@ -95,7 +95,6 @@ namespace HFM.Client.ObjectModel
     {
         public int ID { get; set; }
         public string GPU { get; set; }
-        public string FriendlyName { get; set; }
         public string CUDADevice { get; set; }
         public string OpenCLDevice { get; set; }
     }

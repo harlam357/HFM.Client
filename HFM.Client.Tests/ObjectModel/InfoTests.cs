@@ -41,7 +41,6 @@ namespace HFM.Client.ObjectModel
             Assert.IsNotNull(info.System.GPUInfos);
             Assert.AreEqual(1, info.System.GPUInfos.Count);
             Assert.AreEqual("ATI:2 Mobility Radeon HD 3600 Series", info.System.GPUInfos[0].GPU);
-            Assert.AreEqual("ATI:2 Mobility Radeon HD 3600 Series", info.System.GPUInfos[0].FriendlyName);
             Assert.AreEqual(null, info.System.GPUInfos[0].CUDADevice);
             Assert.AreEqual(null, info.System.GPUInfos[0].OpenCLDevice);
             Assert.AreEqual(null, info.System.HasBattery);
@@ -84,7 +83,6 @@ namespace HFM.Client.ObjectModel
             Assert.IsNotNull(info.System.GPUInfos);
             Assert.AreEqual(1, info.System.GPUInfos.Count);
             Assert.AreEqual("NVIDIA:1 GT200b [GeForce GTX 285]", info.System.GPUInfos[0].GPU);
-            Assert.AreEqual("GeForce GTX 285", info.System.GPUInfos[0].FriendlyName);
             Assert.AreEqual(null, info.System.GPUInfos[0].CUDADevice);
             Assert.AreEqual(null, info.System.GPUInfos[0].OpenCLDevice);
             Assert.AreEqual(null, info.System.HasBattery);
@@ -134,7 +132,6 @@ namespace HFM.Client.ObjectModel
             Assert.IsNotNull(info.System.GPUInfos);
             Assert.AreEqual(1, info.System.GPUInfos.Count);
             Assert.AreEqual("Bus:8 Slot:0 Func:0 NVIDIA:7 TU116 [GeForce GTX 1660 Ti]", info.System.GPUInfos[0].GPU);
-            Assert.AreEqual("GeForce GTX 1660 Ti", info.System.GPUInfos[0].FriendlyName);
             Assert.AreEqual("Platform:0 Device:0 Bus:8 Slot:0 Compute:7.5 Driver:10.1", info.System.GPUInfos[0].CUDADevice);
             Assert.AreEqual("Platform:0 Device:0 Bus:8 Slot:0 Compute:1.2 Driver:432.0", info.System.GPUInfos[0].OpenCLDevice);
             Assert.AreEqual(false, info.System.Win32Service);

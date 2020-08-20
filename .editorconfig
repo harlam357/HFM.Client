@@ -132,6 +132,7 @@ csharp_style_var_when_type_is_apparent = true:suggestion
 csharp_style_expression_bodied_properties = true:suggestion
 csharp_style_expression_bodied_indexers = true:suggestion
 csharp_style_expression_bodied_accessors = true:suggestion
+csharp_style_expression_bodied_methods = true:none
 
 ###############################
 # C# Formatting Rules         #

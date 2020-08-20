@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
 
 using Newtonsoft.Json.Linq;
 
@@ -122,15 +121,14 @@ namespace HFM.Client.ObjectModel.Internal
                 .Select(id =>
                 {
                     var gpu = GetValue<string>(token, String.Concat("GPU ", id));
-                    return gpu != null 
+                    return gpu != null
                         ? new GPUInfo
                         {
-                            ID = id, 
-                            GPU = gpu, 
-                            FriendlyName = ConvertToGPUFriendlyName(gpu),
+                            ID = id,
+                            GPU = gpu,
                             CUDADevice = GetValue<string>(token, String.Concat("CUDA Device ", id)),
                             OpenCLDevice = GetValue<string>(token, String.Concat("OpenCL Device ", id))
-                        } 
+                        }
                         : null;
                 })
                 .Where(x => x != null)
@@ -160,18 +158,6 @@ namespace HFM.Client.ObjectModel.Internal
                 return value / 1048576;
             }
             return null;
-        }
-
-        private static string ConvertToGPUFriendlyName(string input)
-        {
-            var regex = new Regex("\\[(?<GpuType>.+)\\]", RegexOptions.ExplicitCapture | RegexOptions.Singleline);
-            Match match;
-            if ((match = regex.Match(input)).Success)
-            {
-                return match.Groups["GpuType"].Value;
-            }
-
-            return input;
         }
     }
 }
