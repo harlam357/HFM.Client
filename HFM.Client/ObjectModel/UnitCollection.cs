@@ -17,9 +17,19 @@ namespace HFM.Client.ObjectModel
         public static UnitCollection Load(string json) => new Internal.UnitCollectionObjectLoader().Load(json);
 
         /// <summary>
+        /// Creates a new <see cref="UnitCollection"/> object from a <see cref="String"/> that contains JSON.
+        /// </summary>
+        public static UnitCollection Load(string json, ObjectLoadOptions options) => new Internal.UnitCollectionObjectLoader().Load(json, options);
+
+        /// <summary>
         /// Creates a new <see cref="UnitCollection"/> object from a <see cref="StringBuilder"/> that contains JSON.
         /// </summary>
         public static UnitCollection Load(StringBuilder json) => new Internal.UnitCollectionObjectLoader().Load(json);
+
+        /// <summary>
+        /// Creates a new <see cref="UnitCollection"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static UnitCollection Load(StringBuilder json, ObjectLoadOptions options) => new Internal.UnitCollectionObjectLoader().Load(json, options);
 
         /// <summary>
         /// Creates a new <see cref="UnitCollection"/> object from a <see cref="TextReader"/> that contains JSON.

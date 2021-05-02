@@ -13,7 +13,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void SimulationInfo_Load_FromClientVersion_7_1_24()
         {
-            var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_simulation-info.txt"));
+            var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_simulation-info.txt"), ObjectLoadOptions.None);
             Assert.AreEqual("harlam357", simulationInfo.User);
             Assert.AreEqual(32, simulationInfo.Team);
             Assert.AreEqual(11020, simulationInfo.Project);

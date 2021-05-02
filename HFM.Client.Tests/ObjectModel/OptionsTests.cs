@@ -13,7 +13,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void Options_Load_FromClientVersion_7_1_24()
         {
-            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options.txt"));
+            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options.txt"), ObjectLoadOptions.None);
             Assert.AreEqual("127.0.0.1", options["command-allow"]);
             Assert.AreEqual("15", options[Options.Checkpoint]);
             Assert.AreEqual("normal", options[Options.ClientType]);
@@ -45,7 +45,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void Options_Load_FromClientVersion_7_1_43()
         {
-            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_options.txt"));
+            var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_options.txt"), ObjectLoadOptions.None);
             Assert.AreEqual("127.0.0.1", options["command-allow"]);
             Assert.AreEqual("15", options[Options.Checkpoint]);
             Assert.AreEqual("normal", options[Options.ClientType]);

@@ -16,9 +16,19 @@ namespace HFM.Client.ObjectModel
         public static SimulationInfo Load(string json) => new Internal.SimulationInfoObjectLoader().Load(json);
 
         /// <summary>
+        /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="String"/> that contains JSON.
+        /// </summary>
+        public static SimulationInfo Load(string json, ObjectLoadOptions options) => new Internal.SimulationInfoObjectLoader().Load(json, options);
+
+        /// <summary>
         /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="StringBuilder"/> that contains JSON.
         /// </summary>
         public static SimulationInfo Load(StringBuilder json) => new Internal.SimulationInfoObjectLoader().Load(json);
+
+        /// <summary>
+        /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static SimulationInfo Load(StringBuilder json, ObjectLoadOptions options) => new Internal.SimulationInfoObjectLoader().Load(json, options);
 
         /// <summary>
         /// Creates a new <see cref="SimulationInfo"/> object from a <see cref="TextReader"/> that contains JSON.

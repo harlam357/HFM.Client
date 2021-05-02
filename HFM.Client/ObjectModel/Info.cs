@@ -30,9 +30,19 @@ namespace HFM.Client.ObjectModel
         public static Info Load(string json) => new Internal.InfoObjectLoader().Load(json);
 
         /// <summary>
+        /// Creates a new <see cref="Info"/> object from a <see cref="String"/> that contains JSON.
+        /// </summary>
+        public static Info Load(string json, ObjectLoadOptions options) => new Internal.InfoObjectLoader().Load(json, options);
+
+        /// <summary>
         /// Creates a new <see cref="Info"/> object from a <see cref="StringBuilder"/> that contains JSON.
         /// </summary>
         public static Info Load(StringBuilder json) => new Internal.InfoObjectLoader().Load(json);
+
+        /// <summary>
+        /// Creates a new <see cref="Info"/> object from a <see cref="StringBuilder"/> that contains JSON.
+        /// </summary>
+        public static Info Load(StringBuilder json, ObjectLoadOptions options) => new Internal.InfoObjectLoader().Load(json, options);
 
         /// <summary>
         /// Creates a new <see cref="Info"/> object from a <see cref="TextReader"/> that contains JSON.

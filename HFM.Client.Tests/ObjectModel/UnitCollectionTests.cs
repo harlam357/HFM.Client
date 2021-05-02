@@ -13,7 +13,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void UnitCollection_Load_FromClientVersion_7_1_24()
         {
-            var unitCollection = UnitCollection.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_units.txt"));
+            var unitCollection = UnitCollection.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_units.txt"), ObjectLoadOptions.None);
             Assert.AreEqual(0, unitCollection[0].ID);
             Assert.AreEqual("RUNNING", unitCollection[0].State);
             Assert.AreEqual(null, unitCollection[0].Error);
@@ -143,7 +143,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""2 hours 28 mins 13 secs"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.AreEqual(new TimeSpan(2, 28, 13), unitCollection[0].ETATimeSpan);
         }
@@ -154,7 +154,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""2 hours 28 mins"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.AreEqual(new TimeSpan(2, 28, 0), unitCollection[0].ETATimeSpan);
         }
@@ -165,7 +165,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""28 mins 13 secs"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.AreEqual(new TimeSpan(0, 28, 13), unitCollection[0].ETATimeSpan);
         }
@@ -176,7 +176,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""13.15 secs"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.AreEqual(TimeSpan.FromSeconds(13.15), unitCollection[0].ETATimeSpan);
         }
@@ -187,7 +187,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""6.70 days"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.AreEqual(TimeSpan.FromDays(6.7), unitCollection[0].ETATimeSpan);
         }
@@ -198,7 +198,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""A days"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.IsNull(unitCollection[0].ETATimeSpan);
         }
@@ -209,7 +209,7 @@ namespace HFM.Client.ObjectModel
             // Arrange
             const string json = @"[ { ""id"": ""00"", ""eta"": ""13 lightyears"" } ]";
             // Act
-            var unitCollection = UnitCollection.Load(json);
+            var unitCollection = UnitCollection.Load(json, ObjectLoadOptions.None);
             // Assert
             Assert.IsNull(unitCollection[0].ETATimeSpan);
         }

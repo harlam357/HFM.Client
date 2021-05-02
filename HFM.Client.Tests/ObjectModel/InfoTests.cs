@@ -12,7 +12,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void Info_Load_FromClientVersion_7_1_24()
         {
-            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_info.txt"));
+            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_info.txt"), ObjectLoadOptions.None);
             Assert.AreEqual("http://folding.stanford.edu/", info.Client.Homepage);
             Assert.AreEqual("(c) 2009,2010 Stanford University", info.Client.Copyright);
             Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
@@ -54,7 +54,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void Info_Load_FromClientVersion_7_1_43()
         {
-            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_info.txt"));
+            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_info.txt"), ObjectLoadOptions.None);
             Assert.AreEqual("http://folding.stanford.edu/", info.Client.Homepage);
             Assert.AreEqual("(c) 2009-2012 Stanford University", info.Client.Copyright);
             Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
