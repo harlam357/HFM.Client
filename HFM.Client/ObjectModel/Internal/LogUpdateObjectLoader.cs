@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
 using System.Text;
 
@@ -9,14 +8,14 @@ namespace HFM.Client.ObjectModel.Internal
 {
     internal class LogUpdateObjectLoader : ObjectLoader<LogUpdate>
     {
-        public override LogUpdate Load(string json)
+        public override LogUpdate Load(string json, ObjectLoadOptions options = ObjectLoadOptions.Default)
         {
             if (json is null) return null;
 
             return LoadInternal(new LogUpdate { Value = new StringBuilder(json) });
         }
 
-        public override LogUpdate Load(StringBuilder json)
+        public override LogUpdate Load(StringBuilder json, ObjectLoadOptions options = ObjectLoadOptions.Default)
         {
             if (json is null) return null;
 
@@ -28,7 +27,7 @@ namespace HFM.Client.ObjectModel.Internal
         public override LogUpdate Load(TextReader textReader)
         {
             if (textReader is null) return null;
-            
+
             return LoadInternal(new LogUpdate { Value = new StringBuilder(textReader.ReadToEnd()) });
         }
 
