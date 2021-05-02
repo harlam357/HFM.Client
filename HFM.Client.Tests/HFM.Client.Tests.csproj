@@ -4,7 +4,7 @@
     <TargetFrameworks>netcoreapp3.1;net47;net45</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>HFM.Client</RootNamespace>
-    <Version>0.4.1</Version>
+    <Version>0.4.3</Version>
     <AssemblyVersion>0.4.0.0</AssemblyVersion>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\harlam357.snk</AssemblyOriginatorKeyFile>
@@ -24,6 +24,7 @@
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_slot-options.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_slots.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_units.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_21_fr-FR_info.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_info.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_options.txt" />
     <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_slot-options.txt" />

@@ -110,8 +110,12 @@ namespace HFM.Client.ObjectModel.Internal
             {
                 return s;
             }
+            if (s.IndexOf(@"\", 0) < 0)
+            {
+                return s;
+            }
 
-            var builder = new StringBuilder();
+            var builder = new StringBuilder(s.Length);
             int num = s.Length;
             int num2 = 0;
 
@@ -122,24 +126,24 @@ namespace HFM.Client.ObjectModel.Internal
                 {
                     builder.Append(ch);
                 }
-                else if (num2 < (num - 5) && s[num2 + 1] == 0x75)
+                else if (num2 < num - 5 && s[num2 + 1] == 0x75)
                 {
                     int num3 = HexToInt(s[num2 + 2]);
                     int num4 = HexToInt(s[num2 + 3]);
                     int num5 = HexToInt(s[num2 + 4]);
                     int num6 = HexToInt(s[num2 + 5]);
-                    if (num3 < 0 || num4 < 0 | num5 < 0 || num6 < 0)
+                    if (num3 < 0 || (num4 < 0) | (num5 < 0) || num6 < 0)
                     {
                         builder.Append(ch);
                     }
                     else
                     {
-                        ch = (char)((((num3 << 12) | (num4 << 8)) | (num5 << 4)) | num6);
+                        ch = (char)((num3 << 12) | (num4 << 8) | (num5 << 4) | num6);
                         num2 += 5;
                         builder.Append(ch);
                     }
                 }
-                else if (num2 < (num - 3) && s[num2 + 1] == 0x78)
+                else if (num2 < num - 3 && s[num2 + 1] == 0x78)
                 {
                     int num7 = HexToInt(s[num2 + 2]);
                     int num8 = HexToInt(s[num2 + 3]);
@@ -156,26 +160,32 @@ namespace HFM.Client.ObjectModel.Internal
                 }
                 else
                 {
-                    if (num2 < (num - 1))
+                    if (num2 < num - 1)
                     {
                         var ch2 = s[num2 + 1];
                         if (ch2 == 0x5c)
                         {
-                            builder.Append(@"\");
+                            builder.Append('\\');
+                            builder.Append('\\');
                             num2 += 1;
                         }
                         else if (ch2 == 110)
                         {
-                            builder.Append("\n");
+                            // \n
+                            num2 += 1;
+                        }
+                        else if (ch2 == 114)
+                        {
+                            // \r
                             num2 += 1;
                         }
                         else if (ch2 == 0x74)
                         {
-                            builder.Append("\t");
+                            builder.Append('\\');
+                            builder.Append('\t');
                             num2 += 1;
                         }
                     }
-                    builder.Append(ch);
                 }
                 num2 += 1;
             }

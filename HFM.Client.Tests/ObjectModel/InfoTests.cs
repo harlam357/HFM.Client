@@ -138,6 +138,50 @@ namespace HFM.Client.ObjectModel
         }
 
         [Test]
+        public void Info_Load_FromClientVersion_7_6_21_fr_FR()
+        {
+            var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_6_21_fr-FR_info.txt"));
+            Assert.AreEqual("7.6.21", info.Client.Version);
+            Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
+            Assert.AreEqual("2020 foldingathome.org", info.Client.Copyright);
+            Assert.AreEqual("https://foldingathome.org/", info.Client.Homepage);
+            Assert.AreEqual("Oct 20 2020", info.Client.Date);
+            Assert.AreEqual("13:41:04", info.Client.Time);
+            Assert.AreEqual("6efbf0e138e22d3963e6a291f78dcb9c6422a278", info.Client.Revision);
+            Assert.AreEqual("master", info.Client.Branch);
+            Assert.AreEqual("Visual C++ 2015", info.Client.Compiler);
+            Assert.AreEqual(" /TP  /nologo /EHa /wd4297 /wd4103 /O2 /Zc:throwingNew /MT", info.Client.Options);
+            Assert.AreEqual("win32 10", info.Client.Platform);
+            Assert.AreEqual(32, info.Client.Bits);
+            Assert.AreEqual("Release", info.Client.Mode);
+            Assert.IsNull(info.Client.Args);
+            Assert.AreEqual(@"C:\Users\SDP\AppData\Roaming\FAHClient\config.xml", info.Client.Config);
+
+            Assert.AreEqual("Intel(R) Core(TM) i9-9900K CPU @ 3.60GHz", info.System.CPU);
+            Assert.AreEqual("GenuineIntel Family 6 Model 158 Stepping 12", info.System.CPUID);
+            Assert.AreEqual(16, info.System.CPUs);
+            Assert.AreEqual("15.87GiB", info.System.Memory);
+            Assert.AreEqual(15.87, info.System.MemoryValue);
+            Assert.AreEqual("13.64GiB", info.System.FreeMemory);
+            Assert.AreEqual(13.64, info.System.FreeMemoryValue);
+            Assert.AreEqual("WINDOWS_THREADS", info.System.Threads);
+            Assert.AreEqual("6.2", info.System.OSVersion);
+            Assert.AreEqual(false, info.System.HasBattery);
+            Assert.AreEqual(false, info.System.OnBattery);
+            Assert.AreEqual(2, info.System.UtcOffset);
+            Assert.AreEqual(5344, info.System.PID);
+            Assert.AreEqual(@"C:\Users\SDP\AppData\Roaming\FAHClient", info.System.CWD);
+            Assert.AreEqual("Windows 10 Enterprise", info.System.OS);
+            Assert.AreEqual(1, info.System.GPUs);
+            Assert.IsNotNull(info.System.GPUInfos);
+            Assert.AreEqual(1, info.System.GPUInfos.Count);
+            Assert.AreEqual("Bus:0 Slot:2 Func:0 INTEL:1 CFL GT2 [UHD Graphics 630]", info.System.GPUInfos[0].GPU);
+            Assert.IsNull(info.System.GPUInfos[0].CUDADevice);
+            Assert.AreEqual("Platform:0 Device:0 Bus:NA Slot:NA Compute:3.0 Driver:27.20", info.System.GPUInfos[0].OpenCLDevice);
+            Assert.AreEqual(false, info.System.Win32Service);
+        }
+
+        [Test]
         public void Info_Load_ReturnsNullWhenJsonStringIsNull()
         {
             Assert.IsNull(Info.Load((string)null));
