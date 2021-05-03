@@ -12,7 +12,7 @@ namespace HFM.Client.ObjectModel
         [Test]
         public void LogUpdate_Load_String_FromClientVersion_7_1_24()
         {
-            var logUpdate = LogUpdate.Load(TestDataReader.ReadString("Client_7_1_24_log-restart.txt"));
+            var logUpdate = LogUpdate.Load(TestDataReader.ReadString("Client_7_1_24_log-restart.txt"), ObjectLoadOptions.None);
             Assert.AreEqual(65571, logUpdate.Value.Length);
         }
 

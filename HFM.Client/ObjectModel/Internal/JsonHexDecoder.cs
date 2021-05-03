@@ -5,8 +5,22 @@ using static HFM.Client.Internal.StringBuilderExtensions;
 
 namespace HFM.Client.ObjectModel.Internal
 {
+    [Flags]
+    internal enum JsonHexDecoderOptions
+    {
+        None = 0,
+        FilterNewLineCharacters = 1 << 0
+    }
+
     internal class JsonHexDecoder : IJsonStringFilter
     {
+        private readonly JsonHexDecoderOptions _options;
+
+        internal JsonHexDecoder(JsonHexDecoderOptions options = JsonHexDecoderOptions.None)
+        {
+            _options = options;
+        }
+
         public StringBuilder Filter(string s)
         {
             if (String.IsNullOrEmpty(s))
@@ -32,6 +46,7 @@ namespace HFM.Client.ObjectModel.Internal
                 return s;
             }
 
+            bool flterNewLineCharacters = _options.HasFlag(JsonHexDecoderOptions.FilterNewLineCharacters);
             var builder = new StringBuilder(s.Length);
             int num = s.Length;
             int num2 = 0;
@@ -88,12 +103,20 @@ namespace HFM.Client.ObjectModel.Internal
                         }
                         else if (ch2 == 110)
                         {
-                            // \n
+                            if (!flterNewLineCharacters)
+                            {
+                                builder.Append('\\');
+                                builder.Append('n');
+                            }
                             num2 += 1;
                         }
                         else if (ch2 == 114)
                         {
-                            // \r
+                            if (!flterNewLineCharacters)
+                            {
+                                builder.Append('\\');
+                                builder.Append('r');
+                            }
                             num2 += 1;
                         }
                         else if (ch2 == 0x74)

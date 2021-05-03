@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -12,34 +12,38 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (json is null) return null;
 
-            return LoadInternal(new LogUpdate { Value = new StringBuilder(json) });
+            return new LogUpdate { Value = FilterJson(json, options) };
         }
 
         public override LogUpdate Load(StringBuilder json, ObjectLoadOptions options = ObjectLoadOptions.Default)
         {
             if (json is null) return null;
 
-            var logUpdate = new LogUpdate { Value = new StringBuilder() };
-            json.CopyTo(0, logUpdate.Value, 0, json.Length);
-            return LoadInternal(logUpdate);
+            var copyTo = new StringBuilder();
+            json.CopyTo(0, copyTo, 0, json.Length);
+            return new LogUpdate { Value = FilterJson(copyTo, options) };
         }
 
         public override LogUpdate Load(TextReader textReader)
         {
             if (textReader is null) return null;
 
-            return LoadInternal(new LogUpdate { Value = new StringBuilder(textReader.ReadToEnd()) });
+            return new LogUpdate { Value = FilterJson(new StringBuilder(textReader.ReadToEnd()), EnumerateLogUpdateFilters()) };
         }
 
-        private static LogUpdate LoadInternal(LogUpdate logUpdate)
+        protected override IEnumerable<IJsonStringFilter> EnumerateFilters(ObjectLoadOptions options)
         {
-            SetEnvironmentNewLineCharacters(logUpdate.Value.Trim('\"'));
-            return logUpdate;
+            foreach (var f in EnumerateLogUpdateFilters())
+            {
+                yield return f;
+            }
+            if (options.HasFlag(ObjectLoadOptions.DecodeHex)) yield return new JsonHexDecoder();
         }
 
-        private static void SetEnvironmentNewLineCharacters(StringBuilder value)
+        protected static IEnumerable<IJsonStringFilter> EnumerateLogUpdateFilters()
         {
-            value.Replace("\n", Environment.NewLine).Replace("\\n", Environment.NewLine);
+            yield return new LogUpdateQuoteFilter();
+            yield return new LogUpdateNewLineFilter();
         }
     }
 }

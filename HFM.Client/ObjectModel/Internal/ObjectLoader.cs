@@ -38,29 +38,39 @@ namespace HFM.Client.ObjectModel.Internal
             }
         }
 
-        private static StringBuilder FilterJson(string json, ObjectLoadOptions options)
+        protected StringBuilder FilterJson(string json, ObjectLoadOptions options)
+        {
+            return FilterJson(json, EnumerateFilters(options));
+        }
+
+        protected static StringBuilder FilterJson(string json, IEnumerable<IJsonStringFilter> filters)
         {
             StringBuilder sb = null;
-            foreach (var f in EnumerateFilters(options))
+            foreach (var f in filters)
             {
                 sb = sb is null ? f.Filter(json) : f.Filter(sb);
             }
             return sb ?? new StringBuilder(json);
         }
 
-        private static StringBuilder FilterJson(StringBuilder json, ObjectLoadOptions options)
+        protected StringBuilder FilterJson(StringBuilder json, ObjectLoadOptions options)
+        {
+            return FilterJson(json, EnumerateFilters(options));
+        }
+
+        protected static StringBuilder FilterJson(StringBuilder json, IEnumerable<IJsonStringFilter> filters)
         {
             StringBuilder sb = json;
-            foreach (var f in EnumerateFilters(options))
+            foreach (var f in filters)
             {
                 sb = f.Filter(sb);
             }
             return sb;
         }
 
-        private static IEnumerable<IJsonStringFilter> EnumerateFilters(ObjectLoadOptions options)
+        protected virtual IEnumerable<IJsonStringFilter> EnumerateFilters(ObjectLoadOptions options)
         {
-            if (options.HasFlag(ObjectLoadOptions.DecodeHex)) yield return new JsonHexDecoder();
+            if (options.HasFlag(ObjectLoadOptions.DecodeHex)) yield return new JsonHexDecoder(JsonHexDecoderOptions.FilterNewLineCharacters);
         }
 
         /// <summary>
