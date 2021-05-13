@@ -46,7 +46,7 @@ namespace HFM.Client.ObjectModel.Internal
                 return s;
             }
 
-            bool flterNewLineCharacters = _options.HasFlag(JsonHexDecoderOptions.FilterNewLineCharacters);
+            bool filterNewLineCharacters = _options.HasFlag(JsonHexDecoderOptions.FilterNewLineCharacters);
             var builder = new StringBuilder(s.Length);
             int num = s.Length;
             int num2 = 0;
@@ -103,7 +103,7 @@ namespace HFM.Client.ObjectModel.Internal
                         }
                         else if (ch2 == 110)
                         {
-                            if (!flterNewLineCharacters)
+                            if (!filterNewLineCharacters)
                             {
                                 builder.Append('\\');
                                 builder.Append('n');
@@ -112,7 +112,7 @@ namespace HFM.Client.ObjectModel.Internal
                         }
                         else if (ch2 == 114)
                         {
-                            if (!flterNewLineCharacters)
+                            if (!filterNewLineCharacters)
                             {
                                 builder.Append('\\');
                                 builder.Append('r');
