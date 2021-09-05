@@ -20,6 +20,11 @@ namespace HFM.Client
         public StringBuilder MessageText { get; }
 
         /// <summary>
+        /// Gets the format identifier of the <see cref="MessageText"/>.
+        /// </summary>
+        public string MessageFormat { get; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="FahClientMessage"/> class.
         /// </summary>
         /// <param name="identifier">The message identifier.</param>
@@ -28,6 +33,19 @@ namespace HFM.Client
         {
             Identifier = identifier;
             MessageText = messageText;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FahClientMessage"/> class.
+        /// </summary>
+        /// <param name="identifier">The message identifier.</param>
+        /// <param name="messageText">The text value of the message.</param>
+        /// <param name="messageFormat">The message format identifier or null for no format identifier.</param>
+        public FahClientMessage(FahClientMessageIdentifier identifier, StringBuilder messageText, string messageFormat)
+        {
+            Identifier = identifier;
+            MessageText = messageText;
+            MessageFormat = messageFormat;
         }
 
         /// <summary>
@@ -41,5 +59,8 @@ namespace HFM.Client
             sb.AppendLine();
             return sb.ToString();
         }
+
+        public const string PyonMessageFormat = "Pyon";
+        public const string JsonMessageFormat = "Json";
     }
 }

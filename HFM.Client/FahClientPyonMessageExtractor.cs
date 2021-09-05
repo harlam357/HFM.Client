@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -33,7 +32,7 @@ namespace HFM.Client
             // remove the extracted message from the buffer
             buffer.Remove(0, endFooterIndex);
 
-            return new FahClientMessage(new FahClientMessageIdentifier(messageType, DateTime.UtcNow), messageText);
+            return new FahClientMessage(new FahClientMessageIdentifier(messageType, DateTime.UtcNow), messageText, GetMessageFormat());
         }
 
         /// <summary>
@@ -130,5 +129,7 @@ namespace HFM.Client
             public const string PyonFooter = "---";
             // ReSharper restore InconsistentNaming
         }
+
+        protected virtual string GetMessageFormat() => FahClientMessage.PyonMessageFormat;
     }
 }

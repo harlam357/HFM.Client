@@ -84,5 +84,7 @@ namespace HFM.Client
             public const string NewLineCrLf = "\r\n";
             public const string NewLineLf = "\n";
         }
+
+        protected override string GetMessageFormat() => FahClientMessage.JsonMessageFormat;
     }
 }

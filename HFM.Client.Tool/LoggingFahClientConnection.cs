@@ -1,51 +1,46 @@
-﻿
-using System;
+﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace HFM.Client.Tool
 {
     public class LoggingFahClientConnection : FahClientConnection
     {
-        private readonly string _logFilePath;
+        private readonly string _logFolderPath;
 
         public LoggingFahClientConnection(string host, int port) : base(host, port)
         {
-            string folder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HFM");
-            if (!Directory.Exists(folder))
+            _logFolderPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "HFM.Client", $"{DateTime.UtcNow:yyyyMMddThhmmss}");
+            if (!Directory.Exists(_logFolderPath))
             {
-                Directory.CreateDirectory(folder);
+                Directory.CreateDirectory(_logFolderPath);
             }
-            _logFilePath = Path.Combine(folder, $"HFM.Client.Tool-{DateTime.UtcNow:yyyyMMddThhmmss}.log");
         }
 
-        protected override FahClientReader OnCreateReader()
-        {
-            return new LoggingFahClientReader(this, _logFilePath);
-        }
+        protected override FahClientReader OnCreateReader() => new LoggingFahClientReader(this, _logFolderPath);
 
         private class LoggingFahClientReader : FahClientReader
         {
-            private readonly string _logFilePath;
+            private readonly string _logFolderPath;
 
-            public LoggingFahClientReader(FahClientConnection connection, string logFilePath) : base(connection)
+            public LoggingFahClientReader(FahClientConnection connection, string logFolderPath) : base(connection, new FahClientPyonMessageExtractor())
             {
-                _logFilePath = logFilePath;
+                _logFolderPath = logFolderPath;
             }
 
-            protected override int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
-            {
-                int bytesRead = base.OnReadStream(stream, buffer, offset, count);
-                File.AppendAllText(_logFilePath, Encoding.ASCII.GetString(buffer, offset, bytesRead));
-                return bytesRead;
-            }
+            public override bool Read() => SaveMessageAfterRead(base.Read());
 
-            protected override async Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+            public override async Task<bool> ReadAsync() => SaveMessageAfterRead(await base.ReadAsync());
+
+            private bool SaveMessageAfterRead(bool result)
             {
-                int bytesRead = await base.OnReadStreamAsync(stream, buffer, offset, count).ConfigureAwait(false);
-                File.AppendAllText(_logFilePath, Encoding.ASCII.GetString(buffer, offset, bytesRead));
-                return bytesRead;
+                if (result)
+                {
+                    var m = Message;
+                    string path = Path.Combine(_logFolderPath, $"{m.Identifier.MessageType}-{m.Identifier.Received:yyyyMMddThhmmss}.txt");
+                    File.WriteAllText(path, m.MessageText.ToString());
+                }
+                return result;
             }
         }
     }

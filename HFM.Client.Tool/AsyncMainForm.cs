@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
@@ -98,6 +97,10 @@ namespace HFM.Client.Tool
 
             if (message.Identifier.MessageType == FahClientMessageType.SlotInfo)
             {
+                if (message.MessageFormat == FahClientMessage.PyonMessageFormat)
+                {
+                    message = new FahClientJsonMessageExtractor().Extract(message.MessageText);
+                }
                 var slotCollection = SlotCollection.Load(message.MessageText);
                 foreach (var slot in slotCollection)
                 {
