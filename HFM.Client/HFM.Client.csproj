@@ -8,7 +8,7 @@
     <EmbedUntrackedSources>true</EmbedUntrackedSources>
     <Deterministic>true</Deterministic>
     <Authors>harlam357</Authors>
-    <Copyright>Copyright (C) 2020-2021 Ryan Harlamert (harlam357)</Copyright>
+    <Copyright>Copyright (C) 2020-2023 Ryan Harlamert (harlam357)</Copyright>
     <Description>Client API for Folding@Home version 7 clients</Description>
     <PackageTags>Folding@Home HFM TCP Client</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -33,10 +33,6 @@
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-  </ItemGroup>
-
-  <ItemGroup Condition="'$(TargetFramework)' == 'net45'">
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>
