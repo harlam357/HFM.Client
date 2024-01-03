@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp3.1;net47;net45</TargetFrameworks>
+    <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     <IsPackable>false</IsPackable>
     <RootNamespace>HFM.Client</RootNamespace>
     <Version>0.6.0</Version>
@@ -11,23 +11,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_log-restart.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_options.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_simulation-info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slot-options.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_slots.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_24_units.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_options.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_simulation-info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_slot-options.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_slots.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_1_43_units.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_21_fr-FR_info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_info.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_options.txt" />
-    <EmbeddedResource Include="ObjectModel\TestData\Client_7_6_6_slot-options.txt" />
+    <EmbeddedResource Include="ObjectModel\TestData\*.*" />
   </ItemGroup>
 
   <ItemGroup>
