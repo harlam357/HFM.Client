@@ -9,7 +9,7 @@ namespace HFM.Client
     [TestFixture]
     public class FahClientConnectionIntegrationTests
     {
-        private const string Host = "192.168.1.178";
+        private const string Host = "192.168.1.199";
         private const int Port = 36330;
 
         [Test]
