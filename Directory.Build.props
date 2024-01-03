@@ -1,5 +1,11 @@
 ﻿<Project>
   <PropertyGroup>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>disable</Nullable>
     <NoWarn>$(NoWarn);1591</NoWarn>
+    <AnalysisMode>All</AnalysisMode>
+    <LangVersion>latest</LangVersion>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 </Project>
