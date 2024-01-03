@@ -10,15 +10,15 @@ root = true
 [*]
 indent_style = space
 
+[*.{csproj,json}]
+indent_size = 2
+
 [*.{cs,vb}]
 
-# Default severity for analyzer diagnostics - Requires **VS2019 16.5** or later
+# Default severity for analyzer diagnostics
 dotnet_analyzer_diagnostic.severity = warning
-
-# CA1303: Do not pass literals as localized parameters
-dotnet_diagnostic.CA1303.severity = none
-# CA1710: Identifiers should have correct suffix
-dotnet_diagnostic.CA1710.severity = none
+# Default severity for analyzer diagnostics with category 'Style'
+dotnet_analyzer_diagnostic.category-Style.severity = suggestion
 
 indent_size = 4
 insert_final_newline = true
@@ -134,6 +134,8 @@ csharp_style_var_for_built_in_types = false:none
 dotnet_style_object_initializer = false:none
 # IDE0058: Expression value is never used
 csharp_style_unused_value_expression_statement_preference = discard_variable:none
+# IDE0160: Convert to file-scoped namespace
+csharp_style_namespace_declarations = file_scoped:suggestion
 
 # Expression-bodied members
 csharp_style_expression_bodied_properties = true:suggestion
@@ -147,3 +149,12 @@ csharp_style_expression_bodied_operators = when_on_single_line:suggestion
 ###############################
 
 # Taking all Visual Studio defaults
+
+###############################
+# Analyzer Rules              #
+###############################
+
+# CA1303: Do not pass literals as localized parameters
+dotnet_diagnostic.CA1303.severity = none
+# CA1710: Identifiers should have correct suffix
+dotnet_diagnostic.CA1710.severity = none
