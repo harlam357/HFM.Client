@@ -272,5 +272,21 @@ namespace HFM.Client.Tool
         {
             DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
         }
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                components?.Dispose();
+                _fahClient?.Dispose();
+                _messageQueue.Dispose();
+            }
+
+            base.Dispose(disposing);
+        }
     }
 }
