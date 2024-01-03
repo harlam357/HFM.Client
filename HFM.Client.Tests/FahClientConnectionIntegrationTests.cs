@@ -228,9 +228,7 @@ namespace HFM.Client
             }
         }
 
-        private static void CloseConnectionAfter(int millisecondsDelay, FahClientConnection connection)
-        {
-            Task.Delay(millisecondsDelay).ContinueWith(t => connection.Close());
-        }
+        private static void CloseConnectionAfter(int millisecondsDelay, FahClientConnection connection) =>
+            Task.Delay(millisecondsDelay).ContinueWith(_ => connection.Close(), TaskScheduler.Current);
     }
 }

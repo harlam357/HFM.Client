@@ -1,20 +1,11 @@
-﻿
-using System;
+﻿namespace HFM.Client.Tool;
 
-namespace HFM.Client.Tool
+internal static class FahClientMessageHelper
 {
-    internal static class FahClientMessageHelper
-    {
-        internal static string FormatForDisplay(FahClientMessage message)
-        {
-            return SetEnvironmentNewLineCharacters(message.ToString());
-        }
+    internal static string FormatForDisplay(FahClientMessage message) =>
+        SetEnvironmentNewLineCharacters(message.ToString());
 
-        private static string SetEnvironmentNewLineCharacters(string text)
-        {
-            return text
-                .Replace("\n", Environment.NewLine)
-                .Replace("\\n", Environment.NewLine);
-        }
-    }
+    private static string SetEnvironmentNewLineCharacters(string text) => text
+        .Replace("\n", Environment.NewLine, StringComparison.Ordinal)
+        .Replace("\\n", Environment.NewLine, StringComparison.Ordinal);
 }

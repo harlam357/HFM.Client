@@ -17,7 +17,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectedReturnsFalseOnNewInstance()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.IsFalse(connection.Connected);
         }
@@ -26,7 +26,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_GetStreamReturnsNullOnNewInstance()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.IsNull(connection.GetStream());
         }
@@ -35,7 +35,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectThrowsArgumentNullExceptionWhenHostIsNull()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.Throws<ArgumentNullException>(() => connection.Connect(null, LocalTcpListener.Port, 5000));
         }
@@ -44,7 +44,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectAsyncThrowsArgumentNullExceptionWhenHostIsNull()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.ThrowsAsync<ArgumentNullException>(() => connection.ConnectAsync(null, LocalTcpListener.Port, 5000));
         }
@@ -53,7 +53,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.Throws<ArgumentOutOfRangeException>(() => connection.Connect(LocalTcpListener.Host, -1, 5000));
         }
@@ -62,7 +62,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectAsyncThrowsArgumentOutOfRangeExceptionWhenPortNumberIsNotValid()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // Act & Assert
             Assert.ThrowsAsync<ArgumentOutOfRangeException>(() => connection.ConnectAsync(LocalTcpListener.Host, -1, 5000));
         }
@@ -74,7 +74,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 // Act (Connect)
                 connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
                 // Assert
@@ -97,7 +97,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 // Act (Connect)
                 connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
                 // Act (Attempt Another Connection) & Assert
@@ -110,7 +110,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectAttemptTimesOut()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // use a local IP that no physical machine is using
             var host = "172.20.0.1";
             // Act & Assert
@@ -123,7 +123,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectAttemptThrows()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // use a local IP that no physical machine is using
             var host = "172.20.0.1";
             // Act & Assert
@@ -146,7 +146,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 connection.Close();
                 // Act & Assert
                 Assert.Throws<ObjectDisposedException>(() => connection.Connect(LocalTcpListener.Host, LocalTcpListener.Port, 5000));
@@ -160,7 +160,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 // Act (Connect)
                 await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
                 // Assert
@@ -183,7 +183,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 // Act (Connect)
                 await connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000);
                 // Act (Attempt Another Connection) & Assert
@@ -196,7 +196,7 @@ namespace HFM.Client.Sockets
         public void TcpClientConnection_ConnectAsyncAttemptTimesOut()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // use a local IP that no physical machine is using
             var host = "172.20.0.1";
             // Act & Assert
@@ -209,7 +209,7 @@ namespace HFM.Client.Sockets
         public async Task TcpClientConnection_ConnectAsyncAttemptThrows()
         {
             // Arrange
-            var connection = new TcpClientConnection();
+            using var connection = new TcpClientConnection();
             // use a local IP that no physical machine is using
             var host = "172.20.0.1";
             // Act & Assert
@@ -232,7 +232,7 @@ namespace HFM.Client.Sockets
             // Arrange
             using (new LocalTcpListener())
             {
-                var connection = new TcpClientConnection();
+                using var connection = new TcpClientConnection();
                 connection.Close();
                 // Act & Assert
                 Assert.ThrowsAsync<ObjectDisposedException>(() => connection.ConnectAsync(LocalTcpListener.Host, LocalTcpListener.Port, 5000));

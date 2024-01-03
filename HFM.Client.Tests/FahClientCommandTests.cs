@@ -1,13 +1,9 @@
-﻿
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
-using NUnit.Framework;
+﻿using System.Text;
 
 using HFM.Client.Mocks;
 using HFM.Client.Sockets;
+
+using NUnit.Framework;
 
 namespace HFM.Client
 {
@@ -18,7 +14,8 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var command = new FahClientCommand(new FahClientConnection("foo", 2000));
+            using var fahClientConnection = new FahClientConnection("foo", 2000);
+            var command = new FahClientCommand(fahClientConnection);
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => command.Execute());
         }
@@ -27,9 +24,10 @@ namespace HFM.Client
         public void FahClientCommand_ExecuteAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var command = new FahClientCommand(new FahClientConnection("foo", 2000));
+            using var fahClientConnection = new FahClientConnection("foo", 2000);
+            var command = new FahClientCommand(fahClientConnection);
             // Act & Assert
-            Assert.ThrowsAsync<InvalidOperationException>(() => command.ExecuteAsync());
+            Assert.ThrowsAsync<InvalidOperationException>(command.ExecuteAsync);
         }
 
         [Test]
@@ -54,7 +52,7 @@ namespace HFM.Client
                 connection.Open();
                 var command = new FahClientCommand(connection);
                 // Act & Assert
-                Assert.ThrowsAsync<InvalidOperationException>(() => command.ExecuteAsync());
+                Assert.ThrowsAsync<InvalidOperationException>(command.ExecuteAsync);
             }
         }
 
@@ -143,7 +141,7 @@ namespace HFM.Client
             var tcpConnectionFactory = new MockTcpConnectionFactory();
             using (var connection = new FahClientConnection("foo", 2000, tcpConnectionFactory))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = new FahClientCommand(connection, "command text");
                 // Act
                 int bytesWritten = await command.ExecuteAsync();
@@ -179,7 +177,7 @@ namespace HFM.Client
             var tcpConnectionFactory = new MockTcpConnectionFactory();
             using (var connection = new FahClientConnection("foo", 2000, tcpConnectionFactory))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var command = new FahClientCommand(connection, null);
                 // Act
                 int bytesWritten = await command.ExecuteAsync();

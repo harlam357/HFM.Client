@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Concurrent;
+﻿using System.Collections.Concurrent;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 using HFM.Client.ObjectModel;
 
@@ -73,7 +71,7 @@ namespace HFM.Client.Tool
         private FahClientConnection CreateFahClientConnection()
         {
             string host = HostAddressTextBox.Text;
-            int port = Int32.Parse(PortTextBox.Text);
+            int port = Int32.Parse(PortTextBox.Text, CultureInfo.InvariantCulture);
 
             return LogMessagesCheckBox.Checked
                 ? new LoggingFahClientConnection(host, port)
@@ -180,7 +178,7 @@ namespace HFM.Client.Tool
                 for (lineToGoto = 0; lineToGoto < lines.Length; lineToGoto++)
                 {
                     string line = lines[lineToGoto];
-                    if (line.Contains(value))
+                    if (line.Contains(value, StringComparison.Ordinal))
                     {
                         break;
                     }

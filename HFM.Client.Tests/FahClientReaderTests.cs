@@ -1,13 +1,9 @@
-﻿
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
-using NUnit.Framework;
+﻿using System.Text;
 
 using HFM.Client.Mocks;
 using HFM.Client.Sockets;
+
+using NUnit.Framework;
 
 namespace HFM.Client
 {
@@ -18,7 +14,8 @@ namespace HFM.Client
         public void FahClientReader_ReadThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientConnection("foo", 2000));
+            using var fahClientConnection = new FahClientConnection("foo", 2000);
+            var reader = new FahClientReader(fahClientConnection);
             // Act & Assert
             Assert.Throws<InvalidOperationException>(() => reader.Read());
         }
@@ -27,9 +24,10 @@ namespace HFM.Client
         public void FahClientReader_ReadAsyncThrowsInvalidOperationExceptionWhenConnectionIsNotConnected()
         {
             // Arrange
-            var reader = new FahClientReader(new FahClientConnection("foo", 2000));
+            using var fahClientConnection = new FahClientConnection("foo", 2000);
+            var reader = new FahClientReader(fahClientConnection);
             // Act & Assert
-            Assert.ThrowsAsync<InvalidOperationException>(() => reader.ReadAsync());
+            Assert.ThrowsAsync<InvalidOperationException>(reader.ReadAsync);
         }
 
         [Test]
@@ -54,7 +52,7 @@ namespace HFM.Client
                 connection.Open();
                 var reader = new FahClientReader(connection);
                 // Act & Assert
-                Assert.ThrowsAsync<InvalidOperationException>(() => reader.ReadAsync());
+                Assert.ThrowsAsync<InvalidOperationException>(reader.ReadAsync);
             }
         }
 
@@ -150,7 +148,7 @@ namespace HFM.Client
                 Func<TcpConnection> factory = () => new MockTcpConnection(() => stream);
                 using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
                 {
-                    connection.Open();
+                    await connection.OpenAsync();
                     var reader = new FahClientReader(connection);
                     reader.BufferSize = 8;
                     // Act
@@ -164,7 +162,7 @@ namespace HFM.Client
             }
         }
 
-        private static Stream CreateStreamWithMessage()
+        private static MemoryStream CreateStreamWithMessage()
         {
             var stream = new MemoryStream();
             var buffer = Encoding.ASCII.GetBytes(MessageFromStream);
@@ -200,7 +198,7 @@ namespace HFM.Client
             Func<TcpConnection> factory = () => new MockTcpConnection();
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var reader = new FahClientReader(connection, new FahClientMessageExtractorWithMessage(MessageFromStream));
                 reader.BufferSize = 8;
                 // Act
@@ -266,7 +264,7 @@ namespace HFM.Client
             Func<TcpConnection> factory = () => new MockTcpConnection();
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var reader = new FahClientReader(connection);
                 // Act
                 bool result = await reader.ReadAsync();
@@ -300,7 +298,7 @@ namespace HFM.Client
             Func<TcpConnection> factory = () => new MockTcpConnection();
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var reader = new FahClientReaderReturnsZeroWhenStreamIsNull(connection);
                 // Act
                 bool result = await reader.ReadAsync();
@@ -352,7 +350,7 @@ namespace HFM.Client
             Func<TcpConnection> factory = () => new MockTcpConnection();
             using (var connection = new FahClientConnection("foo", 2000, new MockTcpConnectionFactory(factory)))
             {
-                connection.Open();
+                await connection.OpenAsync();
                 var reader = new FahClientReaderReturnsZeroWhenBufferIsNull(connection);
                 // Act
                 bool result = await reader.ReadAsync();
