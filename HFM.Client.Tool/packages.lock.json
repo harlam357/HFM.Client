@@ -8,16 +8,8 @@
         "resolved": "8.0.0",
         "contentHash": "psnQ6GRQOvt+evda5C4nD5EuV49mz2Tv0DD2JDVDEbE/TKoMukxSkGJcsBJ0pajpPuFRr67syFYlkJ4Wj6A5Zw=="
       },
-      "Newtonsoft.Json": {
-        "type": "Transitive",
-        "resolved": "13.0.3",
-        "contentHash": "HrC5BXdl00IP9zeV+0Z848QWPAoCr9P3bDEZguI+gkLcBKAOxix/tLEAAHC+UvDNPv4a2d18lOReHMOagPa+zQ=="
-      },
       "hfm.client": {
-        "type": "Project",
-        "dependencies": {
-          "Newtonsoft.Json": "[13.0.3, )"
-        }
+        "type": "Project"
       }
     }
   }
