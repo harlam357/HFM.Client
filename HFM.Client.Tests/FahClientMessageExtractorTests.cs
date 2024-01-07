@@ -1,16 +1,13 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 
 using NUnit.Framework;
 
-namespace HFM.Client
+namespace HFM.Client;
+
+[TestFixture]
+public class FahClientMessageExtractorTests
 {
-    [TestFixture]
-    public class FahClientMessageExtractorTests
-    {
-        private const string Info = @"PyON 1 info
+    private const string Info = @"PyON 1 info
 [
   [
     ""Folding @home Client"",
@@ -149,7 +146,7 @@ namespace HFM.Client
 ---
 ";
 
-        private const string SimulationInfo = @"PyON 1 simulation-info
+    private const string SimulationInfo = @"PyON 1 simulation-info
 {
    ""user"": ""harlam357"",
    ""team"": ""32"",
@@ -174,7 +171,7 @@ namespace HFM.Client
 ---
 ";
 
-        private const string SimulationInfoJson = @"{
+    private const string SimulationInfoJson = @"{
    ""user"": ""harlam357"",
    ""team"": ""32"",
    ""project"": 7006,
@@ -196,400 +193,399 @@ namespace HFM.Client
    ""slot"": 0
 }";
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ReturnsNullWhenBufferIsNull()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            // Act
-            var result = extractor.Extract(null);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_ReturnsNullWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        // Act
+        var result = extractor.Extract(null);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromSingleMessage()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder(SimulationInfo);
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-            Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromSingleMessage()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder(SimulationInfo);
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromMultipleMessages()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder(Info + SimulationInfo);
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.AreEqual("info", result.Identifier.MessageType);
-            Assert.AreEqual(Info, result.MessageText.ToString());
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractsSingleMessageFromMultipleMessages()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder(Info + SimulationInfo);
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.AreEqual("info", result.Identifier.MessageType);
+        Assert.AreEqual(Info, result.MessageText.ToString());
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractsMultipleMessagesFromMultipleMessages()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder(Info + SimulationInfo);
-            // Act (First Message)
-            var result = extractor.Extract(buffer);
-            // Assert (First Message)
-            Assert.AreEqual("info", result.Identifier.MessageType);
-            Assert.AreEqual(Info, result.MessageText.ToString());
-            // Act (Second Message)
-            result = extractor.Extract(buffer);
-            // Assert (Second Message)
-            Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-            Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractsMultipleMessagesFromMultipleMessages()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder(Info + SimulationInfo);
+        // Act (First Message)
+        var result = extractor.Extract(buffer);
+        // Assert (First Message)
+        Assert.AreEqual("info", result.Identifier.MessageType);
+        Assert.AreEqual(Info, result.MessageText.ToString());
+        // Act (Second Message)
+        result = extractor.Extract(buffer);
+        // Assert (Second Message)
+        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoHeader()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder();
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoHeader()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder();
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_CannotExtractMessageWithOnlyHeader()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder(Info.Substring(0, 11));
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_CannotExtractMessageWithOnlyHeader()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder(Info.Substring(0, 11));
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoFooter()
-        {
-            // Arrange
-            var extractor = new FahClientPyonMessageExtractor();
-            var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_CannotExtractMessageWithNoFooter()
+    {
+        // Arrange
+        var extractor = new FahClientPyonMessageExtractor();
+        var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractsMessageTextAsJson()
-        {
-            // Arrange
-            var extractor = new FahClientJsonMessageExtractor();
-            var buffer = new StringBuilder(SimulationInfo);
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.AreEqual("simulation-info", result.Identifier.MessageType);
-            Assert.AreEqual(SimulationInfoJson, result.MessageText.ToString());
-        }
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractsMessageTextAsJson()
+    {
+        // Arrange
+        var extractor = new FahClientJsonMessageExtractor();
+        var buffer = new StringBuilder(SimulationInfo);
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual(SimulationInfoJson, result.MessageText.ToString());
+    }
 
-        [Test]
-        public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoHeader()
-        {
-            // Arrange
-            var extractor = new FahClientJsonMessageExtractor();
-            var buffer = new StringBuilder();
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoHeader()
+    {
+        // Arrange
+        var extractor = new FahClientJsonMessageExtractor();
+        var buffer = new StringBuilder();
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientJsonMessageExtractor_CannotExtractMessageWithOnlyHeader()
-        {
-            // Arrange
-            var extractor = new FahClientJsonMessageExtractor();
-            var buffer = new StringBuilder(Info.Substring(0, 11));
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientJsonMessageExtractor_CannotExtractMessageWithOnlyHeader()
+    {
+        // Arrange
+        var extractor = new FahClientJsonMessageExtractor();
+        var buffer = new StringBuilder(Info.Substring(0, 11));
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoFooter()
-        {
-            // Arrange
-            var extractor = new FahClientJsonMessageExtractor();
-            var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientJsonMessageExtractor_CannotExtractMessageWithNoFooter()
+    {
+        // Arrange
+        var extractor = new FahClientJsonMessageExtractor();
+        var buffer = new StringBuilder(Info.Substring(0, Info.Length / 2));
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_HandlesNullMessageType()
-        {
-            // Arrange
-            var extractor = new PyonMessageExtractorReturnsNullMessageType();
-            var buffer = new StringBuilder(Info);
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
-        }
+    [Test]
+    public void FahClientPyonMessageExtractor_HandlesNullMessageType()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorReturnsNullMessageType();
+        var buffer = new StringBuilder(Info);
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
 
-        private class PyonMessageExtractorReturnsNullMessageType : FahClientPyonMessageExtractor
+    private class PyonMessageExtractorReturnsNullMessageType : FahClientPyonMessageExtractor
+    {
+        protected override string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
         {
-            protected override string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
-            {
-                return null;
-            }
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_HandlesNullMessageText()
+    [Test]
+    public void FahClientPyonMessageExtractor_HandlesNullMessageText()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorReturnsNullMessageText();
+        var buffer = new StringBuilder(Info);
+        // Act
+        var result = extractor.Extract(buffer);
+        // Assert
+        Assert.IsNull(result);
+    }
+
+    private class PyonMessageExtractorReturnsNullMessageText : FahClientPyonMessageExtractor
+    {
+        protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorReturnsNullMessageText();
-            var buffer = new StringBuilder(Info);
-            // Act
-            var result = extractor.Extract(buffer);
-            // Assert
-            Assert.IsNull(result);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorReturnsNullMessageText : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractIndexes_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractIndexesThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
-            {
-                return null;
-            }
+            ExtractIndexes(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractIndexes_ThrowsWhenBufferIsNull()
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractIndexes_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractIndexesThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+            ExtractIndexes(new StringBuilder(), null);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractMessageType_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractIndexes(null, new Dictionary<string, int>());
-                return null;
-            }
+            ExtractMessageType(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractIndexes_ThrowsWhenIndexesIsNull()
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractMessageType_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+            ExtractMessageType(new StringBuilder(), null);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractMessageText_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractIndexes(new StringBuilder(), null);
-                return null;
-            }
+            ExtractMessageText(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractMessageType_ThrowsWhenBufferIsNull()
+    [Test]
+    public void FahClientPyonMessageExtractor_ExtractMessageText_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new PyonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class PyonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+            ExtractMessageText(new StringBuilder(), null);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractIndexes_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractIndexesThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class JsonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageType(null, new Dictionary<string, int>());
-                return null;
-            }
+            ExtractIndexes(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractMessageType_ThrowsWhenIndexesIsNull()
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractIndexes_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class JsonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+            ExtractIndexes(new StringBuilder(), null);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractMessageType_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class JsonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageType(new StringBuilder(), null);
-                return null;
-            }
+            ExtractMessageType(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractMessageText_ThrowsWhenBufferIsNull()
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractMessageType_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class JsonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+            ExtractMessageType(new StringBuilder(), null);
+            return null;
         }
+    }
 
-        private class PyonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractMessageText_ThrowsWhenBufferIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
+
+    private class JsonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageText(null, new Dictionary<string, int>());
-                return null;
-            }
+            ExtractMessageText(null, new Dictionary<string, int>());
+            return null;
         }
+    }
 
-        [Test]
-        public void FahClientPyonMessageExtractor_ExtractMessageText_ThrowsWhenIndexesIsNull()
-        {
-            // Arrange
-            var extractor = new PyonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
+    [Test]
+    public void FahClientJsonMessageExtractor_ExtractMessageText_ThrowsWhenIndexesIsNull()
+    {
+        // Arrange
+        var extractor = new JsonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull();
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
+    }
 
-        private class PyonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
+    private class JsonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
+    {
+        public override FahClientMessage Extract(StringBuilder buffer)
         {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageText(new StringBuilder(), null);
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractIndexes_ThrowsWhenBufferIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractIndexesThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractIndexes(null, new Dictionary<string, int>());
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractIndexes_ThrowsWhenIndexesIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractIndexes(new StringBuilder(), null);
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractMessageType_ThrowsWhenBufferIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageType(null, new Dictionary<string, int>());
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractMessageType_ThrowsWhenIndexesIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageType(new StringBuilder(), null);
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractMessageText_ThrowsWhenBufferIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageText(null, new Dictionary<string, int>());
-                return null;
-            }
-        }
-
-        [Test]
-        public void FahClientJsonMessageExtractor_ExtractMessageText_ThrowsWhenIndexesIsNull()
-        {
-            // Arrange
-            var extractor = new JsonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull();
-            // Act & Assert
-            Assert.Throws<ArgumentNullException>(() => extractor.Extract(null));
-        }
-
-        private class JsonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
-        {
-            public override FahClientMessage Extract(StringBuilder buffer)
-            {
-                ExtractMessageText(new StringBuilder(), null);
-                return null;
-            }
+            ExtractMessageText(new StringBuilder(), null);
+            return null;
         }
     }
 }

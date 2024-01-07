@@ -5,291 +5,290 @@ using System.Reflection;
 
 using HFM.Client.ObjectModel;
 
-namespace HFM.Client.Tool
+namespace HFM.Client.Tool;
+
+public partial class MainForm : Form
 {
-    public partial class MainForm : Form
+    private FahClientConnection _fahClient;
+    private readonly BlockingCollection<FahClientMessage> _messageQueue;
+
+    public MainForm()
     {
-        private FahClientConnection _fahClient;
-        private readonly BlockingCollection<FahClientMessage> _messageQueue;
+        InitializeComponent();
 
-        public MainForm()
+        base.Text = $"HFM Client Tool v{FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion}";
+
+        _messageQueue = new BlockingCollection<FahClientMessage>();
+        Task.Run(() =>
         {
-            InitializeComponent();
+            FahClientMessage message;
+            while ((message = _messageQueue.Take()) != null)
+            {
+                FahClientMessageReceived(message);
+            }
+        });
+    }
 
-            base.Text = $"HFM Client Tool v{FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion}";
+    private void ConnectButtonClick(object sender, EventArgs e)
+    {
+        try
+        {
+            _fahClient?.Dispose();
+            _fahClient = CreateFahClientConnection();
+            _fahClient.Open();
+            FahClientConnectedChanged(_fahClient.Connected);
 
-            _messageQueue = new BlockingCollection<FahClientMessage>();
+            ResetFahClientDataSent();
+            ResetFahClientDataReceived();
+
+            string password = PasswordTextBox.Text;
+            if (!String.IsNullOrWhiteSpace(password))
+            {
+                ExecuteFahClientCommand("auth " + password);
+            }
+
             Task.Run(() =>
             {
-                FahClientMessage message;
-                while ((message = _messageQueue.Take()) != null)
+                var reader = _fahClient.CreateReader();
+                try
                 {
-                    FahClientMessageReceived(message);
+                    while (reader.Read())
+                    {
+                        _messageQueue.Add(reader.Message);
+                    }
                 }
+                catch (Exception)
+                {
+                    // connection died
+                }
+                _fahClient.Close();
+                FahClientConnectedChanged(_fahClient.Connected);
             });
         }
-
-        private void ConnectButtonClick(object sender, EventArgs e)
+        catch (Exception ex)
         {
-            try
+            MessageBox.Show(ex.Message);
+        }
+    }
+
+    private FahClientConnection CreateFahClientConnection()
+    {
+        string host = HostAddressTextBox.Text;
+        int port = Int32.Parse(PortTextBox.Text, CultureInfo.InvariantCulture);
+
+        return LogMessagesCheckBox.Checked
+            ? new LoggingFahClientConnection(host, port)
+            : new FahClientConnection(host, port);
+    }
+
+    private void FahClientConnectedChanged(bool connected)
+    {
+        SetConnectionButtonsEnabled(connected);
+        SetStatusLabelText(connected ? "Connected" : "Connection Closed");
+    }
+
+    private void FahClientMessageReceived(FahClientMessage message)
+    {
+        AppendTextToMessageDisplayTextBox(String.Empty);
+        AppendTextToMessageDisplayTextBox(FahClientMessageHelper.FormatForDisplay(message));
+        var identifier = message.Identifier.ToString();
+        AddTextToStatusMessageListBox(identifier);
+        SetStatusLabelText(identifier);
+        FahClientDataReceived(message.MessageText.Length);
+
+        if (message.Identifier.MessageType == FahClientMessageType.SlotInfo)
+        {
+            if (message.MessageFormat == FahClientMessage.PyonMessageFormat)
             {
-                _fahClient?.Dispose();
-                _fahClient = CreateFahClientConnection();
-                _fahClient.Open();
-                FahClientConnectedChanged(_fahClient.Connected);
-
-                ResetFahClientDataSent();
-                ResetFahClientDataReceived();
-
-                string password = PasswordTextBox.Text;
-                if (!String.IsNullOrWhiteSpace(password))
-                {
-                    ExecuteFahClientCommand("auth " + password);
-                }
-
-                Task.Run(() =>
-                {
-                    var reader = _fahClient.CreateReader();
-                    try
-                    {
-                        while (reader.Read())
-                        {
-                            _messageQueue.Add(reader.Message);
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        // connection died
-                    }
-                    _fahClient.Close();
-                    FahClientConnectedChanged(_fahClient.Connected);
-                });
+                message = new FahClientJsonMessageExtractor().Extract(message.MessageText);
             }
-            catch (Exception ex)
+            var slotCollection = SlotCollection.Load(message.MessageText);
+            foreach (var slot in slotCollection)
             {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        private FahClientConnection CreateFahClientConnection()
-        {
-            string host = HostAddressTextBox.Text;
-            int port = Int32.Parse(PortTextBox.Text, CultureInfo.InvariantCulture);
-
-            return LogMessagesCheckBox.Checked
-                ? new LoggingFahClientConnection(host, port)
-                : new FahClientConnection(host, port);
-        }
-
-        private void FahClientConnectedChanged(bool connected)
-        {
-            SetConnectionButtonsEnabled(connected);
-            SetStatusLabelText(connected ? "Connected" : "Connection Closed");
-        }
-
-        private void FahClientMessageReceived(FahClientMessage message)
-        {
-            AppendTextToMessageDisplayTextBox(String.Empty);
-            AppendTextToMessageDisplayTextBox(FahClientMessageHelper.FormatForDisplay(message));
-            var identifier = message.Identifier.ToString();
-            AddTextToStatusMessageListBox(identifier);
-            SetStatusLabelText(identifier);
-            FahClientDataReceived(message.MessageText.Length);
-
-            if (message.Identifier.MessageType == FahClientMessageType.SlotInfo)
-            {
-                if (message.MessageFormat == FahClientMessage.PyonMessageFormat)
-                {
-                    message = new FahClientJsonMessageExtractor().Extract(message.MessageText);
-                }
-                var slotCollection = SlotCollection.Load(message.MessageText);
-                foreach (var slot in slotCollection)
-                {
-                    ExecuteFahClientCommand("slot-options " + slot.ID + " client-type client-subtype cpu-usage machine-id max-packet-size core-priority next-unit-percentage max-units checkpoint pause-on-start gpu-index gpu-usage");
-                    ExecuteFahClientCommand("simulation-info " + slot.ID);
-                }
+                ExecuteFahClientCommand("slot-options " + slot.ID + " client-type client-subtype cpu-usage machine-id max-packet-size core-priority next-unit-percentage max-units checkpoint pause-on-start gpu-index gpu-usage");
+                ExecuteFahClientCommand("simulation-info " + slot.ID);
             }
         }
+    }
 
-        private void CloseButtonClick(object sender, EventArgs e)
+    private void CloseButtonClick(object sender, EventArgs e)
+    {
+        _fahClient.Close();
+    }
+
+    private void ClearMessagesButtonClick(object sender, EventArgs e)
+    {
+        MessageDisplayTextBox.Clear();
+        StatusMessageListBox.Items.Clear();
+        StatusLabel.Text = String.Empty;
+    }
+
+    private void SendCommandButtonClick(object sender, EventArgs e)
+    {
+        if (_fahClient == null || !_fahClient.Connected)
         {
-            _fahClient.Close();
+            MessageBox.Show("Not connected.");
+            return;
         }
 
-        private void ClearMessagesButtonClick(object sender, EventArgs e)
+        try
         {
-            MessageDisplayTextBox.Clear();
-            StatusMessageListBox.Items.Clear();
-            StatusLabel.Text = String.Empty;
-        }
-
-        private void SendCommandButtonClick(object sender, EventArgs e)
-        {
-            if (_fahClient == null || !_fahClient.Connected)
+            string command = CommandTextBox.Text;
+            if (command == "test-commands")
             {
-                MessageBox.Show("Not connected.");
-                return;
+                ExecuteFahClientCommand("info");
+                ExecuteFahClientCommand("options -a");
+                ExecuteFahClientCommand("queue-info");
+                ExecuteFahClientCommand("slot-info");
+                ExecuteFahClientCommand("log-updates restart");
             }
-
-            try
+            else
             {
-                string command = CommandTextBox.Text;
-                if (command == "test-commands")
-                {
-                    ExecuteFahClientCommand("info");
-                    ExecuteFahClientCommand("options -a");
-                    ExecuteFahClientCommand("queue-info");
-                    ExecuteFahClientCommand("slot-info");
-                    ExecuteFahClientCommand("log-updates restart");
-                }
-                else
-                {
-                    ExecuteFahClientCommand(CommandTextBox.Text);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
+                ExecuteFahClientCommand(CommandTextBox.Text);
             }
         }
-
-        private void DigitsOnlyKeyPress(object sender, KeyPressEventArgs e)
+        catch (Exception ex)
         {
-            Debug.WriteLine($"Keystroke: {(int)e.KeyChar}");
-
-            // only allow digits & special keystrokes
-            if (char.IsDigit(e.KeyChar) == false &&
-                e.KeyChar != 8 &&       // backspace 
-                e.KeyChar != 26 &&      // Ctrl+Z
-                e.KeyChar != 24 &&      // Ctrl+X
-                e.KeyChar != 3 &&       // Ctrl+C
-                e.KeyChar != 22 &&      // Ctrl+V
-                e.KeyChar != 25)        // Ctrl+Y
-            {
-                e.Handled = true;
-            }
+            Console.WriteLine(ex.Message);
         }
+    }
 
-        private void StatusMessageListBoxClick(object sender, EventArgs e)
+    private void DigitsOnlyKeyPress(object sender, KeyPressEventArgs e)
+    {
+        Debug.WriteLine($"Keystroke: {(int)e.KeyChar}");
+
+        // only allow digits & special keystrokes
+        if (char.IsDigit(e.KeyChar) == false &&
+            e.KeyChar != 8 &&       // backspace 
+            e.KeyChar != 26 &&      // Ctrl+Z
+            e.KeyChar != 24 &&      // Ctrl+X
+            e.KeyChar != 3 &&       // Ctrl+C
+            e.KeyChar != 22 &&      // Ctrl+V
+            e.KeyChar != 25)        // Ctrl+Y
         {
-            string value = StatusMessageListBox.SelectedItem as string;
-            if (!String.IsNullOrWhiteSpace(value))
-            {
-                var lines = MessageDisplayTextBox.Lines;
+            e.Handled = true;
+        }
+    }
 
-                int lineToGoto;
-                for (lineToGoto = 0; lineToGoto < lines.Length; lineToGoto++)
+    private void StatusMessageListBoxClick(object sender, EventArgs e)
+    {
+        string value = StatusMessageListBox.SelectedItem as string;
+        if (!String.IsNullOrWhiteSpace(value))
+        {
+            var lines = MessageDisplayTextBox.Lines;
+
+            int lineToGoto;
+            for (lineToGoto = 0; lineToGoto < lines.Length; lineToGoto++)
+            {
+                string line = lines[lineToGoto];
+                if (line.Contains(value, StringComparison.Ordinal))
                 {
-                    string line = lines[lineToGoto];
-                    if (line.Contains(value, StringComparison.Ordinal))
-                    {
-                        break;
-                    }
-                }
-                if (lineToGoto < lines.Length)
-                {
-                    int position = 0;
-                    for (int i = 0; i < lineToGoto; i++)
-                    {
-                        position += lines[i].Length + Environment.NewLine.Length;
-                    }
-                    MessageDisplayTextBox.SelectionStart = position;
-                    MessageDisplayTextBox.ScrollToCaret();
+                    break;
                 }
             }
-        }
-
-        private void ExecuteFahClientCommand(string commandText)
-        {
-            FahClientDataSent(_fahClient.CreateCommand(commandText).Execute());
-        }
-
-        private int _totalBytesSent;
-
-        private void ResetFahClientDataSent()
-        {
-            _totalBytesSent = 0;
-            SetDataSentValueLabelText(_totalBytesSent);
-        }
-
-        private void FahClientDataSent(int length)
-        {
-            unchecked
+            if (lineToGoto < lines.Length)
             {
-                _totalBytesSent += length;
+                int position = 0;
+                for (int i = 0; i < lineToGoto; i++)
+                {
+                    position += lines[i].Length + Environment.NewLine.Length;
+                }
+                MessageDisplayTextBox.SelectionStart = position;
+                MessageDisplayTextBox.ScrollToCaret();
             }
-            SetDataSentValueLabelText(_totalBytesSent);
         }
+    }
 
-        private int _totalBytesReceived;
+    private void ExecuteFahClientCommand(string commandText)
+    {
+        FahClientDataSent(_fahClient.CreateCommand(commandText).Execute());
+    }
 
-        private void ResetFahClientDataReceived()
+    private int _totalBytesSent;
+
+    private void ResetFahClientDataSent()
+    {
+        _totalBytesSent = 0;
+        SetDataSentValueLabelText(_totalBytesSent);
+    }
+
+    private void FahClientDataSent(int length)
+    {
+        unchecked
         {
-            _totalBytesReceived = 0;
-            SetDataReceivedValueLabelText(_totalBytesReceived);
+            _totalBytesSent += length;
         }
+        SetDataSentValueLabelText(_totalBytesSent);
+    }
 
-        private void FahClientDataReceived(int length)
+    private int _totalBytesReceived;
+
+    private void ResetFahClientDataReceived()
+    {
+        _totalBytesReceived = 0;
+        SetDataReceivedValueLabelText(_totalBytesReceived);
+    }
+
+    private void FahClientDataReceived(int length)
+    {
+        unchecked
         {
-            unchecked
-            {
-                _totalBytesReceived += length;
-            }
-            SetDataReceivedValueLabelText(_totalBytesReceived);
+            _totalBytesReceived += length;
         }
+        SetDataReceivedValueLabelText(_totalBytesReceived);
+    }
 
-        private void SetConnectionButtonsEnabled(bool connected)
+    private void SetConnectionButtonsEnabled(bool connected)
+    {
+        this.BeginInvokeOnUIThread(c =>
         {
-            this.BeginInvokeOnUIThread(c =>
-            {
-                ConnectButton.Enabled = !connected;
-                CloseButton.Enabled = connected;
-            }, connected);
-        }
+            ConnectButton.Enabled = !connected;
+            CloseButton.Enabled = connected;
+        }, connected);
+    }
 
-        private void AppendTextToMessageDisplayTextBox(string text)
+    private void AppendTextToMessageDisplayTextBox(string text)
+    {
+        MessageDisplayTextBox.BeginInvokeOnUIThread(t => MessageDisplayTextBox.AppendText(t), text);
+    }
+
+    private void AddTextToStatusMessageListBox(string text)
+    {
+        StatusMessageListBox.BeginInvokeOnUIThread(t =>
         {
-            MessageDisplayTextBox.BeginInvokeOnUIThread(t => MessageDisplayTextBox.AppendText(t), text);
-        }
+            StatusMessageListBox.Items.Add(text);
+            StatusMessageListBox.SelectedIndex = StatusMessageListBox.Items.Count - 1;
+        }, text);
+    }
 
-        private void AddTextToStatusMessageListBox(string text)
+    private void SetStatusLabelText(string text)
+    {
+        this.BeginInvokeOnUIThread(t => StatusLabel.Text = t, text);
+    }
+
+    private void SetDataSentValueLabelText(int value)
+    {
+        DataSentValueLabel.BeginInvokeOnUIThread(v => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
+    }
+
+    private void SetDataReceivedValueLabelText(int value)
+    {
+        DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
+    }
+
+    /// <summary>
+    /// Clean up any resources being used.
+    /// </summary>
+    /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+    protected override void Dispose(bool disposing)
+    {
+        if (disposing)
         {
-            StatusMessageListBox.BeginInvokeOnUIThread(t =>
-            {
-                StatusMessageListBox.Items.Add(text);
-                StatusMessageListBox.SelectedIndex = StatusMessageListBox.Items.Count - 1;
-            }, text);
+            components?.Dispose();
+            _fahClient?.Dispose();
+            _messageQueue.Dispose();
         }
 
-        private void SetStatusLabelText(string text)
-        {
-            this.BeginInvokeOnUIThread(t => StatusLabel.Text = t, text);
-        }
-
-        private void SetDataSentValueLabelText(int value)
-        {
-            DataSentValueLabel.BeginInvokeOnUIThread(v => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
-        }
-
-        private void SetDataReceivedValueLabelText(int value)
-        {
-            DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
-        }
-
-        /// <summary>
-        /// Clean up any resources being used.
-        /// </summary>
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                components?.Dispose();
-                _fahClient?.Dispose();
-                _messageQueue.Dispose();
-            }
-
-            base.Dispose(disposing);
-        }
+        base.Dispose(disposing);
     }
 }

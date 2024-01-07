@@ -1,30 +1,26 @@
-﻿
-using System;
+﻿using HFM.Client.Sockets;
 
-using HFM.Client.Sockets;
+namespace HFM.Client.Mocks;
 
-namespace HFM.Client.Mocks
+internal class MockTcpConnectionFactory : TcpConnectionFactory
 {
-    internal class MockTcpConnectionFactory : TcpConnectionFactory
+    private readonly Func<TcpConnection> _factory;
+
+    public MockTcpConnectionFactory()
+        : this(() => new MockTcpConnection())
     {
-        private readonly Func<TcpConnection> _factory;
 
-        public MockTcpConnectionFactory()
-           : this(() => new MockTcpConnection())
-        {
+    }
 
-        }
+    public MockTcpConnectionFactory(Func<TcpConnection> factory)
+    {
+        _factory = factory;
+    }
 
-        public MockTcpConnectionFactory(Func<TcpConnection> factory)
-        {
-            _factory = factory;
-        }
+    public TcpConnection TcpConnection { get; private set; }
 
-        public TcpConnection TcpConnection { get; private set; }
-
-        public override TcpConnection Create()
-        {
-            return TcpConnection = _factory();
-        }
+    public override TcpConnection Create()
+    {
+        return TcpConnection = _factory();
     }
 }

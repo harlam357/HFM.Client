@@ -1,117 +1,108 @@
-﻿
-using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
-namespace HFM.Client
+namespace HFM.Client;
+
+/// <summary>
+/// Folding@Home client text command statement.
+/// </summary>
+public class FahClientCommand
 {
     /// <summary>
-    /// Folding@Home client text command statement.
+    /// Gets the <see cref="FahClientConnection"/> used by this <see cref="FahClientCommand"/>.
     /// </summary>
-    public class FahClientCommand
+    public FahClientConnection Connection { get; }
+
+    /// <summary>
+    /// Gets or sets the Folding@Home client command statement.
+    /// </summary>
+    public string CommandText { get; set; } = String.Empty;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
+    /// </summary>
+    /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
+    public FahClientCommand(FahClientConnection connection)
     {
-        /// <summary>
-        /// Gets the <see cref="FahClientConnection"/> used by this <see cref="FahClientCommand"/>.
-        /// </summary>
-        public FahClientConnection Connection { get; }
+        Connection = connection;
+    }
 
-        /// <summary>
-        /// Gets or sets the Folding@Home client command statement.
-        /// </summary>
-        public string CommandText { get; set; } = String.Empty;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
+    /// </summary>
+    /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
+    /// <param name="commandText">The Folding@Home client command statement.</param>
+    public FahClientCommand(FahClientConnection connection, string commandText)
+    {
+        Connection = connection;
+        CommandText = commandText;
+    }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
-        /// </summary>
-        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
-        public FahClientCommand(FahClientConnection connection)
+    /// <summary>
+    /// Sends the <see cref="CommandText"/> to the Folding@Home client.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+    /// <returns>The number of bytes transmitted to the Folding@Home client.</returns>
+    public virtual int Execute()
+    {
+        if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
+
+        try
         {
-            Connection = connection;
+            var stream = GetStream();
+            var buffer = CreateBuffer(CommandText);
+            stream.Write(buffer, 0, buffer.Length);
+            return buffer.Length;
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
-        /// </summary>
-        /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
-        /// <param name="commandText">The Folding@Home client command statement.</param>
-        public FahClientCommand(FahClientConnection connection, string commandText)
+        catch (Exception)
         {
-            Connection = connection;
-            CommandText = commandText;
+            Connection.Close();
+            throw;
         }
+    }
 
-        /// <summary>
-        /// Sends the <see cref="CommandText"/> to the Folding@Home client.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-        /// <returns>The number of bytes transmitted to the Folding@Home client.</returns>
-        public virtual int Execute()
+    /// <summary>
+    /// Asynchronously sends the <see cref="CommandText"/> to the Folding@Home client.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">The connection is not open.</exception>
+    /// <returns>A task representing the asynchronous operation that can return the number of bytes transmitted to the Folding@Home client.</returns>
+    public virtual async Task<int> ExecuteAsync()
+    {
+        if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
+
+        try
         {
-            if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
-
-            try
-            {
-                var stream = GetStream();
-                var buffer = CreateBuffer(CommandText);
-                stream.Write(buffer, 0, buffer.Length);
-                return buffer.Length;
-            }
-            catch (Exception)
-            {
-                Connection.Close();
-                throw;
-            }
+            var stream = GetStream();
+            var buffer = CreateBuffer(CommandText);
+            await stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            return buffer.Length;
         }
-
-        /// <summary>
-        /// Asynchronously sends the <see cref="CommandText"/> to the Folding@Home client.
-        /// </summary>
-        /// <exception cref="InvalidOperationException">The connection is not open.</exception>
-        /// <returns>A task representing the asynchronous operation that can return the number of bytes transmitted to the Folding@Home client.</returns>
-        public virtual async Task<int> ExecuteAsync()
+        catch (Exception)
         {
-            if (!Connection.Connected) throw new InvalidOperationException("The connection is not open.");
-
-            try
-            {
-                var stream = GetStream();
-                var buffer = CreateBuffer(CommandText);
-                await stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
-                return buffer.Length;
-            }
-            catch (Exception)
-            {
-                Connection.Close();
-                throw;
-            }
+            Connection.Close();
+            throw;
         }
+    }
 
-        private Stream GetStream()
+    private Stream GetStream()
+    {
+        var stream = Connection.TcpConnection?.GetStream();
+        if (stream is null)
         {
-            var stream = Connection.TcpConnection?.GetStream();
-            if (stream is null)
-            {
-                throw new InvalidOperationException("The connection is not open.");
-            }
-            return stream;
+            throw new InvalidOperationException("The connection is not open.");
         }
+        return stream;
+    }
 
-        private static byte[] CreateBuffer(string commandText)
+    private static byte[] CreateBuffer(string commandText)
+    {
+        if (commandText is null)
         {
-            if (commandText is null)
-            {
-#if NET45
-                return new byte[0];
-#else
-                return Array.Empty<byte>();
-#endif
-            }
-            if (!commandText.EndsWith("\n", StringComparison.Ordinal))
-            {
-                commandText += "\n";
-            }
-            return Encoding.ASCII.GetBytes(commandText);
+            return Array.Empty<byte>();
         }
+        if (!commandText.EndsWith("\n", StringComparison.Ordinal))
+        {
+            commandText += "\n";
+        }
+        return Encoding.ASCII.GetBytes(commandText);
     }
 }
