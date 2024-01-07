@@ -1,0 +1,20 @@
+PyON 1 slots
+[
+  {
+    "id": "00",
+    "status": "PAUSED",
+    "description": "cpu:12",
+    "options": {"client-type": "advanced", "cpus": 12, "max-packet-size": "big", "pause-on-start": True, "paused": True},
+    "reason": "by user",
+    "idle": False
+  },
+  {
+    "id": "03",
+    "status": "RUNNING",
+    "description": "gpu:14:0 GA102 [GeForce RTX 3080 Lite Hash Rate]",
+    "options": {"max-packet-size": "big", "pause-on-start": True, "paused": False, "pci-bus": "14", "pci-slot": "0"},
+    "reason": "",
+    "idle": False
+  }
+]
+---

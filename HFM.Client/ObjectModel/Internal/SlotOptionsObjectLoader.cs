@@ -1,4 +1,6 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Globalization;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace HFM.Client.ObjectModel.Internal;
 
@@ -19,8 +21,15 @@ internal class SlotOptionsObjectLoader : ObjectLoader<SlotOptions>
         var result = new SlotOptions();
         foreach (var t in obj)
         {
-            result[t.Key] = t.Value?.GetValue<string>();
+            var element = t.Value?.GetValue<JsonElement>();
+            result[t.Key] = element switch
+            {
+                { ValueKind: JsonValueKind.Number } => t.Value?.GetValue<int>().ToString(CultureInfo.InvariantCulture),
+                { ValueKind: JsonValueKind.True or JsonValueKind.False } => t.Value?.GetValue<bool>().ToString(),
+                _ => t.Value?.GetValue<string>()
+            };
         }
+
         return result;
     }
 }

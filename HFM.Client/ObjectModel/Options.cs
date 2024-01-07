@@ -110,6 +110,8 @@ namespace HFM.Client.ObjectModel
         public const string PauseOnBattery = "pause-on-battery";
         public const string PauseOnStart = "pause-on-start";
         public const string Paused = "paused";
+        public const string PciBus = "pci-bus";
+        public const string PciSlot = "pci-slot";
         public const string Power = "power";
         public const string Proxy = "proxy";
         public const string ProxyEnable = "proxy-enable";
