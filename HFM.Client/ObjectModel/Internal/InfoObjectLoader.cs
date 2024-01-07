@@ -1,10 +1,7 @@
-﻿
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
-using Newtonsoft.Json.Linq;
+using HFM.Client.Internal;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -14,46 +11,46 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
 
-            var array = LoadJArray(textReader);
+            var array = LoadJsonArray(textReader);
 
             var info = new Info();
-            var client = GetArrayToken(array, "FAHClient");
+            var client = GetArrayNode(array, "FAHClient");
             if (client != null)
             {
                 FahClientLoader(client, info.Client);
             }
             else
             {
-                client = GetArrayToken(array, "Folding@home Client");
-                var build = GetArrayToken(array, "Build");
+                client = GetArrayNode(array, "Folding@home Client");
+                var build = GetArrayNode(array, "Build");
                 FoldingAtHomeClientLoader(client, build, info.Client);
             }
 
-            var system = GetArrayToken(array, "System");
+            var system = GetArrayNode(array, "System");
             info.System.CPU = GetValue<string>(system, "CPU")?.Trim();
             info.System.CPUID = GetValue<string>(system, "CPU ID");
-            info.System.CPUs = GetValue<int?>(system, "CPUs");
+            info.System.CPUs = GetValue<string>(system, "CPUs").ToNullableInt32();
             info.System.Memory = GetValue<string>(system, "Memory");
             info.System.MemoryValue = ConvertToMemoryValue(info.System.Memory);
             info.System.FreeMemory = GetValue<string>(system, "Free Memory");
             info.System.FreeMemoryValue = ConvertToMemoryValue(info.System.FreeMemory);
             info.System.Threads = GetValue<string>(system, "Threads");
             info.System.OSVersion = GetValue<string>(system, "OS Version");
-            info.System.HasBattery = GetValue<bool?>(system, "Has Battery");
-            info.System.OnBattery = GetValue<bool?>(system, "On Battery");
-            info.System.UtcOffset = GetValue<int?>(system, "UTC Offset", StringComparison.OrdinalIgnoreCase);
-            info.System.PID = GetValue<int?>(system, "PID");
+            info.System.HasBattery = GetValue<string>(system, "Has Battery").ToNullableBoolean();
+            info.System.OnBattery = GetValue<string>(system, "On Battery").ToNullableBoolean();
+            info.System.UtcOffset = GetValue<string>(system, "UTC Offset", StringComparison.OrdinalIgnoreCase).ToNullableInt32();
+            info.System.PID = GetValue<string>(system, "PID").ToNullableInt32();
             info.System.CWD = GetValue<string>(system, "CWD");
             info.System.OS = GetValue<string>(system, "OS");
             info.System.OSArch = GetValue<string>(system, "OS Arch");
-            info.System.GPUs = GetValue<int?>(system, "GPUs");
+            info.System.GPUs = GetValue<string>(system, "GPUs").ToNullableInt32();
             info.System.GPUInfos = BuildGPUInfos(system);
-            info.System.Win32Service = GetValue<bool?>(system, "Win32 Service");
+            info.System.Win32Service = GetValue<string>(system, "Win32 Service").ToNullableBoolean();
 
             return info;
         }
 
-        private static void FahClientLoader(JToken client, ClientInfo clientInfo)
+        private static void FahClientLoader(JsonNode client, ClientInfo clientInfo)
         {
             clientInfo.Version = GetValue<string>(client, "Version");
             clientInfo.Author = GetValue<string>(client, "Author");
@@ -66,13 +63,13 @@ namespace HFM.Client.ObjectModel.Internal
             clientInfo.Compiler = GetValue<string>(client, "Compiler");
             clientInfo.Options = GetValue<string>(client, "Options");
             clientInfo.Platform = GetValue<string>(client, "Platform");
-            clientInfo.Bits = GetValue<int?>(client, "Bits");
+            clientInfo.Bits = GetValue<string>(client, "Bits").ToNullableInt32();
             clientInfo.Mode = GetValue<string>(client, "Mode");
             clientInfo.Args = GetValue<string>(client, "Args")?.Trim();
             clientInfo.Config = GetValue<string>(client, "Config");
         }
 
-        private static void FoldingAtHomeClientLoader(JToken client, JToken build, ClientInfo clientInfo)
+        private static void FoldingAtHomeClientLoader(JsonNode client, JsonNode build, ClientInfo clientInfo)
         {
             clientInfo.Homepage = GetValue<string>(client, "Website");
             clientInfo.Copyright = GetValue<string>(client, "Copyright");
@@ -87,47 +84,58 @@ namespace HFM.Client.ObjectModel.Internal
             clientInfo.Compiler = GetValue<string>(build, "Compiler");
             clientInfo.Options = GetValue<string>(build, "Options");
             clientInfo.Platform = GetValue<string>(build, "Platform");
-            clientInfo.Bits = GetValue<int?>(build, "Bits");
+            clientInfo.Bits = GetValue<string>(build, "Bits").ToNullableInt32();
             clientInfo.Mode = GetValue<string>(build, "Mode");
         }
 
-        private static JToken GetArrayToken(JArray array, string name)
-        {
-            return array.Descendants().FirstOrDefault(x => x.Type == JTokenType.String && x.Value<string>() == name)?.Parent;
-        }
+        private static JsonNode GetArrayNode(JsonArray array, string name) => array
+            .Select(x => x.AsArray().FirstOrDefault())
+            .Where(x => x is not null && x.GetValue<JsonElement>().ValueKind == JsonValueKind.String)
+            .FirstOrDefault(x => x.GetValue<string>() == name)?.Parent;
 
-        private static T GetValue<T>(JToken token, string name, StringComparison nameComparison = StringComparison.Ordinal)
+        private static T GetValue<T>(JsonNode node, string name, StringComparison nameComparison = StringComparison.Ordinal)
         {
-            var innerArray = token?.FirstOrDefault(x => String.Equals(x.FirstOrDefault()?.Value<string>(), name, nameComparison));
-            var valueElement = innerArray?.ElementAtOrDefault(1);
-            if (valueElement != null)
+            if (node is null)
             {
-                try
-                {
-                    return valueElement.Value<T>();
-                }
-                catch (FormatException)
-                {
-                    // if the data changed in a way where the value can
-                    // no longer be converted to the target CLR type
-                }
+                return default;
             }
+
+            var innerArray = node.AsArray().FirstOrDefault(x => x is JsonArray a && String.Equals(a.FirstOrDefault()?.GetValue<string>(), name, nameComparison));
+            var valueNode = innerArray?.AsArray().ElementAtOrDefault(1);
+            if (valueNode == null)
+            {
+                return default;
+            }
+
+            try
+            {
+                return valueNode.GetValue<T>();
+            }
+            catch (FormatException)
+            {
+                // The current JsonNode cannot be represented as a {T}.
+            }
+            catch (InvalidOperationException)
+            {
+                // The current JsonNode is not a JsonValue or is not compatible with {T}.
+            }
+
             return default;
         }
 
-        private static IDictionary<int, GPUInfo> BuildGPUInfos(JToken token)
+        private static IDictionary<int, GPUInfo> BuildGPUInfos(JsonNode node)
         {
             var result = Enumerable.Range(0, 8)
                 .Select(id =>
                 {
-                    var gpu = GetValue<string>(token, String.Concat("GPU ", id));
+                    var gpu = GetValue<string>(node, String.Concat("GPU ", id));
                     return gpu != null
                         ? new GPUInfo
                         {
                             ID = id,
                             GPU = gpu,
-                            CUDADevice = GetValue<string>(token, String.Concat("CUDA Device ", id)),
-                            OpenCLDevice = GetValue<string>(token, String.Concat("OpenCL Device ", id))
+                            CUDADevice = GetValue<string>(node, String.Concat("CUDA Device ", id)),
+                            OpenCLDevice = GetValue<string>(node, String.Concat("OpenCL Device ", id))
                         }
                         : null;
                 })
@@ -139,24 +147,30 @@ namespace HFM.Client.ObjectModel.Internal
 
         private static double? ConvertToMemoryValue(string input)
         {
-            if (input is null) return null;
+            if (input is null)
+            {
+                return null;
+            }
 
             // always returns value in gigabytes
             int gigabyteIndex = input.IndexOf("GiB", StringComparison.Ordinal);
-            if (gigabyteIndex > 0 && Double.TryParse(input.Substring(0, gigabyteIndex), out double value))
+            if (gigabyteIndex > 0 && Double.TryParse(input.AsSpan(0, gigabyteIndex), out double value))
             {
                 return value;
             }
+
             int megabyteIndex = input.IndexOf("MiB", StringComparison.Ordinal);
-            if (megabyteIndex > 0 && Double.TryParse(input.Substring(0, megabyteIndex), out value))
+            if (megabyteIndex > 0 && Double.TryParse(input.AsSpan(0, megabyteIndex), out value))
             {
                 return value / 1024;
             }
+
             int kilobyteIndex = input.IndexOf("KiB", StringComparison.Ordinal);
-            if (kilobyteIndex > 0 && Double.TryParse(input.Substring(0, kilobyteIndex), out value))
+            if (kilobyteIndex > 0 && Double.TryParse(input.AsSpan(0, kilobyteIndex), out value))
             {
                 return value / 1048576;
             }
+
             return null;
         }
     }

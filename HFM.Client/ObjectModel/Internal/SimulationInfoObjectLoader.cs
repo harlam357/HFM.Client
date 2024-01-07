@@ -1,6 +1,4 @@
-﻿
-using System;
-using System.IO;
+﻿using HFM.Client.Internal;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -10,11 +8,11 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
 
-            var obj = LoadJObject(textReader);
+            var obj = LoadJsonObject(textReader);
             
             var si = new SimulationInfo();
             si.User = GetValue<string>(obj, "user");
-            si.Team = GetValue<int?>(obj, "team");
+            si.Team = GetValue<string>(obj, "team").ToNullableInt32();
             si.Project = GetValue<int?>(obj, "project");
             si.Run = GetValue<int?>(obj, "run");
             si.Clone = GetValue<int?>(obj, "clone");

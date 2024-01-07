@@ -1,11 +1,8 @@
-﻿
-using System;
-using System.Globalization;
-using System.IO;
-using System.Linq;
+﻿using System.Globalization;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 
-using Newtonsoft.Json.Linq;
+using HFM.Client.Internal;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -15,22 +12,22 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
             
-            var array = LoadJArray(textReader);
+            var array = LoadJsonArray(textReader);
 
             var collection = new UnitCollection();
-            foreach (var token in array.Where(x => x.HasValues))
+            foreach (var obj in array.Select(x => x.AsObject()).Where(x => x.Count != 0))
             {
-                collection.Add(LoadUnit((JObject)token));
+                collection.Add(LoadUnit(obj));
             }
             return collection;
         }
 
         // ReSharper disable StringLiteralTypo
 
-        private Unit LoadUnit(JObject obj)
+        private Unit LoadUnit(JsonObject obj)
         {
             var slot = new Unit();
-            slot.ID = GetValue<int?>(obj, "id");
+            slot.ID = GetValue<string>(obj, "id").ToNullableInt32();
             slot.State = GetValue<string>(obj, "state");
             slot.Error = GetValue<string>(obj, "error");
             slot.Project = GetValue<int?>(obj, "project");
@@ -57,11 +54,11 @@ namespace HFM.Client.ObjectModel.Internal
             slot.Slot = GetValue<int?>(obj, "slot");
             slot.ETA = GetValue<string>(obj, "eta");
             slot.ETATimeSpan = ConvertToTimeSpan(slot.ETA);
-            slot.PPD = GetValue<double?>(obj, "ppd");
+            slot.PPD = GetValue<string>(obj, "ppd").ToNullableDouble();
             slot.TPF = GetValue<string>(obj, "tpf");
             slot.TPFTimeSpan = ConvertToTimeSpan(slot.TPF);
-            slot.BaseCredit = GetValue<double?>(obj, "basecredit");
-            slot.CreditEstimate = GetValue<double?>(obj, "creditestimate");
+            slot.BaseCredit = GetValue<string>(obj, "basecredit").ToNullableDouble();
+            slot.CreditEstimate = GetValue<string>(obj, "creditestimate").ToNullableDouble();
             return slot;
         }
 

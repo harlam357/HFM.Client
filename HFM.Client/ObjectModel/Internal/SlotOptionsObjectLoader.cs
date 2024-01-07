@@ -1,7 +1,4 @@
-﻿
-using System.IO;
-
-using Newtonsoft.Json.Linq;
+﻿using System.Text.Json.Nodes;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -11,18 +8,18 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
 
-            var obj = LoadJObject(textReader);
+            var obj = LoadJsonObject(textReader);
             return Load(obj);
         }
 
-        internal static SlotOptions Load(JObject obj)
+        internal static SlotOptions Load(JsonObject obj)
         {
             if (obj is null) return null;
 
             var result = new SlotOptions();
             foreach (var t in obj)
             {
-                result[t.Key] = t.Value.Value<string>();
+                result[t.Key] = t.Value?.GetValue<string>();
             }
             return result;
         }

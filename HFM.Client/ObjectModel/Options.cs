@@ -1,8 +1,4 @@
-﻿
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections;
 using System.Text;
 
 namespace HFM.Client.ObjectModel
@@ -24,64 +20,31 @@ namespace HFM.Client.ObjectModel
             _inner = options ?? new Dictionary<string, string>();
         }
 
-        public IEnumerator<KeyValuePair<string, string>> GetEnumerator()
-        {
-            return _inner.GetEnumerator();
-        }
+        public IEnumerator<KeyValuePair<string, string>> GetEnumerator() => _inner.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable)_inner).GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => ((IEnumerable)_inner).GetEnumerator();
 
-        public void Add(KeyValuePair<string, string> item)
-        {
-            _inner.Add(item);
-        }
+        public void Add(KeyValuePair<string, string> item) => _inner.Add(item);
 
-        public void Clear()
-        {
-            _inner.Clear();
-        }
+        public void Clear() => _inner.Clear();
 
-        public bool Contains(KeyValuePair<string, string> item)
-        {
-            return _inner.Contains(item);
-        }
+        public bool Contains(KeyValuePair<string, string> item) => _inner.Contains(item);
 
-        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex)
-        {
-            _inner.CopyTo(array, arrayIndex);
-        }
+        public void CopyTo(KeyValuePair<string, string>[] array, int arrayIndex) => _inner.CopyTo(array, arrayIndex);
 
-        public bool Remove(KeyValuePair<string, string> item)
-        {
-            return _inner.Remove(item);
-        }
+        public bool Remove(KeyValuePair<string, string> item) => _inner.Remove(item);
 
         public int Count => _inner.Count;
 
         public bool IsReadOnly => _inner.IsReadOnly;
 
-        public void Add(string key, string value)
-        {
-            _inner.Add(key, value);
-        }
+        public void Add(string key, string value) => _inner.Add(key, value);
 
-        public bool ContainsKey(string key)
-        {
-            return _inner.ContainsKey(key);
-        }
+        public bool ContainsKey(string key) => _inner.ContainsKey(key);
 
-        public bool Remove(string key)
-        {
-            return _inner.Remove(key);
-        }
+        public bool Remove(string key) => _inner.Remove(key);
 
-        public bool TryGetValue(string key, out string value)
-        {
-            return _inner.TryGetValue(key, out value);
-        }
+        public bool TryGetValue(string key, out string value) => _inner.TryGetValue(key, out value);
 
         public string this[string key]
         {

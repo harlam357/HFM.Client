@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+﻿using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 using HFM.Client.Internal;
-
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -71,6 +67,7 @@ namespace HFM.Client.ObjectModel.Internal
         protected virtual IEnumerable<IJsonStringFilter> EnumerateFilters(ObjectLoadOptions options)
         {
             if (options.HasFlag(ObjectLoadOptions.DecodeHex)) yield return new JsonHexDecoder(JsonHexDecoderOptions.FilterNewLineCharacters);
+            if (options.HasFlag(ObjectLoadOptions.FilterNewLineCharacters)) yield return new JsonNewLineFilter();
         }
 
         /// <summary>
@@ -79,47 +76,65 @@ namespace HFM.Client.ObjectModel.Internal
         public abstract T Load(TextReader textReader);
 
         /// <summary>
-        /// TODO: LoadJObject documentation
+        /// TODO: LoadJsonObject documentation
         /// </summary>
-        protected virtual JObject LoadJObject(TextReader textReader)
+        protected virtual JsonObject LoadJsonObject(TextReader textReader)
         {
-            using (var reader = new JsonTextReader(textReader))
-            {
-                reader.DateParseHandling = DateParseHandling.None;
-                return JObject.Load(reader);
-            }
+            var memory = Read(textReader);
+            var jsonDocument = JsonDocument.Parse(memory);
+            return JsonObject.Create(jsonDocument.RootElement);
         }
 
         /// <summary>
-        /// TODO: LoadJArray documentation
+        /// TODO: LoadJsonArray documentation
         /// </summary>
-        protected virtual JArray LoadJArray(TextReader textReader)
+        protected virtual JsonArray LoadJsonArray(TextReader textReader)
         {
-            using (var reader = new JsonTextReader(textReader))
+            var memory = Read(textReader);
+            var jsonDocument = JsonDocument.Parse(memory);
+            return JsonArray.Create(jsonDocument.RootElement);
+        }
+
+        private static ReadOnlyMemory<char> Read(TextReader textReader)
+        {
+            var buffer = new char[4096];
+            int offset = 0;
+
+            int bytesRead;
+            while ((bytesRead = textReader.ReadBlock(buffer, offset, buffer.Length - offset)) > 0)
             {
-                reader.DateParseHandling = DateParseHandling.None;
-                return JArray.Load(reader);
+                offset += bytesRead;
+
+                if (offset == buffer.Length)
+                {
+                    Array.Resize(ref buffer, buffer.Length * 2);
+                }
             }
+
+            return buffer.AsMemory(0, offset);
         }
 
         /// <summary>
         /// TODO: GetValue documentation
         /// </summary>
-        protected virtual TResult GetValue<TResult>(JObject obj, params string[] names)
+        protected virtual TResult GetValue<TResult>(JsonObject obj, params string[] names)
         {
             foreach (var name in names)
             {
-                var token = obj[name];
-                if (token != null)
+                var node = obj[name];
+                if (node != null)
                 {
                     try
                     {
-                        return token.Value<TResult>();
+                        return node.GetValue<TResult>();
                     }
                     catch (FormatException)
                     {
-                        // if the data changed in a way where the value can
-                        // no longer be converted to the target CLR type
+                        // The current JsonNode cannot be represented as a {T}.
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // The current JsonNode is not a JsonValue or is not compatible with {T}.
                     }
                 }
             }

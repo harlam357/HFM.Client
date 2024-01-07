@@ -1,8 +1,6 @@
-﻿
-using System.IO;
-using System.Linq;
+﻿using System.Text.Json.Nodes;
 
-using Newtonsoft.Json.Linq;
+using HFM.Client.Internal;
 
 namespace HFM.Client.ObjectModel.Internal
 {
@@ -12,23 +10,23 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
 
-            var array = LoadJArray(textReader);
+            var array = LoadJsonArray(textReader);
 
             var collection = new SlotCollection();
-            foreach (var token in array.Where(x => x.HasValues))
+            foreach (var obj in array.Select(x => x.AsObject()).Where(x => x.Count != 0))
             {
-                collection.Add(LoadSlot((JObject)token));
+                collection.Add(LoadSlot(obj));
             }
             return collection;
         }
 
-        private Slot LoadSlot(JObject obj)
+        private Slot LoadSlot(JsonObject obj)
         {
             var slot = new Slot();
-            slot.ID = GetValue<int?>(obj, "id");
+            slot.ID = GetValue<string>(obj, "id").ToNullableInt32();
             slot.Status = GetValue<string>(obj, "status");
             slot.Description = GetValue<string>(obj, "description");
-            slot.SlotOptions = SlotOptionsObjectLoader.Load((JObject)obj["options"]);
+            slot.SlotOptions = SlotOptionsObjectLoader.Load(obj["options"]?.AsObject());
             return slot;
         }
     }

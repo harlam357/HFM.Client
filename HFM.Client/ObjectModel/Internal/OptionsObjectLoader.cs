@@ -1,9 +1,4 @@
-﻿
-using System.IO;
-
-using Newtonsoft.Json.Linq;
-
-namespace HFM.Client.ObjectModel.Internal
+﻿namespace HFM.Client.ObjectModel.Internal
 {
     internal class OptionsObjectLoader : ObjectLoader<Options>
     {
@@ -11,12 +6,12 @@ namespace HFM.Client.ObjectModel.Internal
         {
             if (textReader is null) return null;
 
-            var obj = LoadJObject(textReader);
+            var obj = LoadJsonObject(textReader);
 
             var result = new Options();
             foreach (var t in obj)
             {
-                result[t.Key] = t.Value.Value<string>();
+                result[t.Key] = t.Value?.GetValue<string>();
             }
             return result;
         }
