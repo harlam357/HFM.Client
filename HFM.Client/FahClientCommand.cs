@@ -73,7 +73,7 @@ public class FahClientCommand
         {
             var stream = GetStream();
             var buffer = CreateBuffer(CommandText);
-            await stream.WriteAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+            await stream.WriteAsync(new(buffer, 0, buffer.Length)).ConfigureAwait(false);
             return buffer.Length;
         }
         catch (Exception)

@@ -149,7 +149,7 @@ public class FahClientReader
         if (stream is null) return 0;
         if (buffer is null) return 0;
 
-        return await stream.ReadAsync(buffer, 0, buffer.Length).ConfigureAwait(false);
+        return await stream.ReadAsync(new(buffer)).ConfigureAwait(false);
     }
 
     private byte[] _buffer;

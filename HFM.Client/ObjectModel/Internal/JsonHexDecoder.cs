@@ -24,12 +24,14 @@ internal class JsonHexDecoder : IJsonStringFilter
     {
         if (String.IsNullOrEmpty(s))
         {
-            return new StringBuilder(0);
+            return new(0);
         }
-        if (!s.Contains(@"\"))
+
+        if (!s.Contains('\\', StringComparison.Ordinal))
         {
-            return new StringBuilder(s);
+            return new(s);
         }
+
         return Filter(new StringBuilder(s));
     }
 

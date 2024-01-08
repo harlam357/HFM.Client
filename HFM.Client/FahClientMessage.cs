@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Globalization;
+using System.Text;
 
 namespace HFM.Client;
 
@@ -52,7 +53,7 @@ public class FahClientMessage
     public override string ToString()
     {
         var sb = new StringBuilder();
-        sb.AppendLine($"{Identifier} - Length: {MessageText.Length}");
+        sb.AppendLine(CultureInfo.InvariantCulture, $"{Identifier} - Length: {MessageText.Length}");
         sb.AppendLine(MessageText.ToString());
         sb.AppendLine();
         return sb.ToString();
