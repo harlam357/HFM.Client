@@ -25,7 +25,7 @@ public class FahClientReader
     /// <summary>
     /// Gets the last message read by the reader.
     /// </summary>
-    public FahClientMessage Message { get; protected set; }
+    public FahClientMessage? Message { get; protected set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FahClientReader"/> class.
@@ -92,7 +92,7 @@ public class FahClientReader
     /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
     /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
     /// <returns>The total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
-    protected virtual int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+    protected virtual int OnReadStream(Stream? stream, byte[]? buffer, int offset, int count)
     {
         if (stream is null) return 0;
         if (buffer is null) return 0;
@@ -144,7 +144,7 @@ public class FahClientReader
     /// <param name="offset">The zero-based byte offset in buffer at which to begin storing the data read from the current stream.</param>
     /// <param name="count">The maximum number of bytes to be read from the current stream.</param>
     /// <returns>A task that represents the asynchronous read operation. The value of the TResult parameter contains the total number of bytes read into the buffer. This can be less than the number of bytes requested if that many bytes are not currently available.</returns>
-    protected virtual async Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+    protected virtual async Task<int> OnReadStreamAsync(Stream? stream, byte[]? buffer, int offset, int count)
     {
         if (stream is null) return 0;
         if (buffer is null) return 0;
@@ -152,7 +152,7 @@ public class FahClientReader
         return await stream.ReadAsync(new(buffer)).ConfigureAwait(false);
     }
 
-    private byte[] _buffer;
+    private byte[]? _buffer;
 
     private byte[] GetBuffer()
     {
@@ -175,7 +175,7 @@ public class FahClientReader
 
     private readonly StringBuilder _readBuffer = new StringBuilder();
 
-    private bool ExtractMessage(byte[] buffer, int bytesRead)
+    private bool ExtractMessage(byte[]? buffer, int bytesRead)
     {
         if (buffer != null)
         {

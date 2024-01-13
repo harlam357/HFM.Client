@@ -13,7 +13,7 @@ public class FahClientPyonMessageExtractor : FahClientMessageExtractor
     /// Extracts a new <see cref="FahClientMessage"/> from the <paramref name="buffer"/> if a message is available.
     /// </summary>
     /// <returns>A new <see cref="FahClientMessage"/> or null if a message is not available.</returns>
-    public override FahClientMessage Extract(StringBuilder buffer)
+    public override FahClientMessage? Extract(StringBuilder? buffer)
     {
         if (buffer is null) return null;
 

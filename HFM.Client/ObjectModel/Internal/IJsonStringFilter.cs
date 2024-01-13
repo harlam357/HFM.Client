@@ -4,7 +4,7 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal interface IJsonStringFilter
 {
-    StringBuilder Filter(string s);
+    StringBuilder? Filter(string? s);
 
-    StringBuilder Filter(StringBuilder s);
+    StringBuilder? Filter(StringBuilder? s);
 }

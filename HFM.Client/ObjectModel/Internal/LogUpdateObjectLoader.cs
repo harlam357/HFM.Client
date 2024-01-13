@@ -6,14 +6,14 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal class LogUpdateObjectLoader : ObjectLoader<LogUpdate>
 {
-    public override LogUpdate Load(string json, ObjectLoadOptions options = ObjectLoadOptions.Default)
+    public override LogUpdate? Load(string? json, ObjectLoadOptions options = ObjectLoadOptions.Default)
     {
         if (json is null) return null;
 
         return new LogUpdate { Value = FilterJson(json, options) };
     }
 
-    public override LogUpdate Load(StringBuilder json, ObjectLoadOptions options = ObjectLoadOptions.Default)
+    public override LogUpdate? Load(StringBuilder? json, ObjectLoadOptions options = ObjectLoadOptions.Default)
     {
         if (json is null) return null;
 
@@ -22,7 +22,7 @@ internal class LogUpdateObjectLoader : ObjectLoader<LogUpdate>
         return new LogUpdate { Value = FilterJson(copyTo, options) };
     }
 
-    public override LogUpdate Load(TextReader textReader)
+    public override LogUpdate? Load(TextReader? textReader)
     {
         if (textReader is null) return null;
 

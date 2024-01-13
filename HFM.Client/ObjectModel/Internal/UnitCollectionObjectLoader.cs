@@ -8,16 +8,20 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal class UnitCollectionObjectLoader : ObjectLoader<UnitCollection>
 {
-    public override UnitCollection Load(TextReader textReader)
+    public override UnitCollection? Load(TextReader? textReader)
     {
         if (textReader is null) return null;
             
         var array = LoadJsonArray(textReader);
+        if (array is null)
+        {
+            return null;
+        }
 
         var collection = new UnitCollection();
-        foreach (var obj in array.Select(x => x.AsObject()).Where(x => x.Count != 0))
+        foreach (var obj in array.Select(x => x?.AsObject()).Where(x => x is not null && x.Count != 0))
         {
-            collection.Add(LoadUnit(obj));
+            collection.Add(LoadUnit(obj!));
         }
         return collection;
     }
@@ -64,7 +68,7 @@ internal class UnitCollectionObjectLoader : ObjectLoader<UnitCollection>
 
     // ReSharper restore StringLiteralTypo
 
-    private static TimeSpan? ConvertToTimeSpan(string value)
+    private static TimeSpan? ConvertToTimeSpan(string? value)
     {
         if (value is null) return null;
 

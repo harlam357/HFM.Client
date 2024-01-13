@@ -18,12 +18,12 @@ public abstract class FahClientMessageExtractor
     /// Extracts a new <see cref="FahClientMessage"/> from the <paramref name="buffer"/> if a message is available.
     /// </summary>
     /// <returns>A new <see cref="FahClientMessage"/> or null if a message is not available.</returns>
-    public abstract FahClientMessage Extract(StringBuilder buffer);
+    public abstract FahClientMessage? Extract(StringBuilder? buffer);
 
     /// <summary>
     /// Reports the indexes of the first occurrence of the specified strings in the given StringBuilder object.
     /// </summary>
-    protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+    protected static (int Start, int End) IndexesOfAny(StringBuilder buffer, IEnumerable<string>? values, int startIndex)
     {
         if (values != null)
         {
@@ -43,7 +43,7 @@ public abstract class FahClientMessageExtractor
     /// <summary>
     /// Reports the index of the first occurrence of the specified strings in the given StringBuilder object.
     /// </summary>
-    protected static int IndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+    protected static int IndexOfAny(StringBuilder buffer, IEnumerable<string>? values, int startIndex)
     {
         if (values != null)
         {
@@ -63,7 +63,7 @@ public abstract class FahClientMessageExtractor
     /// <summary>
     /// Reports the end index of the first occurrence of the specified strings in the given StringBuilder object.
     /// </summary>
-    protected static int EndIndexOfAny(StringBuilder buffer, IEnumerable<string> values, int startIndex)
+    protected static int EndIndexOfAny(StringBuilder buffer, IEnumerable<string>? values, int startIndex)
     {
         if (values != null)
         {
@@ -83,7 +83,7 @@ public abstract class FahClientMessageExtractor
     /// <summary>
     /// Reports the indexes of the first occurrence of the specified string in the given StringBuilder object.
     /// </summary>
-    protected static (int Start, int End) IndexesOf(StringBuilder buffer, string value, int startIndex)
+    protected static (int Start, int End) IndexesOf(StringBuilder buffer, string? value, int startIndex)
     {
         if (value != null)
         {

@@ -34,5 +34,5 @@ public abstract class TcpConnection
     /// <summary>
     /// Returns the <see cref="Stream" /> used to send and receive data if connected; otherwise, null.
     /// </summary>
-    public abstract Stream GetStream();
+    public abstract Stream? GetStream();
 }

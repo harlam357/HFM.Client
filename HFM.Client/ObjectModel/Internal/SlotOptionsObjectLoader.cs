@@ -6,7 +6,7 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal class SlotOptionsObjectLoader : ObjectLoader<SlotOptions>
 {
-    public override SlotOptions Load(TextReader textReader)
+    public override SlotOptions? Load(TextReader? textReader)
     {
         if (textReader is null) return null;
 
@@ -14,7 +14,7 @@ internal class SlotOptionsObjectLoader : ObjectLoader<SlotOptions>
         return Load(obj);
     }
 
-    internal static SlotOptions Load(JsonObject obj)
+    internal static SlotOptions? Load(JsonObject? obj)
     {
         if (obj is null) return null;
 

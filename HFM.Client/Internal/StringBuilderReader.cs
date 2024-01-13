@@ -6,7 +6,7 @@ namespace HFM.Client.Internal;
 [Serializable]
 internal class StringBuilderReader : TextReader
 {
-    private StringBuilder _s;
+    private StringBuilder? _s;
     private int _pos;
     private int _length;
 

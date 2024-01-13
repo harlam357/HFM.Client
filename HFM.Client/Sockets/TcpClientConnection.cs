@@ -100,7 +100,7 @@ public class TcpClientConnection : TcpConnection, IDisposable
     /// <summary>
     /// Returns the <see cref="NetworkStream" /> used to send and receive data if connected; otherwise, null.
     /// </summary>
-    public override Stream GetStream()
+    public override Stream? GetStream()
     {
         return Connected ? TcpClient.GetStream() : null;
     }

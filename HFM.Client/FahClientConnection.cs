@@ -32,7 +32,7 @@ public class FahClientConnection : IDisposable
     /// <summary>
     /// Gets the current <see cref="Sockets.TcpConnection"/>.
     /// </summary>
-    public virtual TcpConnection TcpConnection { get; private set; }
+    public virtual TcpConnection? TcpConnection { get; private set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FahClientConnection"/> class.

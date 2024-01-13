@@ -7,7 +7,7 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal class InfoObjectLoader : ObjectLoader<Info>
 {
-    public override Info Load(TextReader textReader)
+    public override Info? Load(TextReader? textReader)
     {
         if (textReader is null) return null;
 
@@ -69,7 +69,7 @@ internal class InfoObjectLoader : ObjectLoader<Info>
         clientInfo.Config = GetValue<string>(client, "Config");
     }
 
-    private static void FoldingAtHomeClientLoader(JsonNode client, JsonNode build, ClientInfo clientInfo)
+    private static void FoldingAtHomeClientLoader(JsonNode? client, JsonNode? build, ClientInfo clientInfo)
     {
         clientInfo.Homepage = GetValue<string>(client, "Website");
         clientInfo.Copyright = GetValue<string>(client, "Copyright");
@@ -88,12 +88,12 @@ internal class InfoObjectLoader : ObjectLoader<Info>
         clientInfo.Mode = GetValue<string>(build, "Mode");
     }
 
-    private static JsonNode GetArrayNode(JsonArray array, string name) => array
-        .Select(x => x.AsArray().FirstOrDefault())
+    private static JsonNode? GetArrayNode(JsonArray? array, string name) => array?
+        .Select(x => x?.AsArray().FirstOrDefault())
         .Where(x => x is not null && x.GetValue<JsonElement>().ValueKind == JsonValueKind.String)
-        .FirstOrDefault(x => x.GetValue<string>() == name)?.Parent;
+        .FirstOrDefault(x => x!.GetValue<string>() == name)?.Parent;
 
-    private static T GetValue<T>(JsonNode node, string name, StringComparison nameComparison = StringComparison.Ordinal)
+    private static T? GetValue<T>(JsonNode? node, string name, StringComparison nameComparison = StringComparison.Ordinal)
     {
         if (node is null)
         {
@@ -123,8 +123,13 @@ internal class InfoObjectLoader : ObjectLoader<Info>
         return default;
     }
 
-    private static IDictionary<int, GPUInfo> BuildGPUInfos(JsonNode node)
+    private static IDictionary<int, GPUInfo>? BuildGPUInfos(JsonNode? node)
     {
+        if (node is null)
+        {
+            return null;
+        }
+
         var result = Enumerable.Range(0, 8)
             .Select(id =>
             {
@@ -140,12 +145,12 @@ internal class InfoObjectLoader : ObjectLoader<Info>
                     : null;
             })
             .Where(x => x != null)
-            .ToDictionary(x => x.ID);
+            .ToDictionary(x => x!.ID, x => x!);
 
         return result.Count > 0 ? result : null;
     }
 
-    private static double? ConvertToMemoryValue(string input)
+    private static double? ConvertToMemoryValue(string? input)
     {
         if (input is null)
         {

@@ -4,7 +4,7 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal class SimulationInfoObjectLoader : ObjectLoader<SimulationInfo>
 {
-    public override SimulationInfo Load(TextReader textReader)
+    public override SimulationInfo? Load(TextReader? textReader)
     {
         if (textReader is null) return null;
 

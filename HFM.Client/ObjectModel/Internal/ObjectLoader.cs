@@ -11,7 +11,7 @@ internal abstract class ObjectLoader<T> where T : class
     /// <summary>
     /// Creates a new object from a <see cref="string"/> that contains JSON.
     /// </summary>
-    public virtual T Load(string json, ObjectLoadOptions options = ObjectLoadOptions.Default)
+    public virtual T? Load(string? json, ObjectLoadOptions options = ObjectLoadOptions.Default)
     {
         if (json is null) return null;
 
@@ -24,7 +24,7 @@ internal abstract class ObjectLoader<T> where T : class
     /// <summary>
     /// Creates a new object from a <see cref="StringBuilder"/> that contains JSON.
     /// </summary>
-    public virtual T Load(StringBuilder json, ObjectLoadOptions options = ObjectLoadOptions.Default)
+    public virtual T? Load(StringBuilder? json, ObjectLoadOptions options = ObjectLoadOptions.Default)
     {
         if (json is null) return null;
 
@@ -41,7 +41,7 @@ internal abstract class ObjectLoader<T> where T : class
 
     protected static StringBuilder FilterJson(string json, IEnumerable<IJsonStringFilter> filters)
     {
-        StringBuilder sb = null;
+        StringBuilder? sb = null;
         foreach (var f in filters)
         {
             sb = sb is null ? f.Filter(json) : f.Filter(sb);
@@ -59,7 +59,7 @@ internal abstract class ObjectLoader<T> where T : class
         StringBuilder sb = json;
         foreach (var f in filters)
         {
-            sb = f.Filter(sb);
+            sb = f.Filter(sb)!;
         }
         return sb;
     }
@@ -71,14 +71,14 @@ internal abstract class ObjectLoader<T> where T : class
     }
 
     /// <summary>
-    /// Creates a object from a <see cref="TextReader"/> that contains JSON.
+    /// Creates an object from a <see cref="TextReader"/> that contains JSON.
     /// </summary>
-    public abstract T Load(TextReader textReader);
+    public abstract T? Load(TextReader? textReader);
 
     /// <summary>
     /// TODO: LoadJsonObject documentation
     /// </summary>
-    protected virtual JsonObject LoadJsonObject(TextReader textReader)
+    protected virtual JsonObject? LoadJsonObject(TextReader textReader)
     {
         var memory = Read(textReader);
         var jsonDocument = JsonDocument.Parse(memory);
@@ -88,7 +88,7 @@ internal abstract class ObjectLoader<T> where T : class
     /// <summary>
     /// TODO: LoadJsonArray documentation
     /// </summary>
-    protected virtual JsonArray LoadJsonArray(TextReader textReader)
+    protected virtual JsonArray? LoadJsonArray(TextReader textReader)
     {
         var memory = Read(textReader);
         var jsonDocument = JsonDocument.Parse(memory);
@@ -117,8 +117,13 @@ internal abstract class ObjectLoader<T> where T : class
     /// <summary>
     /// TODO: GetValue documentation
     /// </summary>
-    protected virtual TResult GetValue<TResult>(JsonObject obj, params string[] names)
+    protected virtual TResult? GetValue<TResult>(JsonObject? obj, params string[] names)
     {
+        if (obj is null)
+        {
+            return default;
+        }
+
         foreach (var name in names)
         {
             var node = obj[name];
@@ -138,6 +143,7 @@ internal abstract class ObjectLoader<T> where T : class
                 }
             }
         }
+
         return default;
     }
 }

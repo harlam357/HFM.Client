@@ -28,17 +28,6 @@ public class FahClientMessage
     /// </summary>
     /// <param name="identifier">The message identifier.</param>
     /// <param name="messageText">The text value of the message.</param>
-    public FahClientMessage(FahClientMessageIdentifier identifier, StringBuilder messageText)
-    {
-        Identifier = identifier;
-        MessageText = messageText;
-    }
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="FahClientMessage"/> class.
-    /// </summary>
-    /// <param name="identifier">The message identifier.</param>
-    /// <param name="messageText">The text value of the message.</param>
     /// <param name="messageFormat">The message format identifier or null for no format identifier.</param>
     public FahClientMessage(FahClientMessageIdentifier identifier, StringBuilder messageText, string messageFormat)
     {

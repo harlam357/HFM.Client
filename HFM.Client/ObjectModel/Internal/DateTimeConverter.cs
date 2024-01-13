@@ -4,7 +4,7 @@ namespace HFM.Client.ObjectModel.Internal;
 
 internal static class DateTimeConverter
 {
-    internal static DateTime? ConvertToDateTime(string input)
+    internal static DateTime? ConvertToDateTime(string? input)
     {
         if (input is null || input == "<invalid>") return null;
 

@@ -20,7 +20,7 @@ internal class JsonHexDecoder : IJsonStringFilter
         _options = options;
     }
 
-    public StringBuilder Filter(string s)
+    public StringBuilder? Filter(string? s)
     {
         if (String.IsNullOrEmpty(s))
         {
@@ -36,7 +36,7 @@ internal class JsonHexDecoder : IJsonStringFilter
     }
 
     // https://github.com/JamesNK/Newtonsoft.Json/issues/980
-    public StringBuilder Filter(StringBuilder s)
+    public StringBuilder? Filter(StringBuilder? s)
     {
         if (s is null || s.Length == 0)
         {
