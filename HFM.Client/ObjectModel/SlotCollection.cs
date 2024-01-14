@@ -11,27 +11,27 @@ public class SlotCollection : Collection<Slot>
     /// <summary>
     /// Creates a new <see cref="SlotCollection"/> object from a <see cref="String"/> that contains JSON.
     /// </summary>
-    public static SlotCollection? Load(string json) => new Internal.SlotCollectionObjectLoader().Load(json);
+    public static SlotCollection? Load(string? json) => new Internal.SlotCollectionObjectLoader().Load(json);
 
     /// <summary>
     /// Creates a new <see cref="SlotCollection"/> object from a <see cref="String"/> that contains JSON.
     /// </summary>
-    public static SlotCollection? Load(string json, ObjectLoadOptions options) => new Internal.SlotCollectionObjectLoader().Load(json, options);
+    public static SlotCollection? Load(string? json, ObjectLoadOptions options) => new Internal.SlotCollectionObjectLoader().Load(json, options);
 
     /// <summary>
     /// Creates a new <see cref="SlotCollection"/> object from a <see cref="StringBuilder"/> that contains JSON.
     /// </summary>
-    public static SlotCollection? Load(StringBuilder json) => new Internal.SlotCollectionObjectLoader().Load(json);
+    public static SlotCollection? Load(StringBuilder? json) => new Internal.SlotCollectionObjectLoader().Load(json);
 
     /// <summary>
     /// Creates a new <see cref="SlotCollection"/> object from a <see cref="StringBuilder"/> that contains JSON.
     /// </summary>
-    public static SlotCollection? Load(StringBuilder json, ObjectLoadOptions options) => new Internal.SlotCollectionObjectLoader().Load(json, options);
+    public static SlotCollection? Load(StringBuilder? json, ObjectLoadOptions options) => new Internal.SlotCollectionObjectLoader().Load(json, options);
 
     /// <summary>
     /// Creates a new <see cref="SlotCollection"/> object from a <see cref="TextReader"/> that contains JSON.
     /// </summary>
-    public static SlotCollection? Load(TextReader textReader) => new Internal.SlotCollectionObjectLoader().Load(textReader);
+    public static SlotCollection? Load(TextReader? textReader) => new Internal.SlotCollectionObjectLoader().Load(textReader);
 }
 
 /// <summary>

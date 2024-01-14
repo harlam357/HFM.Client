@@ -13,7 +13,7 @@ internal static class StringBuilderExtensions
     /// <exception cref="ArgumentNullException">value is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">startIndex is negative. -or- startIndex specifies a position not within this instance.</exception>
     /// <returns>The zero-based index position of the value parameter if that string is found, or -1 if it is not. If value is System.String.Empty, the return value is startIndex.</returns>
-    internal static int IndexOf(this StringBuilder source, string value, int startIndex)
+    internal static int IndexOf(this StringBuilder? source, string? value, int startIndex)
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
         if (value is null) throw new ArgumentNullException(nameof(value));
@@ -52,7 +52,7 @@ internal static class StringBuilderExtensions
     /// <param name="trimChars">An array of Unicode characters to remove.</param>
     /// <exception cref="ArgumentNullException">source -or- trimChars is null.</exception>
     /// <returns>The same source instance with the string content that remains after all occurrences of the characters in the trimChars parameter are removed from the start and end of the source instance.</returns>
-    internal static StringBuilder Trim(this StringBuilder source, params char[] trimChars)
+    internal static StringBuilder Trim(this StringBuilder? source, params char[]? trimChars)
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
         if (trimChars is null) throw new ArgumentNullException(nameof(trimChars));
@@ -122,7 +122,7 @@ internal static class StringBuilderExtensions
     /// <exception cref="ArgumentNullException">source -or- destination is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">sourceIndex, destinationIndex, or count, is less than zero. -or- sourceIndex is greater than the length of this instance.</exception>
     /// <exception cref="ArgumentException">sourceIndex + count is greater than the length of this instance.</exception>
-    internal static void CopyTo(this StringBuilder source, int sourceIndex, StringBuilder destination, int destinationIndex, int count)
+    internal static void CopyTo(this StringBuilder? source, int sourceIndex, StringBuilder? destination, int destinationIndex, int count)
     {
         if (source is null) throw new ArgumentNullException(nameof(source));
         if (destination is null) throw new ArgumentNullException(nameof(destination));

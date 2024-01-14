@@ -319,7 +319,7 @@ public class FahClientConnectionTests
             // Act (Open)
             connection.Open();
             // Assert
-            Assert.IsTrue(tcpConnectionFactory.TcpConnection.Connected);
+            Assert.IsTrue(tcpConnectionFactory.TcpConnection!.Connected);
         }
         // Assert
         Assert.IsFalse(tcpConnectionFactory.TcpConnection.Connected);

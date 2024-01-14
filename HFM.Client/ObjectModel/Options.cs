@@ -66,27 +66,27 @@ public class Options : OptionsBase
     /// <summary>
     /// Creates a new <see cref="Options"/> object from a <see cref="String"/> that contains JSON.
     /// </summary>
-    public static Options? Load(string json) => new Internal.OptionsObjectLoader().Load(json);
+    public static Options? Load(string? json) => new Internal.OptionsObjectLoader().Load(json);
 
     /// <summary>
     /// Creates a new <see cref="Options"/> object from a <see cref="String"/> that contains JSON.
     /// </summary>
-    public static Options? Load(string json, ObjectLoadOptions options) => new Internal.OptionsObjectLoader().Load(json, options);
+    public static Options? Load(string? json, ObjectLoadOptions options) => new Internal.OptionsObjectLoader().Load(json, options);
 
     /// <summary>
     /// Creates a new <see cref="Options"/> object from a <see cref="StringBuilder"/> that contains JSON.
     /// </summary>
-    public static Options? Load(StringBuilder json) => new Internal.OptionsObjectLoader().Load(json);
+    public static Options? Load(StringBuilder? json) => new Internal.OptionsObjectLoader().Load(json);
 
     /// <summary>
     /// Creates a new <see cref="Options"/> object from a <see cref="StringBuilder"/> that contains JSON.
     /// </summary>
-    public static Options? Load(StringBuilder json, ObjectLoadOptions options) => new Internal.OptionsObjectLoader().Load(json, options);
+    public static Options? Load(StringBuilder? json, ObjectLoadOptions options) => new Internal.OptionsObjectLoader().Load(json, options);
 
     /// <summary>
     /// Creates a new <see cref="Options"/> object from a <see cref="TextReader"/> that contains JSON.
     /// </summary>
-    public static Options? Load(TextReader textReader) => new Internal.OptionsObjectLoader().Load(textReader);
+    public static Options? Load(TextReader? textReader) => new Internal.OptionsObjectLoader().Load(textReader);
 
     public const string Allow = "allow";
     public const string Cause = "cause";

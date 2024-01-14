@@ -14,7 +14,7 @@ public class FahClientJsonMessageExtractor : FahClientPyonMessageExtractor
     /// </summary>
     /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
     /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
-    protected override bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
+    protected override bool ExtractIndexes(StringBuilder? buffer, IDictionary<string, int>? indexes)
     {
         if (buffer is null) throw new ArgumentNullException(nameof(buffer));
         if (indexes is null) throw new ArgumentNullException(nameof(indexes));
@@ -43,7 +43,7 @@ public class FahClientJsonMessageExtractor : FahClientPyonMessageExtractor
     /// </summary>
     /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
     /// <returns>The message text as a string.</returns>
-    protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+    protected override StringBuilder ExtractMessageText(StringBuilder? buffer, IDictionary<string, int>? indexes)
     {
         if (buffer is null) throw new ArgumentNullException(nameof(buffer));
         if (indexes is null) throw new ArgumentNullException(nameof(indexes));

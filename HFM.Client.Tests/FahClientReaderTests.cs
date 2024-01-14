@@ -63,7 +63,7 @@ public class FahClientReaderTests
         public override bool Connected => _connected;
 
         // simulate losing the TcpConnection after the FahClientConnection has been opened
-        public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
+        public override TcpConnection? TcpConnection => _connected ? null : base.TcpConnection;
 
         public MockFahClientConnection()
             : base("foo", 2000, new MockTcpConnectionFactory())
@@ -133,7 +133,7 @@ public class FahClientReaderTests
                 // Assert
                 Assert.IsTrue(result);
                 var message = reader.Message;
-                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+                Assert.AreEqual(FahClientMessageType.Info, message!.Identifier.MessageType);
                 Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
             }
         }
@@ -156,7 +156,7 @@ public class FahClientReaderTests
                 // Assert
                 Assert.IsTrue(result);
                 var message = reader.Message;
-                Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+                Assert.AreEqual(FahClientMessageType.Info, message!.Identifier.MessageType);
                 Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
             }
         }
@@ -186,7 +186,7 @@ public class FahClientReaderTests
             // Assert
             Assert.IsTrue(result);
             var message = reader.Message;
-            Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+            Assert.AreEqual(FahClientMessageType.Info, message!.Identifier.MessageType);
             Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
         }
     }
@@ -206,7 +206,7 @@ public class FahClientReaderTests
             // Assert
             Assert.IsTrue(result);
             var message = reader.Message;
-            Assert.AreEqual(FahClientMessageType.Info, message.Identifier.MessageType);
+            Assert.AreEqual(FahClientMessageType.Info, message!.Identifier.MessageType);
             Assert.AreEqual(MessageFromReader, message.MessageText.ToString());
         }
     }
@@ -220,7 +220,7 @@ public class FahClientReaderTests
             _messageText = messageText;
         }
 
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             return base.Extract(new StringBuilder(_messageText));
         }
@@ -315,12 +315,12 @@ public class FahClientReaderTests
 
         }
 
-        protected override int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+        protected override int OnReadStream(Stream? stream, byte[]? buffer, int offset, int count)
         {
             return base.OnReadStream(null, buffer, offset, count);
         }
 
-        protected override Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+        protected override Task<int> OnReadStreamAsync(Stream? stream, byte[]? buffer, int offset, int count)
         {
             return base.OnReadStreamAsync(null, buffer, offset, count);
         }
@@ -367,12 +367,12 @@ public class FahClientReaderTests
 
         }
 
-        protected override int OnReadStream(Stream stream, byte[] buffer, int offset, int count)
+        protected override int OnReadStream(Stream? stream, byte[]? buffer, int offset, int count)
         {
             return base.OnReadStream(stream, null, offset, count);
         }
 
-        protected override Task<int> OnReadStreamAsync(Stream stream, byte[] buffer, int offset, int count)
+        protected override Task<int> OnReadStreamAsync(Stream? stream, byte[]? buffer, int offset, int count)
         {
             return base.OnReadStreamAsync(stream, null, offset, count);
         }

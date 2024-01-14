@@ -213,7 +213,7 @@ public class FahClientMessageExtractorTests
         // Act
         var result = extractor.Extract(buffer);
         // Assert
-        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual("simulation-info", result!.Identifier.MessageType);
         Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
     }
 
@@ -226,7 +226,7 @@ public class FahClientMessageExtractorTests
         // Act
         var result = extractor.Extract(buffer);
         // Assert
-        Assert.AreEqual("info", result.Identifier.MessageType);
+        Assert.AreEqual("info", result!.Identifier.MessageType);
         Assert.AreEqual(Info, result.MessageText.ToString());
     }
 
@@ -239,12 +239,12 @@ public class FahClientMessageExtractorTests
         // Act (First Message)
         var result = extractor.Extract(buffer);
         // Assert (First Message)
-        Assert.AreEqual("info", result.Identifier.MessageType);
+        Assert.AreEqual("info", result!.Identifier.MessageType);
         Assert.AreEqual(Info, result.MessageText.ToString());
         // Act (Second Message)
         result = extractor.Extract(buffer);
         // Assert (Second Message)
-        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual("simulation-info", result!.Identifier.MessageType);
         Assert.AreEqual(SimulationInfo, result.MessageText.ToString());
     }
 
@@ -293,7 +293,7 @@ public class FahClientMessageExtractorTests
         // Act
         var result = extractor.Extract(buffer);
         // Assert
-        Assert.AreEqual("simulation-info", result.Identifier.MessageType);
+        Assert.AreEqual("simulation-info", result!.Identifier.MessageType);
         Assert.AreEqual(SimulationInfoJson, result.MessageText.ToString());
     }
 
@@ -347,7 +347,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorReturnsNullMessageType : FahClientPyonMessageExtractor
     {
-        protected override string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
+        protected override string? ExtractMessageType(StringBuilder? buffer, IDictionary<string, int>? indexes)
         {
             return null;
         }
@@ -367,7 +367,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorReturnsNullMessageText : FahClientPyonMessageExtractor
     {
-        protected override StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+        protected override StringBuilder? ExtractMessageText(StringBuilder? buffer, IDictionary<string, int>? indexes)
         {
             return null;
         }
@@ -384,7 +384,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractIndexes(null, new Dictionary<string, int>());
             return null;
@@ -402,7 +402,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractIndexes(new StringBuilder(), null);
             return null;
@@ -420,7 +420,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageType(null, new Dictionary<string, int>());
             return null;
@@ -438,7 +438,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageType(new StringBuilder(), null);
             return null;
@@ -456,7 +456,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageText(null, new Dictionary<string, int>());
             return null;
@@ -474,7 +474,7 @@ public class FahClientMessageExtractorTests
 
     private class PyonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientPyonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageText(new StringBuilder(), null);
             return null;
@@ -492,7 +492,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractIndexesThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractIndexes(null, new Dictionary<string, int>());
             return null;
@@ -510,7 +510,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractIndexesThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractIndexes(new StringBuilder(), null);
             return null;
@@ -528,7 +528,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractMessageTypeThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageType(null, new Dictionary<string, int>());
             return null;
@@ -546,7 +546,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractMessageTypeThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageType(new StringBuilder(), null);
             return null;
@@ -564,7 +564,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractMessageTextThrowsWhenBufferIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageText(null, new Dictionary<string, int>());
             return null;
@@ -582,7 +582,7 @@ public class FahClientMessageExtractorTests
 
     private class JsonMessageExtractorExtractMessageTextThrowsWhenIndexesIsNull : FahClientJsonMessageExtractor
     {
-        public override FahClientMessage Extract(StringBuilder buffer)
+        public override FahClientMessage? Extract(StringBuilder? buffer)
         {
             ExtractMessageText(new StringBuilder(), null);
             return null;

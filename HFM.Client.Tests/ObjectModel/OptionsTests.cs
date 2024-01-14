@@ -10,7 +10,7 @@ public class OptionsTests
     [Test]
     public void Options_Load_FromClientVersion_7_1_24()
     {
-        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options.txt"), ObjectLoadOptions.None);
+        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_options.txt"), ObjectLoadOptions.None)!;
         Assert.AreEqual("127.0.0.1", options["command-allow"]);
         Assert.AreEqual("15", options[Options.Checkpoint]);
         Assert.AreEqual("normal", options[Options.ClientType]);
@@ -42,7 +42,7 @@ public class OptionsTests
     [Test]
     public void Options_Load_FromClientVersion_7_1_43()
     {
-        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_options.txt"), ObjectLoadOptions.None);
+        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_options.txt"), ObjectLoadOptions.None)!;
         Assert.AreEqual("127.0.0.1", options["command-allow"]);
         Assert.AreEqual("15", options[Options.Checkpoint]);
         Assert.AreEqual("normal", options[Options.ClientType]);
@@ -72,7 +72,7 @@ public class OptionsTests
     [Test]
     public void Options_Load_FromClientVersion_7_6_6()
     {
-        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_6_6_options.txt"));
+        var options = Options.Load(TestDataReader.ReadStringBuilder("Client_7_6_6_options.txt"))!;
         Assert.AreEqual("127.0.0.1 192.168.1.0/24", options[Options.Allow]);
         Assert.AreEqual("ANY", options[Options.Cause]);
         Assert.AreEqual("15", options[Options.Checkpoint]);
@@ -109,18 +109,18 @@ public class OptionsTests
     [Test]
     public void Options_Load_ReturnsNullWhenJsonStringIsNull()
     {
-        Assert.IsNull(Options.Load((string)null));
+        Assert.IsNull(Options.Load((string?)null));
     }
 
     [Test]
     public void Options_Load_ReturnsNullWhenJsonStringBuilderIsNull()
     {
-        Assert.IsNull(Options.Load((StringBuilder)null));
+        Assert.IsNull(Options.Load((StringBuilder?)null));
     }
 
     [Test]
     public void Options_Load_ReturnsNullWhenJsonTextReaderIsNull()
     {
-        Assert.IsNull(Options.Load((TextReader)null));
+        Assert.IsNull(Options.Load((TextReader?)null));
     }
 }

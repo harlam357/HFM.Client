@@ -57,7 +57,7 @@ public class FahClientMessageTests
     public void FahClientMessageIdentifier_ObjectDoesNotEqualNull()
     {
         object id1 = new FahClientMessageIdentifier("foo", new DateTime(2019, 1, 1));
-        object id2 = null;
+        object? id2 = null;
         Assert.IsFalse(id1.Equals(id2));
     }
 

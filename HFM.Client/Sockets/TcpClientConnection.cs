@@ -38,7 +38,7 @@ public class TcpClientConnection : TcpConnection, IDisposable
     /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
     /// <exception cref="TimeoutException">A connection was not made before the timeout duration.</exception>
-    public override void Connect(string host, int port, int timeout)
+    public override void Connect(string? host, int port, int timeout)
     {
         if (_disposed) throw new ObjectDisposedException(GetType().FullName);
         if (Connected) throw new InvalidOperationException("The connection is already connected.");
@@ -66,7 +66,7 @@ public class TcpClientConnection : TcpConnection, IDisposable
     /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
     /// <exception cref="TimeoutException">A connection was not made before the timeout duration.</exception>
-    public override async Task ConnectAsync(string host, int port, int timeout)
+    public override async Task ConnectAsync(string? host, int port, int timeout)
     {
         if (_disposed) throw new ObjectDisposedException(GetType().FullName);
         if (Connected) throw new InvalidOperationException("The connection is already connected.");

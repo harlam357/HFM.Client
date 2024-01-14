@@ -18,17 +18,17 @@ internal class MockTcpConnection : TcpConnection
     }
 
     private bool _connected;
-    private Stream _stream;
+    private Stream? _stream;
 
     public override bool Connected => _connected;
 
-    public override void Connect(string host, int port, int timeout)
+    public override void Connect(string? host, int port, int timeout)
     {
         _connected = true;
         _stream = _streamFactory();
     }
 
-    public override Task ConnectAsync(string host, int port, int timeout)
+    public override Task ConnectAsync(string? host, int port, int timeout)
     {
         _connected = true;
         _stream = _streamFactory();
@@ -42,7 +42,7 @@ internal class MockTcpConnection : TcpConnection
         _stream = null;
     }
 
-    public override Stream GetStream()
+    public override Stream? GetStream()
     {
         return _stream;
     }

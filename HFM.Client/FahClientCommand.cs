@@ -15,7 +15,7 @@ public class FahClientCommand
     /// <summary>
     /// Gets or sets the Folding@Home client command statement.
     /// </summary>
-    public string CommandText { get; set; } = String.Empty;
+    public string? CommandText { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="FahClientCommand"/> class.
@@ -31,7 +31,7 @@ public class FahClientCommand
     /// </summary>
     /// <param name="connection">A <see cref="FahClientConnection"/> that represents the connection to a Folding@Home client.</param>
     /// <param name="commandText">The Folding@Home client command statement.</param>
-    public FahClientCommand(FahClientConnection connection, string commandText)
+    public FahClientCommand(FahClientConnection connection, string? commandText)
     {
         Connection = connection;
         CommandText = commandText;
@@ -93,7 +93,7 @@ public class FahClientCommand
         return stream;
     }
 
-    private static byte[] CreateBuffer(string commandText)
+    private static byte[] CreateBuffer(string? commandText)
     {
         if (commandText is null)
         {

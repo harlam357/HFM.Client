@@ -16,7 +16,7 @@ public abstract class TcpConnection
     /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
     /// <param name="port">The port number of the remote host.</param>
     /// <param name="timeout">The time (in milliseconds) to wait while trying to establish a connection before terminating the attempt and generating an error.</param>
-    public abstract void Connect(string host, int port, int timeout);
+    public abstract void Connect(string? host, int port, int timeout);
 
     /// <summary>
     /// Connects asynchronously to a remote TCP host using the specified host and port number.
@@ -24,7 +24,7 @@ public abstract class TcpConnection
     /// <param name="host">The name of the remote host.  The host can be an IP address or DNS name.</param>
     /// <param name="port">The port number of the remote host.</param>
     /// <param name="timeout">The time (in milliseconds) to wait while trying to establish a connection before terminating the attempt and generating an error.</param>
-    public abstract Task ConnectAsync(string host, int port, int timeout);
+    public abstract Task ConnectAsync(string? host, int port, int timeout);
 
     /// <summary>
     /// Requests that the TCP connection be closed.

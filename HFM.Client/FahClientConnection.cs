@@ -41,7 +41,7 @@ public class FahClientConnection : IDisposable
     /// <param name="port">The port number of the remote host.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-    public FahClientConnection(string host, int port)
+    public FahClientConnection(string? host, int port)
         : this(host, port, TcpConnectionFactory.Default)
     {
 
@@ -57,7 +57,7 @@ public class FahClientConnection : IDisposable
     /// <param name="tcpConnectionFactory">The factory that will be used to create connections for TCP network services.</param>
     /// <exception cref="ArgumentNullException">The <paramref name="host" /> parameter is null.</exception>
     /// <exception cref="ArgumentOutOfRangeException">The <paramref name="port" /> parameter is not between zero and <see cref="Int16.MaxValue"/>.</exception>
-    public FahClientConnection(string host, int port, TcpConnectionFactory tcpConnectionFactory)
+    public FahClientConnection(string? host, int port, TcpConnectionFactory tcpConnectionFactory)
     {
         if (host is null) throw new ArgumentNullException(nameof(host));
         if (!TcpPort.Validate(port)) throw new ArgumentOutOfRangeException(nameof(port));

@@ -20,7 +20,7 @@ public class FahClientPyonMessageExtractor : FahClientMessageExtractor
         var indexes = new Dictionary<string, int>();
         if (!ExtractIndexes(buffer, indexes)) return null;
 
-        string messageType = ExtractMessageType(buffer, indexes);
+        var messageType = ExtractMessageType(buffer, indexes);
         if (messageType is null) return null;
 
         var messageText = ExtractMessageText(buffer, indexes);
@@ -38,7 +38,7 @@ public class FahClientPyonMessageExtractor : FahClientMessageExtractor
     /// </summary>
     /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
     /// <returns>true if all required indexes are found; otherwise, false.  Message extraction will not continue if this method returns false.</returns>
-    protected virtual bool ExtractIndexes(StringBuilder buffer, IDictionary<string, int> indexes)
+    protected virtual bool ExtractIndexes(StringBuilder? buffer, IDictionary<string, int>? indexes)
     {
         if (buffer is null) throw new ArgumentNullException(nameof(buffer));
         if (indexes is null) throw new ArgumentNullException(nameof(indexes));
@@ -75,7 +75,7 @@ public class FahClientPyonMessageExtractor : FahClientMessageExtractor
     /// </summary>
     /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
     /// <returns>The message type as a string.</returns>
-    protected virtual string ExtractMessageType(StringBuilder buffer, IDictionary<string, int> indexes)
+    protected virtual string? ExtractMessageType(StringBuilder? buffer, IDictionary<string, int>? indexes)
     {
         if (buffer is null) throw new ArgumentNullException(nameof(buffer));
         if (indexes is null) throw new ArgumentNullException(nameof(indexes));
@@ -90,7 +90,7 @@ public class FahClientPyonMessageExtractor : FahClientMessageExtractor
     /// </summary>
     /// <exception cref="ArgumentNullException">buffer -or- indexes is null.</exception>
     /// <returns>The message text as a string.</returns>
-    protected virtual StringBuilder ExtractMessageText(StringBuilder buffer, IDictionary<string, int> indexes)
+    protected virtual StringBuilder? ExtractMessageText(StringBuilder? buffer, IDictionary<string, int>? indexes)
     {
         if (buffer is null) throw new ArgumentNullException(nameof(buffer));
         if (indexes is null) throw new ArgumentNullException(nameof(indexes));

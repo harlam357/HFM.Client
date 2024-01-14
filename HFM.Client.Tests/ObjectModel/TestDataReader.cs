@@ -7,7 +7,13 @@ internal static class TestDataReader
 {
     internal static string ReadString(string resourceName)
     {
-        using var reader = new StreamReader(ReadStream(resourceName));
+        using var stream = ReadStream(resourceName);
+        if (stream is null)
+        {
+            return String.Empty;
+        }
+
+        using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
 
@@ -16,7 +22,7 @@ internal static class TestDataReader
 
     private const string TestDataNamespace = "HFM.Client.ObjectModel.TestData";
 
-    internal static Stream ReadStream(string resourceName) =>
+    internal static Stream? ReadStream(string resourceName) =>
         Assembly.GetExecutingAssembly().GetManifestResourceStream($"{TestDataNamespace}.{resourceName}");
 
     private static StringBuilder GetResourceStringBuilder(string resourceName)
@@ -25,6 +31,11 @@ internal static class TestDataReader
         // https://docs.microsoft.com/en-us/archive/msdn-magazine/2018/january/csharp-all-about-span-exploring-a-new-net-mainstay
 
         var stream = ReadStream(resourceName);
+        if (stream is null)
+        {
+            return new(0);
+        }
+
         var result = new StringBuilder((int)stream.Length);
         Span<char> buffer = stackalloc char[128];
 

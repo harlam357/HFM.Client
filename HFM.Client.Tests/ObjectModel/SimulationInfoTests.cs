@@ -10,7 +10,7 @@ public class SimulationInfoTests
     [Test]
     public void SimulationInfo_Load_FromClientVersion_7_1_24()
     {
-        var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_simulation-info.txt"), ObjectLoadOptions.None);
+        var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_simulation-info.txt"), ObjectLoadOptions.None)!;
         Assert.AreEqual("harlam357", simulationInfo.User);
         Assert.AreEqual(32, simulationInfo.Team);
         Assert.AreEqual(11020, simulationInfo.Project);
@@ -38,7 +38,7 @@ public class SimulationInfoTests
     [Test]
     public void SimulationInfo_Load_FromClientVersion_7_1_43()
     {
-        var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_simulation-info.txt"));
+        var simulationInfo = SimulationInfo.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_simulation-info.txt"))!;
         Assert.AreEqual("harlam357", simulationInfo.User);
         Assert.AreEqual(32, simulationInfo.Team);
         Assert.AreEqual(7610, simulationInfo.Project);
@@ -66,26 +66,26 @@ public class SimulationInfoTests
     [Test]
     public void SimulationInfo_Load_ReturnsNullWhenJsonStringIsNull()
     {
-        Assert.IsNull(SimulationInfo.Load((string)null));
+        Assert.IsNull(SimulationInfo.Load((string?)null));
     }
 
     [Test]
     public void SimulationInfo_Load_ReturnsNullWhenJsonStringBuilderIsNull()
     {
-        Assert.IsNull(SimulationInfo.Load((StringBuilder)null));
+        Assert.IsNull(SimulationInfo.Load((StringBuilder?)null));
     }
 
     [Test]
     public void SimulationInfo_Load_ReturnsNullWhenJsonTextReaderIsNull()
     {
-        Assert.IsNull(SimulationInfo.Load((TextReader)null));
+        Assert.IsNull(SimulationInfo.Load((TextReader?)null));
     }
 
     [Test]
     public void SimulationInfo_Load_DateTimeValueDoesNotExist()
     {
         // Act
-        var si = SimulationInfo.Load("{ }");
+        var si = SimulationInfo.Load("{ }")!;
         // Assert
         Assert.IsNull(si.StartTimeDateTime);
     }
@@ -94,7 +94,7 @@ public class SimulationInfoTests
     public void SimulationInfo_Load_MalformedDateTimeValue()
     {
         // Act
-        var si = SimulationInfo.Load(@"{ ""start_time"": ""May 29 2019-00:11:22"" }");
+        var si = SimulationInfo.Load(@"{ ""start_time"": ""May 29 2019-00:11:22"" }")!;
         // Assert
         Assert.IsNull(si.StartTimeDateTime);
     }
@@ -103,7 +103,7 @@ public class SimulationInfoTests
     public void SimulationInfo_Load_TimeSpanValueDoesNotExist()
     {
         // Act
-        var si = SimulationInfo.Load("{ }");
+        var si = SimulationInfo.Load("{ }")!;
         // Assert
         Assert.IsNull(si.ETATimeSpan);
     }

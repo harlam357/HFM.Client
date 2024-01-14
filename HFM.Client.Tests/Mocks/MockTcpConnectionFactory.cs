@@ -17,7 +17,7 @@ internal class MockTcpConnectionFactory : TcpConnectionFactory
         _factory = factory;
     }
 
-    public TcpConnection TcpConnection { get; private set; }
+    public TcpConnection? TcpConnection { get; private set; }
 
     public override TcpConnection Create()
     {

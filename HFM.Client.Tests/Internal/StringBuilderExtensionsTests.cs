@@ -11,7 +11,7 @@ public class StringBuilderExtensionsTests
     public void StringBuilder_IndexOf_ThrowsArgumentNullExceptionWhenSourceIsNull()
     {
         // Arrange
-        StringBuilder source = null;
+        StringBuilder? source = null;
         string value = "";
         int startIndex = 0;
         // Act & Assert
@@ -23,7 +23,7 @@ public class StringBuilderExtensionsTests
     {
         // Arrange
         StringBuilder source = new StringBuilder();
-        string value = null;
+        string? value = null;
         int startIndex = 0;
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => source.IndexOf(value, startIndex));
@@ -94,7 +94,7 @@ public class StringBuilderExtensionsTests
     public void StringBuilder_Trim_ThrowsArgumentNullExceptionWhenSourceIsNull()
     {
         // Arrange
-        StringBuilder source = null;
+        StringBuilder? source = null;
         // Act & Assert
         Assert.Throws<ArgumentNullException>(() => source.Trim());
     }
@@ -159,7 +159,7 @@ public class StringBuilderExtensionsTests
     public void StringBuilder_CopyTo_ThrowsArgumentNullExceptionWhenSourceIsNull()
     {
         // Arrange
-        StringBuilder source = null;
+        StringBuilder? source = null;
         int sourceIndex = 0;
         StringBuilder destination = new StringBuilder();
         int destinationIndex = 0;
@@ -174,7 +174,7 @@ public class StringBuilderExtensionsTests
         // Arrange
         StringBuilder source = new StringBuilder();
         int sourceIndex = 0;
-        StringBuilder destination = null;
+        StringBuilder? destination = null;
         int destinationIndex = 0;
         int count = 0;
         // Act & Assert

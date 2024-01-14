@@ -63,7 +63,7 @@ public class FahClientCommandTests
         public override bool Connected => _connected;
 
         // simulate losing the TcpConnection after the FahClientConnection has been opened
-        public override TcpConnection TcpConnection => _connected ? null : base.TcpConnection;
+        public override TcpConnection? TcpConnection => _connected ? null : base.TcpConnection;
 
         public MockFahClientConnection()
             : base("foo", 2000, new MockTcpConnectionFactory())
@@ -129,7 +129,7 @@ public class FahClientCommandTests
             int bytesWritten = command.Execute();
             // Assert
             Assert.AreEqual(13, bytesWritten);
-            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection!.GetStream()!;
             Assert.AreEqual("command text\n", Encoding.ASCII.GetString(memoryStream.ToArray()));
         }
     }
@@ -147,7 +147,7 @@ public class FahClientCommandTests
             int bytesWritten = await command.ExecuteAsync();
             // Assert
             Assert.AreEqual(13, bytesWritten);
-            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection!.GetStream()!;
             Assert.AreEqual("command text\n", Encoding.ASCII.GetString(memoryStream.ToArray()));
         }
     }
@@ -165,7 +165,7 @@ public class FahClientCommandTests
             int bytesWritten = command.Execute();
             // Assert
             Assert.AreEqual(0, bytesWritten);
-            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection!.GetStream()!;
             Assert.AreEqual("", Encoding.ASCII.GetString(memoryStream.ToArray()));
         }
     }
@@ -183,7 +183,7 @@ public class FahClientCommandTests
             int bytesWritten = await command.ExecuteAsync();
             // Assert
             Assert.AreEqual(0, bytesWritten);
-            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection.GetStream();
+            var memoryStream = (MemoryStream)tcpConnectionFactory.TcpConnection!.GetStream()!;
             Assert.AreEqual("", Encoding.ASCII.GetString(memoryStream.ToArray()));
         }
     }

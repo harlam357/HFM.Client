@@ -10,7 +10,7 @@ public class InfoTests
     [Test]
     public void Info_Load_FromClientVersion_7_1_24()
     {
-        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_info.txt"), ObjectLoadOptions.None);
+        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_24_info.txt"), ObjectLoadOptions.None)!;
         Assert.AreEqual("http://folding.stanford.edu/", info.Client.Homepage);
         Assert.AreEqual("(c) 2009,2010 Stanford University", info.Client.Copyright);
         Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
@@ -37,7 +37,7 @@ public class InfoTests
         Assert.AreEqual("WINDOWS_THREADS", info.System.Threads);
         Assert.AreEqual(1, info.System.GPUs);
         Assert.IsNotNull(info.System.GPUInfos);
-        Assert.AreEqual(1, info.System.GPUInfos.Count);
+        Assert.AreEqual(1, info.System.GPUInfos!.Count);
         Assert.AreEqual("ATI:2 Mobility Radeon HD 3600 Series", info.System.GPUInfos[0].GPU);
         Assert.AreEqual(null, info.System.GPUInfos[0].CUDADevice);
         Assert.AreEqual(null, info.System.GPUInfos[0].OpenCLDevice);
@@ -52,7 +52,7 @@ public class InfoTests
     [Test]
     public void Info_Load_FromClientVersion_7_1_43()
     {
-        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_info.txt"), ObjectLoadOptions.None);
+        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_1_43_info.txt"), ObjectLoadOptions.None)!;
         Assert.AreEqual("http://folding.stanford.edu/", info.Client.Homepage);
         Assert.AreEqual("(c) 2009-2012 Stanford University", info.Client.Copyright);
         Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
@@ -79,7 +79,7 @@ public class InfoTests
         Assert.AreEqual("WINDOWS_THREADS", info.System.Threads);
         Assert.AreEqual(1, info.System.GPUs);
         Assert.IsNotNull(info.System.GPUInfos);
-        Assert.AreEqual(1, info.System.GPUInfos.Count);
+        Assert.AreEqual(1, info.System.GPUInfos!.Count);
         Assert.AreEqual("NVIDIA:1 GT200b [GeForce GTX 285]", info.System.GPUInfos[0].GPU);
         Assert.AreEqual(null, info.System.GPUInfos[0].CUDADevice);
         Assert.AreEqual(null, info.System.GPUInfos[0].OpenCLDevice);
@@ -94,7 +94,7 @@ public class InfoTests
     [Test]
     public void Info_Load_FromClientVersion_7_6_6()
     {
-        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_6_6_info.txt"));
+        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_6_6_info.txt"))!;
         Assert.AreEqual("7.6.6", info.Client.Version);
         Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
         Assert.AreEqual("2020 foldingathome.org", info.Client.Copyright);
@@ -128,7 +128,7 @@ public class InfoTests
         Assert.AreEqual("Windows 10 Enterprise", info.System.OS);
         Assert.AreEqual(1, info.System.GPUs);
         Assert.IsNotNull(info.System.GPUInfos);
-        Assert.AreEqual(1, info.System.GPUInfos.Count);
+        Assert.AreEqual(1, info.System.GPUInfos!.Count);
         Assert.AreEqual("Bus:8 Slot:0 Func:0 NVIDIA:7 TU116 [GeForce GTX 1660 Ti]", info.System.GPUInfos[0].GPU);
         Assert.AreEqual("Platform:0 Device:0 Bus:8 Slot:0 Compute:7.5 Driver:10.1", info.System.GPUInfos[0].CUDADevice);
         Assert.AreEqual("Platform:0 Device:0 Bus:8 Slot:0 Compute:1.2 Driver:432.0", info.System.GPUInfos[0].OpenCLDevice);
@@ -138,7 +138,7 @@ public class InfoTests
     [Test]
     public void Info_Load_FromClientVersion_7_6_21_fr_FR()
     {
-        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_6_21_fr-FR_info.txt"));
+        var info = Info.Load(TestDataReader.ReadStringBuilder("Client_7_6_21_fr-FR_info.txt"))!;
         Assert.AreEqual("7.6.21", info.Client.Version);
         Assert.AreEqual("Joseph Coffland <joseph@cauldrondevelopment.com>", info.Client.Author);
         Assert.AreEqual("2020 foldingathome.org", info.Client.Copyright);
@@ -172,7 +172,7 @@ public class InfoTests
         Assert.AreEqual("Windows 10 Enterprise", info.System.OS);
         Assert.AreEqual(1, info.System.GPUs);
         Assert.IsNotNull(info.System.GPUInfos);
-        Assert.AreEqual(1, info.System.GPUInfos.Count);
+        Assert.AreEqual(1, info.System.GPUInfos!.Count);
         Assert.AreEqual("Bus:0 Slot:2 Func:0 INTEL:1 CFL GT2 [UHD Graphics 630]", info.System.GPUInfos[0].GPU);
         Assert.IsNull(info.System.GPUInfos[0].CUDADevice);
         Assert.AreEqual("Platform:0 Device:0 Bus:NA Slot:NA Compute:3.0 Driver:27.20", info.System.GPUInfos[0].OpenCLDevice);
@@ -182,19 +182,19 @@ public class InfoTests
     [Test]
     public void Info_Load_ReturnsNullWhenJsonStringIsNull()
     {
-        Assert.IsNull(Info.Load((string)null));
+        Assert.IsNull(Info.Load((string?)null));
     }
 
     [Test]
     public void Info_Load_ReturnsNullWhenJsonStringBuilderIsNull()
     {
-        Assert.IsNull(Info.Load((StringBuilder)null));
+        Assert.IsNull(Info.Load((StringBuilder?)null));
     }
 
     [Test]
     public void Info_Load_ReturnsNullWhenJsonTextReaderIsNull()
     {
-        Assert.IsNull(Info.Load((TextReader)null));
+        Assert.IsNull(Info.Load((TextReader?)null));
     }
 
     [Test]
@@ -205,7 +205,7 @@ public class InfoTests
         // Act
         var info = Info.Load(json);
         // Assert
-        Assert.AreEqual(4.0, info.System.MemoryValue);
+        Assert.AreEqual(4.0, info!.System.MemoryValue);
     }
 
     [Test]
@@ -216,7 +216,7 @@ public class InfoTests
         // Act
         var info = Info.Load(json);
         // Assert
-        Assert.AreEqual(0.5, info.System.MemoryValue);
+        Assert.AreEqual(0.5, info!.System.MemoryValue);
     }
 
     [Test]
@@ -227,7 +227,7 @@ public class InfoTests
         // Act
         var info = Info.Load(json);
         // Assert
-        Assert.AreEqual(0.25, info.System.MemoryValue);
+        Assert.AreEqual(0.25, info!.System.MemoryValue);
     }
 
     [Test]
@@ -238,7 +238,7 @@ public class InfoTests
         // Act
         var info = Info.Load(json);
         // Assert
-        Assert.IsNull(info.System.MemoryValue);
+        Assert.IsNull(info!.System.MemoryValue);
     }
 
     [Test]
@@ -249,6 +249,6 @@ public class InfoTests
         // Act
         var info = Info.Load(json);
         // Assert
-        Assert.IsNull(info.System.GPUs);
+        Assert.IsNull(info!.System.GPUs);
     }
 }
