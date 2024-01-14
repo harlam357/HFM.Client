@@ -9,8 +9,8 @@ namespace HFM.Client.Tool;
 
 public partial class AsyncMainForm : Form
 {
-    private FahClientConnection _fahClient;
-    private readonly BlockingCollection<FahClientMessage> _messageQueue;
+    private FahClientConnection? _fahClient;
+    private readonly BlockingCollection<FahClientMessage?> _messageQueue;
 
     public AsyncMainForm()
     {
@@ -18,11 +18,10 @@ public partial class AsyncMainForm : Form
 
         base.Text = $"HFM Client Tool v{FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location).ProductVersion}";
 
-        _messageQueue = new BlockingCollection<FahClientMessage>();
+        _messageQueue = new();
         Task.Run(() =>
         {
-            FahClientMessage message;
-            while ((message = _messageQueue.Take()) != null)
+            while (_messageQueue.Take() is { } message)
             {
                 FahClientMessageReceived(message);
             }
@@ -84,8 +83,13 @@ public partial class AsyncMainForm : Form
         SetStatusLabelText(connected ? "Connected" : "Connection Closed");
     }
 
-    private async void FahClientMessageReceived(FahClientMessage message)
+    private async void FahClientMessageReceived(FahClientMessage? message)
     {
+        if (message is null)
+        {
+            return;
+        }
+
         AppendTextToMessageDisplayTextBox(String.Empty);
         AppendTextToMessageDisplayTextBox(FahClientMessageHelper.FormatForDisplay(message));
         var identifier = message.Identifier.ToString();
@@ -98,8 +102,18 @@ public partial class AsyncMainForm : Form
             if (message.MessageFormat == FahClientMessage.PyonMessageFormat)
             {
                 message = new FahClientJsonMessageExtractor().Extract(message.MessageText);
+                if (message is null)
+                {
+                    return;
+                }
             }
+
             var slotCollection = SlotCollection.Load(message.MessageText);
+            if (slotCollection is null)
+            {
+                return;
+            }
+
             foreach (var slot in slotCollection)
             {
                 await ExecuteFahClientCommandAsync("slot-options " + slot.ID + " client-type client-subtype cpu-usage machine-id max-packet-size core-priority next-unit-percentage max-units checkpoint pause-on-start gpu-index gpu-usage");
@@ -110,7 +124,7 @@ public partial class AsyncMainForm : Form
 
     private void CloseButtonClick(object sender, EventArgs e)
     {
-        _fahClient.Close();
+        _fahClient?.Close();
     }
 
     private void ClearMessagesButtonClick(object sender, EventArgs e)
@@ -122,7 +136,7 @@ public partial class AsyncMainForm : Form
 
     private async void SendCommandButtonClick(object sender, EventArgs e)
     {
-        if (_fahClient == null || !_fahClient.Connected)
+        if (_fahClient is not { Connected: true })
         {
             MessageBox.Show("Not connected.");
             return;
@@ -155,7 +169,7 @@ public partial class AsyncMainForm : Form
         Debug.WriteLine($"Keystroke: {(int)e.KeyChar}");
 
         // only allow digits & special keystrokes
-        if (char.IsDigit(e.KeyChar) == false &&
+        if (Char.IsDigit(e.KeyChar) == false &&
             e.KeyChar != 8 &&       // backspace 
             e.KeyChar != 26 &&      // Ctrl+Z
             e.KeyChar != 24 &&      // Ctrl+X
@@ -169,7 +183,7 @@ public partial class AsyncMainForm : Form
 
     private void StatusMessageListBoxClick(object sender, EventArgs e)
     {
-        string value = StatusMessageListBox.SelectedItem as string;
+        var value = StatusMessageListBox.SelectedItem as string;
         if (!String.IsNullOrWhiteSpace(value))
         {
             var lines = MessageDisplayTextBox.Lines;
@@ -198,7 +212,7 @@ public partial class AsyncMainForm : Form
 
     private async Task ExecuteFahClientCommandAsync(string commandText)
     {
-        FahClientDataSent(await _fahClient.CreateCommand(commandText).ExecuteAsync());
+        FahClientDataSent(await _fahClient!.CreateCommand(commandText).ExecuteAsync());
     }
 
     private int _totalBytesSent;
@@ -237,7 +251,7 @@ public partial class AsyncMainForm : Form
 
     private void SetConnectionButtonsEnabled(bool connected)
     {
-        this.BeginInvokeOnUIThread(c =>
+        this.BeginInvokeOnUIThread(_ =>
         {
             ConnectButton.Enabled = !connected;
             CloseButton.Enabled = connected;
@@ -246,12 +260,12 @@ public partial class AsyncMainForm : Form
 
     private void AppendTextToMessageDisplayTextBox(string text)
     {
-        MessageDisplayTextBox.BeginInvokeOnUIThread(t => MessageDisplayTextBox.AppendText(t), text);
+        MessageDisplayTextBox.BeginInvokeOnUIThread(MessageDisplayTextBox.AppendText, text);
     }
 
     private void AddTextToStatusMessageListBox(string text)
     {
-        StatusMessageListBox.BeginInvokeOnUIThread(t =>
+        StatusMessageListBox.BeginInvokeOnUIThread(_ =>
         {
             StatusMessageListBox.Items.Add(text);
             StatusMessageListBox.SelectedIndex = StatusMessageListBox.Items.Count - 1;
@@ -265,12 +279,12 @@ public partial class AsyncMainForm : Form
 
     private void SetDataSentValueLabelText(int value)
     {
-        DataSentValueLabel.BeginInvokeOnUIThread(v => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
+        DataSentValueLabel.BeginInvokeOnUIThread(_ => DataSentValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
     }
 
     private void SetDataReceivedValueLabelText(int value)
     {
-        DataReceivedValueLabel.BeginInvokeOnUIThread(v => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
+        DataReceivedValueLabel.BeginInvokeOnUIThread(_ => DataReceivedValueLabel.Text = $"{value / 1024.0:0.0} KB", value);
     }
 
     /// <summary>

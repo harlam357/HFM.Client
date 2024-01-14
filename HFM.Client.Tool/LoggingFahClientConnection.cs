@@ -30,12 +30,20 @@ public class LoggingFahClientConnection : FahClientConnection
 
         private bool SaveMessageAfterRead(bool result)
         {
-            if (result)
+            if (!result)
             {
-                var m = Message;
-                string path = Path.Combine(_logFolderPath, $"{m.Identifier.MessageType}-{m.Identifier.Received:yyyyMMddThhmmss}.txt");
-                File.WriteAllText(path, m.MessageText.ToString());
+                return result;
             }
+
+            var m = Message;
+            if (m is null)
+            {
+                return result;
+            }
+
+            string path = Path.Combine(_logFolderPath, $"{m.Identifier.MessageType}-{m.Identifier.Received:yyyyMMddThhmmss}.txt");
+            File.WriteAllText(path, m.MessageText.ToString());
+
             return result;
         }
     }
