@@ -117,33 +117,63 @@ internal abstract class ObjectLoader<T> where T : class
     /// <summary>
     /// TODO: GetValue documentation
     /// </summary>
-    protected virtual TResult? GetValue<TResult>(JsonObject? obj, params string[] names)
+    protected static TResult? GetValue<TResult>(JsonObject? obj, string name)
     {
         if (obj is null)
         {
             return default;
         }
 
-        foreach (var name in names)
+        var node = obj[name];
+        if (node != null)
         {
-            var node = obj[name];
-            if (node != null)
+            try
             {
-                try
-                {
-                    return node.GetValue<TResult>();
-                }
-                catch (FormatException)
-                {
-                    // The current JsonNode cannot be represented as a {T}.
-                }
-                catch (InvalidOperationException)
-                {
-                    // The current JsonNode is not a JsonValue or is not compatible with {T}.
-                }
+                return node.GetValue<TResult>();
+            }
+            catch (FormatException)
+            {
+                // The current JsonNode cannot be represented as a {T}.
+            }
+            catch (InvalidOperationException)
+            {
+                // The current JsonNode is not a JsonValue or is not compatible with {T}.
             }
         }
 
         return default;
+    }
+
+    /// <summary>
+    /// TODO: TryGetValue documentation
+    /// </summary>
+    protected static bool TryGetValue<TResult>(JsonObject? obj, string name, out TResult? result)
+    {
+        result = default;
+
+        if (obj is null)
+        {
+            return false;
+        }
+
+        var node = obj[name];
+        if (node != null)
+        {
+            try
+            {
+                result = node.GetValue<TResult>();
+                return true;
+            }
+            catch (FormatException)
+            {
+                // The current JsonNode cannot be represented as a {T}.
+            }
+            catch (InvalidOperationException)
+            {
+                // The current JsonNode is not a JsonValue or is not compatible with {T}.
+            }
+        }
+
+        return false;
     }
 }

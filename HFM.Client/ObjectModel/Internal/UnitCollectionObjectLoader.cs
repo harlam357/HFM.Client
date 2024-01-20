@@ -28,7 +28,7 @@ internal class UnitCollectionObjectLoader : ObjectLoader<UnitCollection>
 
     // ReSharper disable StringLiteralTypo
 
-    private Unit LoadUnit(JsonObject obj)
+    private static Unit LoadUnit(JsonObject obj)
     {
         var slot = new Unit();
         slot.ID = GetValue<string>(obj, "id").ToNullableInt32();
@@ -55,7 +55,14 @@ internal class UnitCollectionObjectLoader : ObjectLoader<UnitCollection>
         slot.Attempts = GetValue<int?>(obj, "attempts");
         slot.NextAttempt = GetValue<string>(obj, "nextattempt");
         slot.NextAttemptTimeSpan = ConvertToTimeSpan(slot.NextAttempt);
-        slot.Slot = GetValue<int?>(obj, "slot");
+        if (TryGetValue<string>(obj, "slot", out var slotString))
+        {
+            slot.Slot = slotString.ToNullableInt32();
+        }
+        else if (TryGetValue<int?>(obj, "slot", out var slotInt))
+        {
+            slot.Slot = slotInt;
+        }
         slot.ETA = GetValue<string>(obj, "eta");
         slot.ETATimeSpan = ConvertToTimeSpan(slot.ETA);
         slot.PPD = GetValue<string>(obj, "ppd").ToNullableDouble();

@@ -24,7 +24,7 @@ internal class SlotCollectionObjectLoader : ObjectLoader<SlotCollection>
         return collection;
     }
 
-    private Slot LoadSlot(JsonObject obj)
+    private static Slot LoadSlot(JsonObject obj)
     {
         var slot = new Slot();
         slot.ID = GetValue<string>(obj, "id").ToNullableInt32();

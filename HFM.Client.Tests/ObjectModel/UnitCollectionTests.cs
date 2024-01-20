@@ -117,6 +117,44 @@ public class UnitCollectionTests
     }
 
     [Test]
+    public void UnitCollection_Load_FromClientVersion_7_6_21()
+    {
+        var unitCollection = UnitCollection.Load(TestDataReader.ReadStringBuilder("Client_7_6_21_units.txt"), ObjectLoadOptions.None)!;
+        Assert.AreEqual(0, unitCollection[0].ID);
+        Assert.AreEqual("RUNNING", unitCollection[0].State);
+        Assert.AreEqual("NO_ERROR", unitCollection[0].Error);
+        Assert.AreEqual(18725, unitCollection[0].Project);
+        Assert.AreEqual(0, unitCollection[0].Run);
+        Assert.AreEqual(267, unitCollection[0].Clone);
+        Assert.AreEqual(766, unitCollection[0].Gen);
+        Assert.AreEqual("0x22", unitCollection[0].Core);
+        Assert.AreEqual("0xfe0200000b0100000000000025490000", unitCollection[0].UnitHex);
+        Assert.AreEqual("24.56%", unitCollection[0].PercentDone);
+        Assert.AreEqual(100, unitCollection[0].TotalFrames);
+        Assert.AreEqual(24, unitCollection[0].FramesDone);
+        Assert.AreEqual("2024-01-20T15:23:36Z", unitCollection[0].Assigned);
+        Assert.AreEqual(new DateTime(2024, 1, 20, 15, 23, 36), unitCollection[0].AssignedDateTime);
+        Assert.AreEqual("2024-01-22T03:23:36Z", unitCollection[0].Timeout);
+        Assert.AreEqual(new DateTime(2024, 1, 22, 3, 23, 36), unitCollection[0].TimeoutDateTime);
+        Assert.AreEqual("2024-01-22T15:23:36Z", unitCollection[0].Deadline);
+        Assert.AreEqual(new DateTime(2024, 1, 22, 15, 23, 36), unitCollection[0].DeadlineDateTime);
+        Assert.AreEqual("131.239.113.97", unitCollection[0].WorkServer);
+        Assert.AreEqual("128.174.73.78", unitCollection[0].CollectionServer);
+        Assert.AreEqual(String.Empty, unitCollection[0].WaitingOn);
+        Assert.AreEqual(0, unitCollection[0].Attempts);
+        Assert.AreEqual("0.00 secs", unitCollection[0].NextAttempt);
+        Assert.AreEqual(TimeSpan.Zero, unitCollection[0].NextAttemptTimeSpan);
+        Assert.AreEqual(3, unitCollection[0].Slot);
+        Assert.AreEqual("1 hours 41 mins", unitCollection[0].ETA);
+        Assert.AreEqual(new TimeSpan(1, 41, 0), unitCollection[0].ETATimeSpan);
+        Assert.AreEqual(8481141.0, unitCollection[0].PPD);
+        Assert.AreEqual("1 mins 21 secs", unitCollection[0].TPF);
+        Assert.AreEqual(new TimeSpan(0, 1, 21), unitCollection[0].TPFTimeSpan);
+        Assert.AreEqual(200000.0, unitCollection[0].BaseCredit);
+        Assert.AreEqual(795107.0, unitCollection[0].CreditEstimate);
+    }
+
+    [Test]
     public void UnitCollection_Load_ReturnsNullWhenJsonStringIsNull()
     {
         Assert.IsNull(UnitCollection.Load((string?)null));
