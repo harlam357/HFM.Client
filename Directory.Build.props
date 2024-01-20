@@ -5,7 +5,7 @@
     <NoWarn>$(NoWarn);1591</NoWarn>
     <AnalysisMode>All</AnalysisMode>
     <LangVersion>latest</LangVersion>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
   </PropertyGroup>
 </Project>
